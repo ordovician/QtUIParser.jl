@@ -1,6 +1,7 @@
-authors = ["Erik Engheim <erik.engheim@mac.com>"]
 name = "QtUIParser"
 uuid = "a1393636-aef5-11e8-26d4-25c6120b235b"
+authors = ["Erik Engheim <erik.engheim@mac.com>"]
 version = "0.1.0"
 
 [deps]
+PLists = "244549da-a957-11e8-2419-29f9eea8ace5"
