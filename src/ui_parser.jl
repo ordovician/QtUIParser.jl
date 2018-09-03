@@ -47,8 +47,13 @@ function parse_enum(s::AbstractString)
 end
 
 function parse_rect(n::ElementNode)
-    children = elements(n)
-    # TODO: Do a dict style lookup of x, y, width, height. Maybe expand API
+    attributes = elements(n)
+    value(key) = nodecontent(findfirst(key, attributes))
+    x       = value("x")
+    y       = value("y")
+    width   = value("width")
+    height  = value("height")            
+    Rect(x, y, width, height)
 end
 
 function parse_property_data(n::ElementNode)
@@ -77,6 +82,35 @@ function parse_property(n::ElementNode)
     property(name, parse_property_data(data_node))
 end
 
+function parse_func_signature(s::AbstractString, T::DataType)
+    m = match(r"\s*(\w+)\(([\w,\s]*)\)", s)
+    if m == nothing
+       @error "Was not able to parse signal or slot method '$s'" 
+    else
+       T(m[1], split(m[2])) 
+    end    
+end
+
+function parse_connection(node::ElementNode)
+    attributes = elements(n)
+    value(key) = nodecontent(findfirst(key, attributes))
+    
+    sender     = value("sender")
+    receiver   = value("receiver")
+    signal_str = value("signal")
+    slot_str   = value("slot")
+    
+    signal = parse_func_signature(signal_str, Signal)
+    slot   = parse_func_signature(signal_str, Slot)
+    
+    Connection(sender, signal, receiver, slot)
+end
+
+function parse_connections(node::ElementNode)
+    connections = elements(n)
+    [parse_connection(conn) for conn in connections]    
+end
+
 function parse_widget(node::ElementNode)
     cname = node["class"] # class name
     name  = node["name"]
@@ -94,7 +128,7 @@ function parse_widget(node::ElementNode)
         end
     end
     # TODO: how do we deal with other widgets?
-    CustomWidget(name, class, properties, layout)
+    CustomWidget(name, cname, properties, layout)
 end
 
 function read_ui_string(text::AbstractString)
