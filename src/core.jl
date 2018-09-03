@@ -24,7 +24,7 @@ abstract type Property end
 
 struct TextProperty <: Property
    name::String
-   text::String 
+   text::String
 end
 
 property(text::AbstractString) = TextProperty("text", text)
@@ -87,7 +87,7 @@ mutable struct CustomWidget <: Widget
    name::String
    class::String
    properties::Vector{Property}
-   layout::Union{Layout, Nothing} 
+   layout::Union{Layout, Nothing}
 end
 
 function CustomWidget(name::AbstractString = "Form", class::AbstractString = "QWidget")
@@ -101,12 +101,17 @@ mutable struct BoxLayout <: Layout
     items::Vector{Union{Layout, Widget}}
 end
 
+function BoxLayout(name::AbstractString, orientation::Orientation = horizontal, items...)
+    BoxLayout(name, orientation, items)
+end
+
+
 """
 Defines a signal which may be broadcast from a QObject. Looks like
 a C++ function signature. E.g. we would represent the signal:
 
     add(int, int)
-    
+
 Like this:
 
     Signal("add", ["int", "int"])
@@ -123,7 +128,7 @@ Defines a slot on a QObject which may accept a broadcast signal.
 Looks like a regular C++ function:
 
     add(int, int)
-    
+
 Like this:
 
     Slot("add", ["int", "int"])
@@ -139,7 +144,7 @@ Slot(name::AbstractString) = Slot(name, String[])
 Represent a connection between a signal emitted from an object
 and a slot on a receiving object. This could be a push button emitting
 a `clicked()` signal, which you want to connect to a `handleButtonClick()`
-slot on receiver object. 
+slot on receiver object.
 """
 mutable struct Connection
     sender::String
