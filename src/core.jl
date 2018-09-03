@@ -1,6 +1,7 @@
 import Base: print, show, setindex!, getindex
 
-export Ui, Widget, Layout, Property, Signal, Slot, Connection,
+export Ui, 
+       Widget, Spacer, Layout, Property, Signal, Slot, Connection, Resource,
        Orientation, Rect,
        PushButton, CheckBox, RadioButton, Slider, ComboBox,
        CustomWidget,
@@ -151,6 +152,16 @@ mutable struct Connection
     signal::Signal
     receiver::String
     slot::Slot
+end
+
+# TODO: Define structure
+mutable struct Resource
+    
+end
+
+# TODO: Define a spacer
+mutable struct Spacer
+    
 end
 
 """

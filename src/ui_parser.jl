@@ -14,7 +14,7 @@ const ename_to_enum_dict = Dict("Qt::Horizontal" => horizontal,
                                 "Qt::Vertical"   => vertical)
 #
 "Looks for a child node of `n` which is a property with name `name`."
-findproperty(n::Node, name::AbstractString) = findfirst(["property"], "name", name, n)
+findproperty(n::Node, name::AbstractString) = locatefirst(["property"], "name", name, n)
 
 """
     findwidget(node, name) -> Node
@@ -47,8 +47,7 @@ function parse_enum(s::AbstractString)
 end
 
 function parse_rect(n::ElementNode)
-    attributes = elements(n)
-    value(key) = nodecontent(findfirst(key, attributes))
+    value(key) = Meta.parse(nodecontent(locatefirst(key, n)))
     x       = value("x")
     y       = value("y")
     width   = value("width")
@@ -77,8 +76,6 @@ function parse_property(n::ElementNode)
         error("property node is missing data")
     end
     data_node = first(children)
-    # TODO: We get an error here:
-    # ERROR: MethodError: no method matching property(::String, ::Array{Node,1})
     property(name, parse_property_data(data_node))
 end
 
@@ -92,8 +89,7 @@ function parse_func_signature(s::AbstractString, T::DataType)
 end
 
 function parse_connection(node::ElementNode)
-    attributes = elements(n)
-    value(key) = nodecontent(findfirst(key, attributes))
+    value(key) = nodecontent(locatefirst(key, n))
     
     sender     = value("sender")
     receiver   = value("receiver")
@@ -107,8 +103,46 @@ function parse_connection(node::ElementNode)
 end
 
 function parse_connections(node::ElementNode)
-    connections = elements(n)
+    connections = elements(node)
     [parse_connection(conn) for conn in connections]    
+end
+
+function parse_layout(node::ElementNode)
+    class = node["class"]
+    name  = node["name"]
+    
+    items = Union{Layout, Widget}[]
+    
+    item_nodes = elements(node)
+    for item_node in item_nodes
+        children = elements(item_node)
+        child = first(children)
+        tag = nodename(child)
+        if     "widget" == tag
+            w = parse_widget(child)
+            push!(items, w)
+        elseif "layout" == tag
+            l = parse_layout(child)
+            push!(items, l)
+        elseif "spacer" == tag
+            push!(items, ) # TODO: Parse spacers properly
+        else
+            @error "Don't know how to parse items of type '$tag'"
+        end
+    end
+    
+    if     "QVBoxLayout" == class
+        BoxLayout(name, vertical, items)
+    elseif "QHBoxLayout" == class
+        BoxLayout(name, horizontal, items)
+    else
+        @error "Missing code to handle Layout of type '$class'"
+    end
+end
+
+# TODO: Implement when we know more about the structure of resources XML
+function parse_resources(node::ElementNode)
+    Resource[]
 end
 
 function parse_widget(node::ElementNode)
@@ -124,7 +158,7 @@ function parse_widget(node::ElementNode)
         if     tag == "property"
             push!(properties, parse_property(child))
         elseif tag == "layout"
-            layout = parse_layout(child) # TODO: need to parse layout
+            layout = parse_layout(child)
         end
     end
     # TODO: how do we deal with other widgets?
@@ -143,9 +177,9 @@ function read_ui_string(text::AbstractString)
     end
     version = ui["version"]
     children = elements(ui)
-    root_widget = parse_widget(findfirst("widget", ui))
-    connections = parse_connections(findfirst("connections", ui))
-    resources   = parse_resources(findfirst("resources", ui))
+    root_widget = parse_widget(locatefirst("widget", ui))
+    connections = parse_connections(locatefirst("connections", ui))
+    resources   = parse_resources(locatefirst("resources", ui))
     
     Ui(root_widget, connections, version)
 end
@@ -154,7 +188,7 @@ end
 Read Qt `.ui` file
 """
 function read_ui(stream::IO)
-    text = readstring(stream)
+    text = read(stream, String)
     read_ui_string(text)
 end
 

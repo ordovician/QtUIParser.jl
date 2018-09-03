@@ -37,6 +37,14 @@ function xml(conns::Vector{Connection})
     node 
 end
 
+function xml(resources::Vector{Resource})
+    node = ElementNode("resources")
+    for res in resources 
+        addchild!(node, xml(res))
+    end
+    node 
+end
+
 function connections(conns...)
     p = ElementNode("connections")
     for conn in conns 
@@ -79,7 +87,7 @@ function xml(layout::BoxLayout)
     elseif layout.orientation == vertical
         "QVBoxLayout"
     end
-    node = ElementNode("layout", ["class"=>class, "name"=>name])
+    node = ElementNode("layout", ["class"=>class, "name"=>layout.name])
     for item in layout.items
        addchild!(node, ElementNode("item", [xml(item)]))
     end
@@ -96,6 +104,10 @@ end
 
 function hboxlayout(name::AbstractString, items...)
     boxlayout(name, horizontal, items...)
+end
+
+function xml(spacer::Spacer)
+    ElementNode("spacer")
 end
 
 """
