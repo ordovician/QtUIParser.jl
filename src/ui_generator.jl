@@ -14,11 +14,11 @@ of a sender and receiver.
 function xml(conn::Connection)
     node = ElementNode("connection")
     addchildren!(node, [
-        "sender" => conn.sender, 
-        "signal" => string(conn.signal), 
-        "receiver" => conn.receiver, 
+        "sender" => conn.sender,
+        "signal" => string(conn.signal),
+        "receiver" => conn.receiver,
         "slot" => string(conn.slot)])
-    node   
+    node
 end
 
 function connection(sender::String, signal::Signal, receiver::String, slot::Slot)
@@ -31,26 +31,26 @@ XML representation for multiple connections.
 """
 function xml(conns::Vector{Connection})
     node = ElementNode("connections")
-    for conn in conns 
+    for conn in conns
         addchild!(node, xml(conn))
     end
-    node 
+    node
 end
 
 function xml(resources::Vector{Resource})
     node = ElementNode("resources")
-    for res in resources 
+    for res in resources
         addchild!(node, xml(res))
     end
-    node 
+    node
 end
 
 function connections(conns...)
     p = ElementNode("connections")
-    for conn in conns 
+    for conn in conns
         addchild!(p, conn)
     end
-    p    
+    p
 end
 
 function xml(w::Widget)
@@ -147,7 +147,7 @@ class_name(w::Slider) = "QSlider"
     class_name(widget)
 Name of widget class in Qt.
 """
-class_name(w::Widget) = "QWidget"
+class_name(w::CustomWidget) = "QWidget"
 
 """
     xml(property)
@@ -155,29 +155,38 @@ XML representation of a subclass of `Property`. Used to describe aspects
 of a widget.
 """
 function xml(p::GeometryProperty)
-    node = ElementNode("property", ["name"=>"geometry"])
+    node = ElementNode("property", ["name"=>p.name])
     r = p.rect
     addchildren!(node, [
-        "x" => string(r.x), 
-        "y" => string(r.y), 
-        "width" => string(r.width), 
+        "x" => string(r.x),
+        "y" => string(r.y),
+        "width" => string(r.width),
         "height" => string(r.height)])
-    node 
+    node
+end
+
+function xml(p::SizeProperty)
+    node = ElementNode("property", ["name"=>p.name])
+    sz = p.size
+    addchildren!(node, [
+        "width"  => string(sz.width),
+        "height" => string(sz.height)])
+    node
 end
 
 function xml(p::TextProperty)
-    node = ElementNode("property", ["name"=>"text"])
+    node = ElementNode("property", ["name"=>p.name])
     addchild!(node, ElementNode("string", p.text))
     node
 end
 
 function xml(p::OrientationProperty)
-    node = ElementNode("property", ["name"=>"orientation"])
+    node = ElementNode("property", ["name"=>p.name])
     s = if p.orientation == horizontal
             "Qt::Horizontal"
         elseif p.orientation == vertical
             "Qt::Vertical"
-        end        
+        end
     addchild!(node, ElementNode("enum", s))
     node
 end
@@ -188,7 +197,7 @@ function xml(p::BoolProperty)
     node
 end
 
-function add_property_nodes!(node::Node, w::Widget)
+function add_property_nodes!(node::Node, w::Union{Spacer, Widget})
     for p in w.properties
         addchild!(node, xml(p))
     end
@@ -202,7 +211,7 @@ function xml(w::ComboBox)
     node = widget(class_name(w), w.name)
     add_property_nodes!(node, w)
     for item in w.items
-       addchild!(node, ElementNode("item"), [xml(item)]) 
+       addchild!(node, ElementNode("item"), [xml(item)])
     end
     node
 end
@@ -210,7 +219,7 @@ end
 function xml(w::Slider)
     node = widget(class_name(w), w.name)
     add_property_nodes!(node, w)
-    node 
+    node
 end
 
 function xml(w::Union{PushButton, CheckBox, RadioButton})
@@ -226,5 +235,11 @@ function xml(w::CustomWidget)
     if w.layout != nothing
         addchild!(node, xml(w.layout))
     end
+    node
+end
+
+function xml(spacer::Spacer)
+    node =  ElementNode("spacer", ["name"=>spacer.name])
+    add_property_nodes!(node, spacer)
     node
 end

@@ -1,8 +1,8 @@
 import Base: print, show, setindex!, getindex
 
-export Ui, 
+export Ui,
        Widget, Spacer, Layout, Property, Signal, Slot, Connection, Resource,
-       Orientation, Rect,
+       Orientation, Rect, Size,
        PushButton, CheckBox, RadioButton, Slider, ComboBox,
        CustomWidget,
        TextProperty, BoolProperty, GeometryProperty, OrientationProperty,
@@ -12,6 +12,11 @@ export Ui,
 struct Rect
     x::Int
     y::Int
+    width::Int
+    height::Int
+end
+
+struct Size
     width::Int
     height::Int
 end
@@ -40,6 +45,11 @@ property(orientation::Orientation) = OrientationProperty("orientation", orientat
 struct GeometryProperty <: Property
     name::String
     rect::Rect
+end
+
+struct SizeProperty <: Property
+    name::String
+    size::Size
 end
 
 property(rect::Rect) = GeometryProperty("geometry", rect)
@@ -102,8 +112,8 @@ mutable struct BoxLayout <: Layout
     items::Vector{Union{Layout, Widget}}
 end
 
-function BoxLayout(name::AbstractString, orientation::Orientation = horizontal, items...)
-    BoxLayout(name, orientation, items)
+function BoxLayout(name::AbstractString, orientation::Orientation = horizontal)
+    BoxLayout(name, orientation, Union{Layout, Widget}[])
 end
 
 
@@ -156,12 +166,23 @@ end
 
 # TODO: Define structure
 mutable struct Resource
-    
+
 end
 
-# TODO: Define a spacer
 mutable struct Spacer
-    
+    name::String
+    orientation::Orientation
+    size_hint::Size
+    properties::Vector{Property}
+end
+
+"""
+     Spacer(name, orientation, size_hint)
+Creates a strech or space inside a layout. It can be used to expand empty
+space, avoiding that other GUI components are made bigger.
+"""
+function Spacer(name, orientation, size_hint)
+    Spacer(name, orientation, size_hint, Property[])
 end
 
 """
@@ -188,6 +209,8 @@ Create a property holding a rectangle. Used to represent the geometry of a widge
 """
 property(name::AbstractString, r::Rect) = GeometryProperty(name, r)
 
+property(name::AbstractString, sz::Size) = SizeProperty(name, sz)
+
 """
     property(name, text)
 Text property which can be used for e.g. a window title or label of a widget.
@@ -205,6 +228,8 @@ property(name::AbstractString, orientation::Orientation) = OrientationProperty(n
 Boolean property. Useful for the state of check boxes or radio buttons.
 """
 property(name::AbstractString, on::Bool) = BoolProperty(name, on)
+
+
 
 print(io::IO, signal::Signal) = print(io, signal.name, "(", join(signal.args, ", "),")")
 print(io::IO, slot::Slot)     = print(io, slot.name,   "(", join(slot.args,   ", "),")")

@@ -4,13 +4,13 @@ export read_ui, read_ui_string,
        findproperty, findwidget
 
 # Qt class name to Julia type mapping
-const cname_to_type_dict = Dict("QPushButton" => PushButton, 
+const cname_to_type_dict = Dict("QPushButton" => PushButton,
                                "QComboBox"    => ComboBox,
                                "QCheckBox"    => CheckBox,
                                "QRadioButton" => RadioButton,
                                "QWidget"      => CustomWidget)
 
-const ename_to_enum_dict = Dict("Qt::Horizontal" => horizontal, 
+const ename_to_enum_dict = Dict("Qt::Horizontal" => horizontal,
                                 "Qt::Vertical"   => vertical)
 #
 "Looks for a child node of `n` which is a property with name `name`."
@@ -30,7 +30,7 @@ function findwidget(node::Node, name::AbstractString)
            m = findwidget(n, name)
            if m != nothing
                return m
-           end 
+           end
         end
     end
     nothing
@@ -51,8 +51,15 @@ function parse_rect(n::ElementNode)
     x       = value("x")
     y       = value("y")
     width   = value("width")
-    height  = value("height")            
+    height  = value("height")
     Rect(x, y, width, height)
+end
+
+function parse_size(n::ElementNode)
+    value(key) = Meta.parse(nodecontent(locatefirst(key, n)))
+    width   = value("width")
+    height  = value("height")
+    Size(width, height)
 end
 
 function parse_property_data(n::ElementNode)
@@ -65,6 +72,10 @@ function parse_property_data(n::ElementNode)
         parse(nodecontent(n))
     elseif "rect" == tag
         parse_rect(n)
+    elseif "size" == tag
+        parse_size(n)
+    else
+        @error "Unknown property type '$tag' encountered"
     end
 end
 
@@ -82,37 +93,37 @@ end
 function parse_func_signature(s::AbstractString, T::DataType)
     m = match(r"\s*(\w+)\(([\w,\s]*)\)", s)
     if m == nothing
-       @error "Was not able to parse signal or slot method '$s'" 
+       @error "Was not able to parse signal or slot method '$s'"
     else
-       T(m[1], split(m[2])) 
-    end    
+       T(m[1], split(m[2]))
+    end
 end
 
 function parse_connection(node::ElementNode)
     value(key) = nodecontent(locatefirst(key, n))
-    
+
     sender     = value("sender")
     receiver   = value("receiver")
     signal_str = value("signal")
     slot_str   = value("slot")
-    
+
     signal = parse_func_signature(signal_str, Signal)
     slot   = parse_func_signature(signal_str, Slot)
-    
+
     Connection(sender, signal, receiver, slot)
 end
 
 function parse_connections(node::ElementNode)
     connections = elements(node)
-    [parse_connection(conn) for conn in connections]    
+    [parse_connection(conn) for conn in connections]
 end
 
 function parse_layout(node::ElementNode)
     class = node["class"]
     name  = node["name"]
-    
+
     items = Union{Layout, Widget}[]
-    
+
     item_nodes = elements(node)
     for item_node in item_nodes
         children = elements(item_node)
@@ -125,12 +136,13 @@ function parse_layout(node::ElementNode)
             l = parse_layout(child)
             push!(items, l)
         elseif "spacer" == tag
-            push!(items, ) # TODO: Parse spacers properly
+            spacer = parse_spacer(child)
+            push!(items, spacer)
         else
             @error "Don't know how to parse items of type '$tag'"
         end
     end
-    
+
     if     "QVBoxLayout" == class
         BoxLayout(name, vertical, items)
     elseif "QHBoxLayout" == class
@@ -148,9 +160,9 @@ end
 function parse_widget(node::ElementNode)
     cname = node["class"] # class name
     name  = node["name"]
-    
+
     children = elements(node)
-    
+
     properties = Property[]
     layout = nothing
     for child in children
@@ -165,22 +177,48 @@ function parse_widget(node::ElementNode)
     CustomWidget(name, cname, properties, layout)
 end
 
+function parse_spacer(node::ElementNode)
+    name  = node["name"]
+    children = elements(node)
+
+    properties = Property[]
+    orientation = horizontal
+    size_hint = Size(0, 0)
+    for child in children
+        tag = nodename(child)
+        if tag == "property"
+            key = child["name"]
+            prop = parse_property(child)
+            if "orientation" == key
+                orientation = prop.orientation
+            elseif "sizeHint" == key
+                size_hint = prop.size
+            else
+                push!(properties, prop)
+            end
+        else
+            @error "Encountered a '$tag' element while parsing Spacer. Expect 'property' elements"
+        end
+    end
+    Spacer(name, orientation, size, properties)
+end
+
 function read_ui_string(text::AbstractString)
     doc = parsexml(text)
     if !hasroot(doc)
         return nothing
     end
-    
+
     ui = root(doc)
     if nodename(ui) != "ui"
-        error("Expected root node to be 'ui' not '$(nodename(ui))'") 
+        error("Expected root node to be 'ui' not '$(nodename(ui))'")
     end
     version = ui["version"]
     children = elements(ui)
     root_widget = parse_widget(locatefirst("widget", ui))
     connections = parse_connections(locatefirst("connections", ui))
     resources   = parse_resources(locatefirst("resources", ui))
-    
+
     Ui(root_widget, connections, version)
 end
 
