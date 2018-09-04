@@ -26,6 +26,8 @@ abstract type Widget end
 abstract type Layout end
 abstract type Property end
 
+
+
 "Sliders and box layouts may have orientations"
 @enum Orientation HORIZONTAL VERTICAL
 
@@ -106,15 +108,31 @@ function CustomWidget(name::AbstractString = "Form", class::AbstractString = "QW
     CustomWidget(name, class, Property[], nothing)
 end
 
+mutable struct Spacer
+    name::String
+    orientation::Orientation
+    size_hint::Size
+    properties::Vector{Property}
+end
+
+"""
+     Spacer(name, orientation, size_hint)
+Creates a strech or space inside a layout. It can be used to expand empty
+space, avoiding that other GUI components are made bigger.
+"""
+function Spacer(name, orientation, size_hint)
+    Spacer(name, orientation, size_hint, Property[])
+end
+
 "A layout which lays out items vertical or horizontal depending on `orientation`"
 mutable struct BoxLayout <: Layout
     name::String
     orientation::Orientation
-    items::Vector{Union{Layout, Widget}}
+    items::Vector{Union{Layout, Widget, Spacer}}
 end
 
 function BoxLayout(name::AbstractString, orientation::Orientation = HORIZONTAL)
-    BoxLayout(name, orientation, Union{Layout, Widget}[])
+    BoxLayout(name, orientation, Union{Layout, Widget, Spacer}[])
 end
 
 
@@ -168,22 +186,6 @@ end
 # TODO: Define structure
 mutable struct Resource
 
-end
-
-mutable struct Spacer
-    name::String
-    orientation::Orientation
-    size_hint::Size
-    properties::Vector{Property}
-end
-
-"""
-     Spacer(name, orientation, size_hint)
-Creates a strech or space inside a layout. It can be used to expand empty
-space, avoiding that other GUI components are made bigger.
-"""
-function Spacer(name, orientation, size_hint)
-    Spacer(name, orientation, size_hint, Property[])
 end
 
 """

@@ -123,7 +123,7 @@ function parse_layout(node::ElementNode)
     class = node["class"]
     name  = node["name"]
 
-    items = Union{Layout, Widget}[]
+    items = Union{Layout, Widget, Spacer}[]
 
     item_nodes = elements(node)
     for item_node in item_nodes
@@ -201,7 +201,7 @@ function parse_spacer(node::ElementNode)
             @error "Encountered a '$tag' element while parsing Spacer. Expect 'property' elements"
         end
     end
-    Spacer(name, orientation, size, properties)
+    Spacer(name, orientation, size_hint, properties)
 end
 
 function read_ui_string(text::AbstractString)
