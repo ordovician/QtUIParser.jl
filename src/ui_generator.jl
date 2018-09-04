@@ -69,12 +69,12 @@ function combobox(name::AbstractString)
     xml(ComboBox(name))
 end
 
-function checkbox(name::AbstractString, label::AbstractString)
-    xml(CheckBox(name, label))
+function checkbox(name::AbstractString, text::AbstractString)
+    xml(CheckBox(name, text))
 end
 
-function pushbutton(name::AbstractString, label::AbstractString)
-    xml(PushButton(name, label))
+function pushbutton(name::AbstractString, text::AbstractString)
+    xml(PushButton(name, text))
 end
 
 """
@@ -82,9 +82,9 @@ end
 Create XML representation for a vertical or horizontal box layout
 """
 function xml(layout::BoxLayout)
-    class = if layout.orientation == horizontal
+    class = if layout.orientation == HORIZONTAL
         "QHBoxLayout"
-    elseif layout.orientation == vertical
+    elseif layout.orientation == VERTICAL
         "QVBoxLayout"
     end
     node = ElementNode("layout", ["class"=>class, "name"=>layout.name])
@@ -99,15 +99,11 @@ function boxlayout(name::AbstractString, orientation::Orientation, items...)
 end
 
 function vboxlayout(name::AbstractString, items...)
-    boxlayout(name, vertical, items...)
+    boxlayout(name, VERTICAL, items...)
 end
 
 function hboxlayout(name::AbstractString, items...)
-    boxlayout(name, horizontal, items...)
-end
-
-function xml(spacer::Spacer)
-    ElementNode("spacer")
+    boxlayout(name, HORIZONTAL, items...)
 end
 
 """
@@ -116,7 +112,10 @@ Create XML representation of the top-level object of a Qt `.ui` file.
 If you want to write a `.ui` this the XML you need.
 """
 function xml(ui::Ui)
-    ElementNode("ui", [xml(ui.root_widget), xml(ui.connections)])
+    ElementNode("ui", [ElementNode("class", ui.class), 
+                       xml(ui.root_widget), 
+                       xml(ui.resources), 
+                       xml(ui.connections)])
 end
 
 const type_to_cname_dict = Dict(PushButton  => "QPushButton",
@@ -136,20 +135,26 @@ XML representation of a subclass of `Property`. Used to describe aspects
 of a widget.
 """
 function xml(p::GeometryProperty)
-    node = ElementNode("property", ["name"=>p.name])
-    r = p.rect
-    addchildren!(node, [
+    pnode = ElementNode("property", ["name"=>p.name])
+    rnode = ElementNode("rect")
+    addchild!(pnode, rnode)
+
+    r = p.rect    
+    addchildren!(rnode, [
         "x" => string(r.x),
         "y" => string(r.y),
         "width" => string(r.width),
         "height" => string(r.height)])
-    node
+    pnode
 end
 
 function xml(p::SizeProperty)
-    node = ElementNode("property", ["name"=>p.name])
+    pnode  = ElementNode("property", ["name"=>p.name])
+    sznode = ElementNode("size") 
+    addchild!(pnode, sznode)
+    
     sz = p.size
-    addchildren!(node, [
+    addchildren!(sznode, [
         "width"  => string(sz.width),
         "height" => string(sz.height)])
     node
@@ -163,9 +168,9 @@ end
 
 function xml(p::OrientationProperty)
     node = ElementNode("property", ["name"=>p.name])
-    s = if p.orientation == horizontal
+    s = if p.orientation == HORIZONTAL
             "Qt::Horizontal"
-        elseif p.orientation == vertical
+        elseif p.orientation == VERTICAL
             "Qt::Vertical"
         end
     addchild!(node, ElementNode("enum", s))
@@ -205,7 +210,7 @@ end
 
 function xml(w::Union{PushButton, CheckBox, RadioButton})
     node = widget(class_name(w), w.name)
-    addchild!(node, xml(property(w.label)))
+    addchild!(node, xml(property(w.text)))
     add_property_nodes!(node, w)
     node
 end

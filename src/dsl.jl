@@ -12,7 +12,7 @@ box = BoxLayout("layout")
 
 function config_widget!(w::Widget, args)
     for (k, v) in args
-        if k in [:name, :class, :layout]
+        if k in fieldnames(typeof(w))
             setfield!(w, k, v)
         else
             push!(w.properties,  QtUIParser.property(string(k), v))
@@ -37,7 +37,7 @@ for T in types
 end
 
 function BoxLayout(;args...)
-    layout = BoxLayout("noname",  QtUIParser.horizontal)
+    layout = BoxLayout("noname",  QtUIParser.HORIZONTAL)
     for (k, v) in args
         if k in [:name, :orientation]
             setfield!(layout, k, v)

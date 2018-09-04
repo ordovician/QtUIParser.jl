@@ -7,6 +7,7 @@ ui = Ui(Widget(
     windowTitle = "Form",
     layout = BoxLayout(
         name  = "verticalLayout",
+        orientation = VERTICAL,
         items = [
             PushButton(
                 name = "okay_button",

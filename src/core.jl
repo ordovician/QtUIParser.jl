@@ -2,7 +2,8 @@ import Base: print, show, setindex!, getindex
 
 export Ui,
        Widget, Spacer, Layout, Property, Signal, Slot, Connection, Resource,
-       Orientation, Rect, Size,
+       Orientation, HORIZONTAL, VERTICAL,
+       Rect, Size,
        PushButton, CheckBox, RadioButton, Slider, ComboBox,
        CustomWidget,
        TextProperty, BoolProperty, GeometryProperty, OrientationProperty,
@@ -26,7 +27,7 @@ abstract type Layout end
 abstract type Property end
 
 "Sliders and box layouts may have orientations"
-@enum Orientation horizontal vertical
+@enum Orientation HORIZONTAL VERTICAL
 
 struct TextProperty <: Property
    name::String
@@ -64,10 +65,10 @@ for T in types
   @eval begin
     mutable struct $T <: Widget
         name::String
-        label::String
+        text::String
         properties::Vector{Property}
     end
-    $T(name::AbstractString, label::AbstractString) = $T(name, label, Property[])
+    $T(name::AbstractString, text::AbstractString) = $T(name, text, Property[])
   end
 end
 
@@ -78,7 +79,7 @@ mutable struct Slider <: Widget
    properties::Vector{Property}
 end
 
-function Slider(name::AbstractString, orientation::Orientation = horizontal)
+function Slider(name::AbstractString, orientation::Orientation = HORIZONTAL)
     Slider(name, orientation, Property[])
 end
 
@@ -112,7 +113,7 @@ mutable struct BoxLayout <: Layout
     items::Vector{Union{Layout, Widget}}
 end
 
-function BoxLayout(name::AbstractString, orientation::Orientation = horizontal)
+function BoxLayout(name::AbstractString, orientation::Orientation = HORIZONTAL)
     BoxLayout(name, orientation, Union{Layout, Widget}[])
 end
 
@@ -192,13 +193,20 @@ All `.ui` files need to be made with a `Ui` object at the top.
 hierarchy.
 """
 mutable struct Ui
-   root_widget::Widget
-   connections::Array{Connection}
-   version::String
+    class::String
+    root_widget::Widget
+    resources::Array{Resource}
+    connections::Array{Connection}
+    version::String
 end
 
-Ui() = Ui(CustomWidget(), Connection[], "4.0")
-Ui(root::Widget) = Ui(root, Connection[], "4.0")
+function Ui(class::AbstractString = "Form")
+    Ui(class, CustomWidget(class), Resource[], Connection[], "4.0")
+end
+
+function Ui(root::Widget)
+    Ui(root.name, root, Resource[], Connection[], "4.0")
+end
 
 """
 Creates a property named `name`. The concrete `Property` type used will

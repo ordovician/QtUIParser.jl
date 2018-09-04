@@ -11,8 +11,8 @@ const cname_to_type_dict = Dict("QPushButton" => PushButton,
                                "QSlider"      => Slider,
                                "QWidget"      => CustomWidget)
 
-const ename_to_enum_dict = Dict("Qt::Horizontal" => horizontal,
-                                "Qt::Vertical"   => vertical)
+const ename_to_enum_dict = Dict("Qt::Horizontal" => HORIZONTAL,
+                                "Qt::Vertical"   => VERTICAL)
 #
 "Looks for a child node of `n` which is a property with name `name`."
 findproperty(n::Node, name::AbstractString) = locatefirst(["property"], "name", name, n)
@@ -145,9 +145,9 @@ function parse_layout(node::ElementNode)
     end
 
     if     "QVBoxLayout" == class
-        BoxLayout(name, vertical, items)
+        BoxLayout(name, VERTICAL, items)
     elseif "QHBoxLayout" == class
-        BoxLayout(name, horizontal, items)
+        BoxLayout(name, HORIZONTAL, items)
     else
         @error "Missing code to handle Layout of type '$class'"
     end
@@ -183,7 +183,7 @@ function parse_spacer(node::ElementNode)
     children = elements(node)
 
     properties = Property[]
-    orientation = horizontal
+    orientation = HORIZONTAL
     size_hint = Size(0, 0)
     for child in children
         tag = nodename(child)
@@ -214,13 +214,15 @@ function read_ui_string(text::AbstractString)
     if nodename(ui) != "ui"
         error("Expected root node to be 'ui' not '$(nodename(ui))'")
     end
-    version = ui["version"]
+    version  = ui["version"]
     children = elements(ui)
-    root_widget = parse_widget(locatefirst("widget", ui))
+    
+    class       = nodecontent(      locatefirst("class", ui))
+    root_widget = parse_widget(     locatefirst("widget", ui))
     connections = parse_connections(locatefirst("connections", ui))
-    resources   = parse_resources(locatefirst("resources", ui))
+    resources   = parse_resources(  locatefirst("resources", ui))
 
-    Ui(root_widget, connections, version)
+    Ui(class, root_widget, resources, connections, version)
 end
 
 """
