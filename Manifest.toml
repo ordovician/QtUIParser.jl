@@ -29,7 +29,7 @@ uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 
 [[PLists]]
 deps = ["Base64", "Dates", "Test"]
-git-tree-sha1 = "31c38197b2dcd92416caf1249da0cc038cd2fa00"
+git-tree-sha1 = "f7dcc350a8480217b953b28a932a5e12e79e4357"
 repo-rev = "master"
 repo-url = "git@github.com:ordovician/PLists.jl.git"
 uuid = "244549da-a957-11e8-2419-29f9eea8ace5"
