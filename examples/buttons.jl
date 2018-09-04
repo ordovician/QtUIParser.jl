@@ -1,30 +1,56 @@
 using QtUIParser
 
-function Rect(;x, y, width, height)
-    Rect(x, y, width, height)
-end
+Ui(widget(
+    class = "QWidget",
+    name = "ButtonForm",
+    geometry = Rect(0, 0, 180, 150),
+    windowTitle = "Choose Colors",
+    layout = BoxLayout(
+        name = "top_vlayout",
+        orientation = VERTICAL,
+        items = [
+            CheckBox("red_checkbox", "red"),
+            CheckBox("green_checkbox", "green"),
+            Spacer("vertical_spacer", VERTICAL, Size(20, 40))
+            BoxLayout(
+                name = "bottom_hlayout",
+                orientation = HORIZONTAL,
+                items = [
+                    PushButton("ok_button", "Ok"),
+                    PushButton("ok_button", "Cancel")
+                ]
+            )
+        ]
+    )
+))
 
-function widget_name()
-    "widget"
-end
-
-box = BoxLayout("layout")
-
-function widget(;args...)
-    w = CustomWidget(widget_name(),  "QWidget",  Property[], nothing)
-    # name = widget_name()
-    # class = "QWidget"
-    # properties = Property[]
-    # layout = nothing
-
-    for attr in [:name, :class, :layout]
-        if haskey(args, attr)
-            setfield!(w, attr, args[attr])
-            delete!(args, attr)
-        end
-    end
-
-    for (k, v) in args
-        push!(w.properties, property(string(k), v))
-    end
-end
+# Ui begin
+#     Widget begin
+#         class = "QWidget"
+#         name = "ButtonForm"
+#         geometry = Rect begin
+#             x = 0
+#             y = 0
+#             width  = 180
+#             height = 150
+#         end
+#         windowTitle = "Choose Colors",
+#         layout = BoxLayout begin
+#             name = "top_vlayout"
+#             orientation = VERTICAL
+#             items = [
+#                 red_checkbox   = CheckBox("red"),
+#                 green_checkbox = CheckBox(green"),
+#                 Spacer("vertical_spacer", VERTICAL, Size(20, 40))
+#                 BoxLayout(
+#                     name = "bottom_hlayout",
+#                     orientation = HORIZONTAL,
+#                     items = [
+#                         PushButton("ok_button", "Ok"),
+#                         PushButton("ok_button", "Cancel")
+#                     ]
+#                 )
+#             ]
+#         end
+#     end
+# end
