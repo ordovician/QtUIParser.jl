@@ -119,35 +119,16 @@ function xml(ui::Ui)
     ElementNode("ui", [xml(ui.root_widget), xml(ui.connections)])
 end
 
-"""
-    class_name(combobox)
-Name of combobox class in Qt.
-"""
-class_name(w::ComboBox) = "QComboBox"
+const type_to_cname_dict = Dict(PushButton  => "QPushButton",
+                               ComboBox     => "QComboBox",
+                               CheckBox     => "QCheckBox",
+                               RadioButton  => "QRadioButton",
+                               Slider       => "QSlider",
+                               CustomWidget => "QWidget")
 
-"""
-    class_name(radiobutton)
-Name of radio button class in Qt.
-"""
-class_name(w::RadioButton) = "QRadioButton"
-
-"""
-    class_name(checkbox)
-Name of check box class in Qt.
-"""
-class_name(w::CheckBox) = "QCheckBox"
-
-"""
-    class_name(slider)
-Name of slider class in Qt.
-"""
-class_name(w::Slider) = "QSlider"
-
-"""
-    class_name(widget)
-Name of widget class in Qt.
-"""
-class_name(w::CustomWidget) = "QWidget"
+function class_name(w::Widget)
+    type_to_cname_dict[typeof(w)]
+end
 
 """
     xml(property)

@@ -8,6 +8,7 @@ const cname_to_type_dict = Dict("QPushButton" => PushButton,
                                "QComboBox"    => ComboBox,
                                "QCheckBox"    => CheckBox,
                                "QRadioButton" => RadioButton,
+                               "QSlider"      => Slider,
                                "QWidget"      => CustomWidget)
 
 const ename_to_enum_dict = Dict("Qt::Horizontal" => horizontal,
