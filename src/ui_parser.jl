@@ -13,7 +13,26 @@ const cname_to_type_dict = Dict("QPushButton" => PushButton,
 
 const ename_to_enum_dict = Dict("Qt::Horizontal" => HORIZONTAL,
                                 "Qt::Vertical"   => VERTICAL)
-#
+
+"Convert generic widget to a more specialized on based on properties"
+function specialize_widget(w::CustomWidget)
+    W = get(cname_to_type_dict, w.class, CustomWidget)
+    if W != CustomWidget
+        fields = string.(fieldnames(W))
+        obj = W(w.name)
+        for prop in w.properties
+            if prop.name in fields
+                setfield!(obj, Symbol(prop.name), propvalue(prop))
+            else
+                push!(obj.properties, prop)
+            end
+        end
+        obj
+    else
+        w
+    end
+end
+
 "Looks for a child node of `n` which is a property with name `name`."
 findproperty(n::Node, name::AbstractString) = locatefirst(["property"], "name", name, n)
 
@@ -174,8 +193,8 @@ function parse_widget(node::ElementNode)
             layout = parse_layout(child)
         end
     end
-    # TODO: how do we deal with other widgets?
-    CustomWidget(name, cname, properties, layout)
+
+    specialize_widget(CustomWidget(name, cname, properties, layout))
 end
 
 function parse_spacer(node::ElementNode)
@@ -216,7 +235,7 @@ function read_ui_string(text::AbstractString)
     end
     version  = ui["version"]
     children = elements(ui)
-    
+
     class       = nodecontent(      locatefirst("class", ui))
     root_widget = parse_widget(     locatefirst("widget", ui))
     connections = parse_connections(locatefirst("connections", ui))

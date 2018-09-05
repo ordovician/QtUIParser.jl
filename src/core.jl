@@ -1,4 +1,4 @@
-import Base: print, show, setindex!, getindex
+import Base: print, show, setindex!, getindex, haskey, keys, iterate, length
 
 export Ui,
        Widget, Spacer, Layout, Property, Signal, Slot, Connection, Resource,
@@ -62,6 +62,9 @@ struct BoolProperty <: Property
     on::Bool
 end
 
+"Get the value of the property, regardless of whether it is boolean, text or orientation"
+propvalue(p::Property) = getfield(p, 2)
+
 types = [:PushButton, :CheckBox, :RadioButton]
 for T in types
   @eval begin
@@ -70,7 +73,7 @@ for T in types
         text::String
         properties::Vector{Property}
     end
-    $T(name::AbstractString, text::AbstractString) = $T(name, text, Property[])
+    $T(name::AbstractString, text::AbstractString = "") = $T(name, text, Property[])
   end
 end
 
@@ -92,8 +95,8 @@ mutable struct ComboBox <: Widget
     items::Vector{Property}
 end
 
-function ComboBox(name::AbstractString, items::Array{T}) where T <: AbstractString
-    ComboBox(name, Property[], )
+function ComboBox(name::AbstractString, items::Array{T} = T[]) where T <: AbstractString
+    ComboBox(name, Property[], items)
 end
 
 "Typically used for custom top level widgets"
@@ -253,7 +256,7 @@ function getindex(w::Widget, key::AbstractString)
     error("No property with key $key exist")
 end
 
-function setindex!(w::Widget, value, key::String)
+function setindex!(w::Widget, value, key::AbstractString)
     i = findfirst(w->w.name == key, w.properties)
     if i == nothing
         push!(w.properties, property(key, value))
@@ -261,3 +264,37 @@ function setindex!(w::Widget, value, key::String)
         w.properties[i] = property(key, value)
     end
 end
+
+struct PropertyIterator
+    widget::Widget
+end
+
+function iterate(it::PropertyIterator)
+    props = it.widget.properties
+    if isempty(props)
+        nothing
+    else
+        (propvalue(props[1]), 2)
+    end
+end
+
+function iterate(it::PropertyIterator, i)
+    props = it.widget.properties
+    if i > lastindex(props)
+        nothing
+    else
+        (propvalue(prop[i]), i+1)
+    end
+end
+
+function length(it::PropertyIterator)
+    length(it.widget.properties)
+end
+
+function keys(w::Widget)
+    PropertyIterator(w)
+end
+
+# function show(io::IO, it::PropertyIterator)
+#     value = collect(it)
+# end
