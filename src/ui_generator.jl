@@ -112,10 +112,13 @@ Create XML representation of the top-level object of a Qt `.ui` file.
 If you want to write a `.ui` this the XML you need.
 """
 function xml(ui::Ui)
-    ElementNode("ui", [ElementNode("class", ui.class), 
-                       xml(ui.root_widget), 
-                       xml(ui.resources), 
-                       xml(ui.connections)])
+    node = ElementNode("ui", ["version"=>ui.version])
+
+    node.children =  Node[ElementNode("class", ui.class),
+                          xml(ui.root_widget),
+                          xml(ui.resources),
+                          xml(ui.connections)]
+    node
 end
 
 const type_to_cname_dict = Dict(PushButton  => "QPushButton",
@@ -139,7 +142,7 @@ function xml(p::GeometryProperty)
     rnode = ElementNode("rect")
     addchild!(pnode, rnode)
 
-    r = p.rect    
+    r = p.rect
     addchildren!(rnode, [
         "x" => string(r.x),
         "y" => string(r.y),
@@ -149,15 +152,15 @@ function xml(p::GeometryProperty)
 end
 
 function xml(p::SizeProperty)
-    pnode  = ElementNode("property", ["name"=>p.name])
-    sznode = ElementNode("size") 
+    pnode  = ElementNode("property", ["name"=>p.name, "stdset"=>"0"])
+    sznode = ElementNode("size")
     addchild!(pnode, sznode)
-    
+
     sz = p.size
     addchildren!(sznode, [
         "width"  => string(sz.width),
         "height" => string(sz.height)])
-    node
+    pnode
 end
 
 function xml(p::TextProperty)
@@ -226,6 +229,8 @@ end
 
 function xml(spacer::Spacer)
     node =  ElementNode("spacer", ["name"=>spacer.name])
+    addchild!(node, xml(property(spacer.orientation)))
+    addchild!(node, xml(property("sizeHint", spacer.size_hint)))
     add_property_nodes!(node, spacer)
     node
 end
