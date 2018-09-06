@@ -11,8 +11,6 @@ function widget_name()
     "widget"
 end
 
-box = BoxLayout("layout")
-
 function config_widget!(w::Widget, args)
     for (k, v) in args
         if k in fieldnames(typeof(w))

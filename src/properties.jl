@@ -1,68 +1,20 @@
-export Property,
-       TextProperty, BoolProperty, GeometryProperty, OrientationProperty
+export Property   
 
-struct TextProperty <: Property
-   name::String
-   value::String
+struct Property
+    name::String
+    value::Union{String, Orientation, Rect, Size, Bool}
 end
 
-property(text::AbstractString) = TextProperty("text", text)
+property(text::AbstractString)     = Property("text", text)
+property(orientation::Orientation) = Property("orientation", orientation)
+property(rect::Rect)               = Property("geometry", rect)
 
-struct OrientationProperty <: Property
-    name::String
-    value::Orientation
-end
-
-property(orientation::Orientation) = OrientationProperty("orientation", orientation)
-
-struct GeometryProperty <: Property
-    name::String
-    value::Rect
-end
-
-struct SizeProperty <: Property
-    name::String
-    value::Size
-end
-
-property(rect::Rect) = GeometryProperty("geometry", rect)
-
-struct BoolProperty <: Property
-    name::String
-    value::Bool
+function property(name::AbstractString, value::Union{String, Orientation, Rect, Size, Bool})
+    Property(name, value)
 end
 
 "Get the value of the property, regardless of whether it is boolean, text or orientation"
 propvalue(p::Property) = p.value
-
-"""
-Creates a property named `name`. The concrete `Property` type used will
-depend on the type of value provided.
-
-    property(name, rect)
-Create a property holding a rectangle. Used to represent the geometry of a widget.
-"""
-property(name::AbstractString, r::Rect) = GeometryProperty(name, r)
-
-property(name::AbstractString, sz::Size) = SizeProperty(name, sz)
-
-"""
-    property(name, text)
-Text property which can be used for e.g. a window title or label of a widget.
-"""
-property(name::AbstractString, text::AbstractString) = TextProperty(name, text)
-
-"""
-    property(name, orientation)
-Orientation of a widget. E.g. is the slider horizontal or vertical.
-"""
-property(name::AbstractString, orientation::Orientation) = OrientationProperty(name, orientation)
-
-"""
-    property(name, on)
-Boolean property. Useful for the state of check boxes or radio buttons.
-"""
-property(name::AbstractString, on::Bool) = BoolProperty(name, on)
 
 ##################### IO #####################
 
@@ -82,7 +34,10 @@ end
 
 ##################### XML #####################
 function xml(p::Property)
-    error("Must implement xml(", typeof(p), ")")
+    parent = ElementNode("property", ["name"=>p.name])
+    child  = xml(p.value)
+    addchild!(parent, child)
+    parent
 end
 
 """
@@ -90,51 +45,34 @@ end
 XML representation of a subclass of `Property`. Used to describe aspects
 of a widget.
 """
-function xml(p::GeometryProperty)
-    pnode = ElementNode("property", ["name"=>p.name])
-    rnode = ElementNode("rect")
-    addchild!(pnode, rnode)
+function xml(r::Rect)
+    parent = ElementNode("rect")
 
-    r = p.value
-    addchildren!(rnode, [
+    addchildren!(parent, [
         "x" => string(r.x),
         "y" => string(r.y),
         "width" => string(r.width),
         "height" => string(r.height)])
-    pnode
+    parent
 end
 
-function xml(p::SizeProperty)
-    pnode  = ElementNode("property", ["name"=>p.name, "stdset"=>"0"])
-    sznode = ElementNode("size")
-    addchild!(pnode, sznode)
+function xml(sz::Size)
+    parent = ElementNode("size")
 
-    sz = p.value
-    addchildren!(sznode, [
+    addchildren!(parent, [
         "width"  => string(sz.width),
         "height" => string(sz.height)])
-    pnode
+    parent
 end
 
-function xml(p::TextProperty)
-    node = ElementNode("property", ["name"=>p.name])
-    addchild!(node, ElementNode("string", p.value))
-    node
-end
-
-function xml(p::OrientationProperty)
-    node = ElementNode("property", ["name"=>p.name])
-    s = if p.value == HORIZONTAL
+function xml(orientation::Orientation)
+    s = if orientation == HORIZONTAL
             "Qt::Horizontal"
-        elseif p.value == VERTICAL
+        elseif orientation == VERTICAL
             "Qt::Vertical"
         end
-    addchild!(node, ElementNode("enum", s))
-    node
+    ElementNode("enum", s)
 end
 
-function xml(p::BoolProperty)
-    node = ElementNode("property", ["name"=>p.name])
-    addchild!(node, ElementNode("bool", string(p.value)))
-    node
-end
+xml(on::Bool) = ElementNode("bool", string(on))
+xml(text::AbstractString) = ElementNode("string", text)
