@@ -1,3 +1,6 @@
+function Ui(;class, version, root)
+    Ui(class, root, Resource[], Connection[], version)
+end
 
 
 function Rect(;x, y, width, height)
