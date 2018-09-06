@@ -1,4 +1,4 @@
-export spacer
+export Spacer
 
 mutable struct Spacer
     name::String
