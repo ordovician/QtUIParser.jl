@@ -22,7 +22,7 @@ function show(io::IO, prop::Property, depth::Integer = 0)
     show(io, propvalue(prop))
 end
 
-function show(io::IO, orientation::Orientation)
+function show(io::IO, orientation::QtUIParser.Orientation)
     if VERTICAL == orientation
         print(io, "VERTICAL")
     elseif HORIZONTAL == orientation

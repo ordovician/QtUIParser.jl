@@ -210,9 +210,9 @@ function parse_spacer(node::ElementNode)
             key = child["name"]
             prop = parse_property(child)
             if "orientation" == key
-                orientation = prop.orientation
+                orientation = prop.value
             elseif "sizeHint" == key
-                size_hint = prop.size
+                size_hint = prop.value
             else
                 push!(properties, prop)
             end

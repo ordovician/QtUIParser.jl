@@ -33,37 +33,37 @@ abstract type Property end
 
 struct TextProperty <: Property
    name::String
-   text::String
+   value::String
 end
 
 property(text::AbstractString) = TextProperty("text", text)
 
 struct OrientationProperty <: Property
     name::String
-    orientation::Orientation
+    value::Orientation
 end
 
 property(orientation::Orientation) = OrientationProperty("orientation", orientation)
 
 struct GeometryProperty <: Property
     name::String
-    rect::Rect
+    value::Rect
 end
 
 struct SizeProperty <: Property
     name::String
-    size::Size
+    value::Size
 end
 
 property(rect::Rect) = GeometryProperty("geometry", rect)
 
 struct BoolProperty <: Property
     name::String
-    on::Bool
+    value::Bool
 end
 
 "Get the value of the property, regardless of whether it is boolean, text or orientation"
-propvalue(p::Property) = getfield(p, 2)
+propvalue(p::Property) = p.value
 
 types = [:PushButton, :CheckBox, :RadioButton]
 for T in types

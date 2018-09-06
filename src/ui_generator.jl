@@ -142,7 +142,7 @@ function xml(p::GeometryProperty)
     rnode = ElementNode("rect")
     addchild!(pnode, rnode)
 
-    r = p.rect
+    r = p.value
     addchildren!(rnode, [
         "x" => string(r.x),
         "y" => string(r.y),
@@ -156,7 +156,7 @@ function xml(p::SizeProperty)
     sznode = ElementNode("size")
     addchild!(pnode, sznode)
 
-    sz = p.size
+    sz = p.value
     addchildren!(sznode, [
         "width"  => string(sz.width),
         "height" => string(sz.height)])
@@ -165,15 +165,15 @@ end
 
 function xml(p::TextProperty)
     node = ElementNode("property", ["name"=>p.name])
-    addchild!(node, ElementNode("string", p.text))
+    addchild!(node, ElementNode("string", p.value))
     node
 end
 
 function xml(p::OrientationProperty)
     node = ElementNode("property", ["name"=>p.name])
-    s = if p.orientation == HORIZONTAL
+    s = if p.value == HORIZONTAL
             "Qt::Horizontal"
-        elseif p.orientation == VERTICAL
+        elseif p.value == VERTICAL
             "Qt::Vertical"
         end
     addchild!(node, ElementNode("enum", s))
@@ -182,7 +182,7 @@ end
 
 function xml(p::BoolProperty)
     node = ElementNode("property", ["name"=>p.name])
-    addchild!(node, ElementNode("bool", string(p.on)))
+    addchild!(node, ElementNode("bool", string(p.value)))
     node
 end
 
