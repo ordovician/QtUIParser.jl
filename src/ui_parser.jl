@@ -3,17 +3,6 @@ using PLists
 export read_ui, read_ui_string,
        findproperty, findwidget
 
-# Qt class name to Julia type mapping
-const cname_to_type_dict = Dict("QPushButton" => PushButton,
-                               "QComboBox"    => ComboBox,
-                               "QCheckBox"    => CheckBox,
-                               "QRadioButton" => RadioButton,
-                               "QSlider"      => Slider,
-                               "QWidget"      => CustomWidget)
-
-const ename_to_enum_dict = Dict("Qt::Horizontal" => HORIZONTAL,
-                                "Qt::Vertical"   => VERTICAL)
-
 "Convert generic widget to a more specialized on based on properties"
 function specialize_widget(w::CustomWidget)
     W = get(cname_to_type_dict, w.class, CustomWidget)
