@@ -1,9 +1,9 @@
 import Base: setindex!, getindex
 
 export  Widget, CustomWidget,
-        PushButton, CheckBox, RadioButton, Slider, ComboBox
+        PushButton, CheckBox, RadioButton, Slider, ComboBox, LineEdit, Label
 
-types = [:PushButton, :CheckBox, :RadioButton]
+types = [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
 for T in types
   @eval begin
     mutable struct $T <: Widget
@@ -56,6 +56,8 @@ const cname_to_type_dict = Dict("QPushButton" => PushButton,
                                "QCheckBox"    => CheckBox,
                                "QRadioButton" => RadioButton,
                                "QSlider"      => Slider,
+                               "QLabel"       => Label,
+                               "QLineEdit"    => LineEdit,
                                "QWidget"      => CustomWidget)
 
 const ename_to_enum_dict = Dict("Qt::Horizontal" => HORIZONTAL,
@@ -66,6 +68,8 @@ const type_to_cname_dict = Dict(PushButton  => "QPushButton",
                                CheckBox     => "QCheckBox",
                                RadioButton  => "QRadioButton",
                                Slider       => "QSlider",
+                               Label        => "QLabel",
+                               LineEdit     => "QLineEdit",
                                CustomWidget => "QWidget")
 
 ########################## Index Accessors #################################
@@ -90,7 +94,7 @@ end
 
 ##################### IO ##########################################
 
-function show(io::IO, w::Union{PushButton, CheckBox, RadioButton}, depth::Integer = 0)
+function show(io::IO, w::Union{PushButton, CheckBox, RadioButton, Label, LineEdit}, depth::Integer = 0)
     indent = tab^depth
     print(io, indent, string(typeof(w)))
 
@@ -107,6 +111,22 @@ function show(io::IO, w::Union{PushButton, CheckBox, RadioButton}, depth::Intege
     end
 end
 
+function print_widget_properties(io::IO, w::CustomWidget, depth::Integer)
+    indent = tab^depth
+    println(io, "(")
+    properties = Property[property("name", w.name),
+                          property("class", w.class),
+                          w.properties...]
+    show(io, properties, depth + 1)
+    println(io, ",")
+    if w.layout != nothing
+        println(io, indent, tab, "layout = $(typeof(w.layout))(")
+        print_layout_properties(io, w.layout, depth + 1)
+    end
+    println(io)
+    print(io, indent, ")")    
+end
+
 function show(io::IO, w::CustomWidget, depth::Integer = 0)
     indent = tab^depth
     print(io, indent, "Widget")
@@ -114,14 +134,7 @@ function show(io::IO, w::CustomWidget, depth::Integer = 0)
     if isempty(w.properties) && w.layout == nothing
         print(io, "(\"$(w.name)\", \"$(w.class)\")")
     else
-        println(io, "(")
-        properties = Property[property("name", w.name),
-                              property("class", w.class),
-                              w.properties...]
-        show(io, properties, depth + 1)
-        println(io, ",")
-        print_layout(io, w.layout, depth + 1)
-        print(io, indent, ")")
+        print_widget_properties(io, w, depth)
     end
 end
 
@@ -149,7 +162,7 @@ function xml(w::Slider)
     node
 end
 
-function xml(w::Union{PushButton, CheckBox, RadioButton})
+function xml(w::Union{PushButton, CheckBox, RadioButton, Label, LineEdit})
     node = widget(class_name(w), w.name)
     addchild!(node, xml(property(w.text)))
     add_property_nodes!(node, w)

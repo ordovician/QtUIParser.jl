@@ -31,8 +31,8 @@ function show(io::IO, ui::Ui)
                           property("version", ui.version)]
     show(io, properties, depth + 1)
     println(io, ",")
-    println(io, tab, "root = ")
-    show(io, ui.root_widget, depth + 1)
+    print(io, tab, "root = Widget")
+    print_widget_properties(io, ui.root_widget, depth + 1)
     println(io)
     print(io, ")")
 end

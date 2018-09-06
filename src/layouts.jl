@@ -14,10 +14,17 @@ end
 
 ##################### IO #####################
 
-function print_layout(io::IO, layout::Layout, depth::Integer = 0)
+function print_layout_properties(io::IO, layout::Layout, depth::Integer)
     indent = tab^depth
-    println(io, indent, "layout = ")
-    show(io, layout, depth + 1)
+    properties = Property[property("name", layout.name),
+                          property("orientation", layout.orientation)]
+    show(io, properties, depth + 1)
+    if !isempty(layout.items)
+        println(io, ",")
+        print_items(io, layout.items, depth + 1)
+    end
+    println(io)
+    print(io, indent, ")")
 end
 
 function print_items(io::IO, items::Array{T}, depth::Integer = 0) where T <: Union{Widget, Layout, Spacer}
@@ -35,15 +42,7 @@ end
 function show(io::IO, layout::BoxLayout, depth::Integer = 0)
     indent = tab^depth
     println(io, indent, "BoxLayout(")
-    properties = Property[property("name", layout.name),
-                          property("orientation", layout.orientation)]
-    show(io, properties, depth + 1)
-    if !isempty(layout.items)
-        println(io, ",")
-        print_items(io, layout.items, depth + 1)
-    end
-    println(io)
-    println(io, indent, ")")
+    print_layout_properties(io, layout, depth)
 end
 
 ##################### XML #####################
