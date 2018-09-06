@@ -19,7 +19,7 @@ end
 
 ##################### IO #####################
 
-function show(io::IO, orientation::QtUIParser.Orientation)
+function show(io::IO, orientation::Orientation, depth::Integer = 0)
     if VERTICAL == orientation
         print(io, "VERTICAL")
     elseif HORIZONTAL == orientation
