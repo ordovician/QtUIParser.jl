@@ -75,9 +75,16 @@ const type_to_cname_dict = Dict(PushButton  => "QPushButton",
 ########################## Index Accessors #################################
 
 function getindex(w::Widget, key::AbstractString)
+    # Check if one of the type field has the key
+    sym_key = Symbol(key)
+    if sym_key in fieldnames(typeof(w))
+        return getfield(w, sym_key)
+    end
+    
+    # if not lets go through our properties
     for p in w.properties
         if p.name == key
-            return p
+            return p.value
         end
     end
     error("No property with key $key exist")
@@ -86,7 +93,13 @@ end
 function setindex!(w::Widget, value, key::AbstractString)
     i = findfirst(w->w.name == key, w.properties)
     if i == nothing
-        push!(w.properties, property(key, value))
+        sym_key = Symbol(key)
+        fields = fieldnames(typeof(w))
+        if sym_key in fields && isa(value, fieldtype(typeof(w), sym_key))
+            setfield!(w, sym_key, value)
+        else
+            push!(w.properties, property(key, value))
+        end
     else
         w.properties[i] = property(key, value)
     end
