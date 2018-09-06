@@ -1,5 +1,5 @@
 export Layout,
-       BoxLayout
+       BoxLayout, GridLayout
 
 "A layout which lays out items vertical or horizontal depending on `orientation`"
 mutable struct BoxLayout <: Layout
@@ -12,12 +12,21 @@ function BoxLayout(name::AbstractString, orientation::Orientation = HORIZONTAL)
     BoxLayout(name, orientation, Union{Layout, Widget, Spacer}[])
 end
 
+mutable struct GridLayout <: Layout
+   name::String
+   items::Vector{Union{Layout, Widget, Spacer}} 
+end
+
+GridLayout(name::AbstractString) = GridLayout(name, Union{Layout, Widget, Spacer}[])
+
 ##################### IO #####################
 
 function print_layout_properties(io::IO, layout::Layout, depth::Integer)
     indent = tab^depth
-    properties = Property[property("name", layout.name),
-                          property("orientation", layout.orientation)]
+    properties = Property[property("name", layout.name)]
+    if :orientation in fieldnames(typeof(layout))
+        push!(properties, property("orientation", layout.orientation))
+    end
     show(io, properties, depth + 1)
     if !isempty(layout.items)
         println(io, ",")
@@ -39,9 +48,9 @@ function print_items(io::IO, items::Array{T}, depth::Integer = 0) where T <: Uni
     print(io, indent, "]")
 end
 
-function show(io::IO, layout::BoxLayout, depth::Integer = 0)
+function show(io::IO, layout::Layout, depth::Integer = 0)
     indent = tab^depth
-    println(io, indent, "BoxLayout(")
+    println(io, indent, "$(typeof(layout))(")
     print_layout_properties(io, layout, depth)
 end
 

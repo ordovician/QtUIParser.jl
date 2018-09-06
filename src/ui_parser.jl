@@ -156,6 +156,8 @@ function parse_layout(node::ElementNode)
         BoxLayout(name, VERTICAL, items)
     elseif "QHBoxLayout" == class
         BoxLayout(name, HORIZONTAL, items)
+    elseif "QGridLayout" == class
+        GridLayout(name, items)
     else
         @error "Missing code to handle Layout of type '$class'"
     end
