@@ -169,22 +169,7 @@ function xml(w::Widget)
     error("Must implement xml(", typeof(w), ")")
 end
 
-function uiform(name::AbstractString = "Form")
-    ElementNode("ui", [AttributeNode("version", "4.0")], [ElementNode("class", name)])
-end
-
 function widget(class::AbstractString, name::AbstractString)
     ElementNode("widget", ["class"=>class, "name"=>name])
 end
 
-function combobox(name::AbstractString)
-    xml(ComboBox(name))
-end
-
-function checkbox(name::AbstractString, text::AbstractString)
-    xml(CheckBox(name, text))
-end
-
-function pushbutton(name::AbstractString, text::AbstractString)
-    xml(PushButton(name, text))
-end

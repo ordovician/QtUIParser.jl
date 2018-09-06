@@ -68,10 +68,6 @@ function xml(conn::Connection)
     node
 end
 
-function connection(sender::String, signal::Signal, receiver::String, slot::Slot)
-    xml(Connection(sender, signal, receiver, slot))
-end
-
 """
     xml(connections)
 XML representation for multiple connections.
@@ -82,12 +78,4 @@ function xml(conns::Vector{Connection})
         addchild!(node, xml(conn))
     end
     node
-end
-
-function connections(conns...)
-    p = ElementNode("connections")
-    for conn in conns
-        addchild!(p, conn)
-    end
-    p
 end
