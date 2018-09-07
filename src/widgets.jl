@@ -33,7 +33,7 @@ mutable struct ComboBox <: Widget
     items::Vector{Property}
 end
 
-function ComboBox(name::AbstractString, items::Array{T} = T[]) where T <: AbstractString
+function ComboBox(name::AbstractString, items::Vector{T} = T[]) where T <: AbstractString
     ComboBox(name, Property[], items)
 end
 
@@ -80,7 +80,7 @@ function getindex(w::Widget, key::AbstractString)
     if sym_key in fieldnames(typeof(w))
         return getfield(w, sym_key)
     end
-    
+
     # if not lets go through our properties
     for p in w.properties
         if p.name == key
@@ -137,7 +137,7 @@ function print_widget_properties(io::IO, w::CustomWidget, depth::Integer)
         print_layout_properties(io, w.layout, depth + 1)
     end
     println(io)
-    print(io, indent, ")")    
+    print(io, indent, ")")
 end
 
 function show(io::IO, w::CustomWidget, depth::Integer = 0)
@@ -198,4 +198,3 @@ end
 function widget(class::AbstractString, name::AbstractString)
     ElementNode("widget", ["class"=>class, "name"=>name])
 end
-

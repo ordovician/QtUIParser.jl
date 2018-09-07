@@ -9,8 +9,8 @@ hierarchy.
 mutable struct Ui
     class::String
     root::Widget
-    resources::Array{Resource}
-    connections::Array{Connection}
+    resources::Vector{Resource}
+    connections::Vector{Connection}
     version::String
 end
 

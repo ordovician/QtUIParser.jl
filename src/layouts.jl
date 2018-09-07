@@ -14,7 +14,7 @@ end
 
 mutable struct GridLayout <: Layout
    name::String
-   items::Vector{Union{Layout, Widget, Spacer}} 
+   items::Vector{Union{Layout, Widget, Spacer}}
 end
 
 GridLayout(name::AbstractString) = GridLayout(name, Union{Layout, Widget, Spacer}[])
@@ -36,7 +36,7 @@ function print_layout_properties(io::IO, layout::Layout, depth::Integer)
     print(io, indent, ")")
 end
 
-function print_items(io::IO, items::Array{T}, depth::Integer = 0) where T <: Union{Widget, Layout, Spacer}
+function print_items(io::IO, items::Vector{T}, depth::Integer = 0) where T <: Union{Widget, Layout, Spacer}
     indent = tab^depth
     println(io, indent, "items = [")
     for item in items[1:end-1]

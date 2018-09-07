@@ -14,5 +14,6 @@ include("ui.jl")
 
 include("ui_parser.jl")
 include("dsl.jl")
+include("tools.jl")
 
 end # module

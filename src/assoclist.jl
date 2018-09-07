@@ -2,7 +2,7 @@ import Base: getindex, setindex!, length, iterate
 
 "Dictionary implemented as associative list for doing lookups with either key or value"
 mutable struct Assoc
-    items::Array{Pair{DataType, String}}
+    items::Vector{Pair{DataType, String}}
 end
 
 """
