@@ -127,28 +127,42 @@ function parse_connections(node::ElementNode)
     [parse_connection(conn) for conn in connections]
 end
 
+function parse_item(tag, child)
+    if     "widget" == tag
+        parse_widget(child)
+    elseif "layout" == tag
+        parse_layout(child)
+    elseif "spacer" == tag
+        parse_spacer(child)
+    else
+        @error "Don't know how to parse items of type '$tag'"
+        nothing
+    end
+end
+
 function parse_layout(node::ElementNode)
     class = node["class"]
     name  = node["name"]
 
     items = Union{Layout, Widget, Spacer}[]
+    griditems = GridItem[]
 
     item_nodes = elements(node)
     for item_node in item_nodes
         children = elements(item_node)
         child = first(children)
-        tag = nodename(child)
-        if     "widget" == tag
-            w = parse_widget(child)
-            push!(items, w)
-        elseif "layout" == tag
-            l = parse_layout(child)
-            push!(items, l)
-        elseif "spacer" == tag
-            spacer = parse_spacer(child)
-            push!(items, spacer)
+        tag  = nodename(child)
+        item = parse_item(tag, child)
+        if item == nothing
+            continue
+        end
+
+        if "QGridLayout" == class
+            row = Meta.parse(item_node["row"])
+            col = Meta.parse(item_node["column"])
+            push!(griditems, GridItem(row, col, item))
         else
-            @error "Don't know how to parse items of type '$tag'"
+            push!(items, item)
         end
     end
 

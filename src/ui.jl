@@ -14,7 +14,7 @@ mutable struct Ui
     version::String
 end
 
-function Ui(class::AbstractString = "Form")
+function Ui(class::AbstractString)
     Ui(class, CustomWidget(class), Resource[], Connection[], "4.0")
 end
 

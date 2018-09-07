@@ -1,6 +1,6 @@
 export finditem, copyitem!, removeitem!
 
-function Ui(;class, version, root)
+function Ui(;class = "Form", version =  "4.0", root = CustomWidget(class))
     Ui(class, root, Resource[], Connection[], version)
 end
 

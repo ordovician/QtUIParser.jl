@@ -1,5 +1,5 @@
 export Layout,
-       BoxLayout, GridLayout
+       BoxLayout, GridLayout, GridItem
 
 "A layout which lays out items vertical or horizontal depending on `orientation`"
 mutable struct BoxLayout <: Layout
@@ -12,14 +12,29 @@ function BoxLayout(name::AbstractString, orientation::Orientation = HORIZONTAL)
     BoxLayout(name, orientation, Union{Layout, Widget, Spacer}[])
 end
 
-mutable struct GridLayout <: Layout
-   name::String
-   items::Vector{Union{Layout, Widget, Spacer}}
+struct GridItem
+    row::Int
+    column::Int
+    item::Union{Layout, Widget, Spacer}
 end
 
-GridLayout(name::AbstractString) = GridLayout(name, Union{Layout, Widget, Spacer}[])
+mutable struct GridLayout <: Layout
+   name::String
+   items::Vector{GridItem}
+end
+
+GridLayout(name::AbstractString) = GridLayout(name, GridItem[])
 
 ##################### IO #####################
+
+function show(io::IO, item::GridItem, depth::Integer)
+    indent = tab^depth
+    println(io, indent, "GridItem(")
+    println(io, indent, tab, item.row, ",")
+    println(io, indent, tab, item.row, ",")
+    show(io, item.item, depth + 1)
+    print(io, indent, ")")
+end
 
 function print_layout_properties(io::IO, layout::Layout, depth::Integer)
     indent = tab^depth
@@ -36,7 +51,19 @@ function print_layout_properties(io::IO, layout::Layout, depth::Integer)
     print(io, indent, ")")
 end
 
-function print_items(io::IO, items::Vector{T}, depth::Integer = 0) where T <: Union{Widget, Layout, Spacer}
+function print_layout_properties(io::IO, layout::GridLayout, depth::Integer)
+    indent = tab^depth
+    properties = Property[property("name", layout.name)]
+    show(io, properties, depth + 1)
+    if !isempty(layout.items)
+        println(io, ",")
+        print_items(io, layout.items, depth + 1)
+    end
+    println(io)
+    print(io, indent, ")")
+end
+
+function print_items(io::IO, items::Vector{T}, depth::Integer = 0) where T <: Union{Widget, Layout, Spacer, GridItem}
     indent = tab^depth
     println(io, indent, "items = [")
     for item in items[1:end-1]
@@ -73,14 +100,12 @@ function xml(layout::BoxLayout)
     node
 end
 
-function boxlayout(name::AbstractString, orientation::Orientation, items...)
-    xml(BoxLayout(name, orientation, items))
-end
-
-function vboxlayout(name::AbstractString, items...)
-    boxlayout(name, VERTICAL, items...)
-end
-
-function hboxlayout(name::AbstractString, items...)
-    boxlayout(name, HORIZONTAL, items...)
+function xml(layout::GridLayout)
+    node = ElementNode("layout", ["class"=>"QGridLayout", "name"=>layout.name])
+    for item in layout.items
+        item_node =  ElementNode("item", ["row"=>string(item.row), "column" => string(item.column)])
+        addchild!(item_node, xml(item.item))
+        addchild!(node, item_node)
+    end
+    node
 end
