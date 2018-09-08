@@ -1,10 +1,11 @@
 import Base: setindex!, getindex
 
 export  Widget, CustomWidget,
-        PushButton, CheckBox, RadioButton, Slider, SpinBox, ComboBox, LineEdit, Label
+        PushButton, CheckBox, RadioButton, ToolButton,
+        Slider, SpinBox, ComboBox, GroupBox,
+        LineEdit, TextEdit, Label
 
-types = [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
-for T in types
+for T in [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
   @eval begin
     mutable struct $T <: Widget
         name::String
@@ -15,12 +16,16 @@ for T in types
   end
 end
 
-mutable struct SpinBox <: Widget
-    name::String
-    properties::Vector{Property}    
-end
 
-SpinBox(name) = SpinBox(name, Property[])
+for T in [:SpinBox, :GroupBox, :TextEdit, :ToolButton]
+    @eval begin
+        mutable struct $T <: Widget
+            name::String
+            properties::Vector{Property}    
+        end
+        $T(name::AbstractString) = $T(name, Property[])
+    end
+end
 
 "Allows you to move a slider  between a min and max value"
 mutable struct Slider <: Widget
@@ -73,6 +78,9 @@ const widget_dict  =     Assoc(PushButton   => "QPushButton",
                                SpinBox      => "QSpinBox",
                                Label        => "QLabel",
                                LineEdit     => "QLineEdit",
+                               TextEdit     => "QTextEdit",
+                               GroupBox     => "QGroupBox",
+                               ToolButton   => "QToolButton",
                                CustomWidget => "QWidget")
 
 ########################## Index Accessors #################################
@@ -144,7 +152,7 @@ function show(io::IO, w::Slider, depth::Integer = 0)
     end
 end
 
-function show(io::IO, w::SpinBox, depth::Integer = 0)
+function show(io::IO, w::Union{SpinBox, GroupBox, TextEdit, ToolButton}, depth::Integer = 0)
     indent = tab^depth
     print(io, indent, string(typeof(w)))
 
@@ -205,7 +213,7 @@ function xml(w::ComboBox)
     node
 end
 
-function xml(w::SpinBox)
+function xml(w::Union{SpinBox, GroupBox, TextEdit, ToolButton})
     node = widget(class_name(w), w.name)
     add_property_nodes!(node, w)
     node

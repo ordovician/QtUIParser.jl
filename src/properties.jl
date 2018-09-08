@@ -1,4 +1,4 @@
-export Property   
+export Property, property   
 
 struct Property
     name::String
@@ -25,11 +25,13 @@ function show(io::IO, prop::Property, depth::Integer = 0)
 end
 
 function show(io::IO, properties::Vector{T}, depth::Integer = 0) where T <: Property
-    for prop in properties[1:end-1]
-        show(io, prop, depth)
-        println(io, ",")
+    if !isempty(properties)
+        for prop in properties[1:end-1]
+            show(io, prop, depth)
+            println(io, ",")
+        end
+        show(io, properties[end], depth)
     end
-    show(io, properties[end], depth)
 end
 
 ##################### XML #####################

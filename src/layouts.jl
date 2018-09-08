@@ -64,11 +64,13 @@ end
 function print_items(io::IO, items::Vector{T}, depth::Integer = 0) where T <: Union{Widget, Layout, Spacer, GridItem}
     indent = tab^depth
     println(io, indent, "items = [")
-    for item in items[1:end-1]
-        show(io, item, depth + 1)
-        println(io, ",")
+    if !isempty(items)
+        for item in items[1:end-1]
+            show(io, item, depth + 1)
+            println(io, ",")
+        end
+        show(io, items[end], depth + 1)
     end
-    show(io, items[end], depth + 1)
     println(io)
     print(io, indent, "]")
 end
