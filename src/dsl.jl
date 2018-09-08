@@ -1,4 +1,4 @@
-export finditem, copyitem!, removeitem!
+export finditem, copyitem!, removeitem!, findfirstitem
 
 function Ui(;class = "Form", version =  "4.0", root = CustomWidget(class))
     Ui(class, root, Resource[], Connection[], version)
@@ -54,50 +54,72 @@ function BoxLayout(;args...)
 end
 
 ################## Search Functionality ############################
+function findfirstitem(root, name::AbstractString)
+    items = finditem(root, name)
+    if isempty(items)
+        nothing
+    else
+        first(items)
+    end    
+end
+
+function finditem(root, kind::DataType)
+    finditem(x -> isa(x, kind), root)
+end
 
 """
     finditem(root, name)
 Locate an item in the tree. An item could be a layout, widget or spacer
 """
-finditem(ui::Ui, name::AbstractString) = finditem(ui.root, name)
+function finditem(root::Union{Ui, Widget, Layout, Spacer}, name::AbstractString)
+    finditem(x->x.name == name, root)
+end
 
-function finditem(item::CustomWidget, name::AbstractString)
-    if item.name == name
-        item
+finditem(pred::Function, ui::Ui) = finditem(pred, ui.root)
+
+function finditem(pred::Function, item::CustomWidget)
+    result = Union{Widget, Layout, Spacer}[]
+    if pred(item)
+        push!(result, item)
+    end
+    
+    append!(result, finditem(pred, item.layout))
+end
+
+function finditem(pred::Function, item::Widget)
+    if pred(item)
+        [item]
     else
-        finditem(item.layout, name)
+        Union{Widget, Layout, Spacer}[]
     end
 end
 
-function finditem(item::Widget, name::AbstractString)
-    if item.name == name
-        item
-    else
-        nothing
+function finditem(pred::Function, layout::Layout)
+    result = Union{Widget, Layout, Spacer}[]
+    if pred(layout)
+        push!(result, layout)
     end
+    append!(result, finditem(pred, layout.items))
 end
 
-function finditem(layout::Layout, name::AbstractString)
-    if layout.name == name
-        layout
-    else
-        finditem(layout.items, name)
-    end
-end
-
-function finditem(items::Vector{T}, name::AbstractString) where T <: Union{Layout, Widget, Spacer}
+function finditem(pred::Function, items::Vector{T}) where T <: Union{Layout, Widget, Spacer}
+    result = Union{Widget, Layout, Spacer}[]
     for item in items
-        w = finditem(item, name)
-        if w != nothing
-            return w
-        end
+        append!(result, finditem(pred, item))
     end
-    nothing
+    result
 end
 
 
-finditem(spacer::Spacer, name) = spacer.name == name ? spacer : nothing
-finditem(::Nothing, name) = nothing
+function finditem(pred::Function, spacer::Spacer)
+    result = Union{Widget, Layout, Spacer}[]
+    if pred(spacer)
+        append!(result, [spacer])
+    end
+    result
+end
+
+finditem(pred::Function, ::Nothing) = Union{Widget, Layout, Spacer}[]
 
 """
     copyitem!(root, source, target)
@@ -105,7 +127,7 @@ Copies an item named `source` to layout named `target`. Item can be a widget,
 spacer or layout.
 """
 function copyitem!(root, item_name::AbstractString, layout_name::AbstractString)
-    w = finditem(root, item_name)
+    w = findfirstitem(root, item_name)
     if w == nothing
         error("Did not find any source object named $item_name")
     end
@@ -114,7 +136,7 @@ function copyitem!(root, item_name::AbstractString, layout_name::AbstractString)
         error("$item_name is not an item (widget, spacer or layout)")
     end
 
-    layout = finditem(root, layout_name)
+    layout = findfirstitem(root, layout_name)
     if layout == nothing || !isa(layout, Layout)
         error("Did not find a layout named '$layout_name'")
     end
