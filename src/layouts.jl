@@ -29,11 +29,9 @@ GridLayout(name::AbstractString) = GridLayout(name, GridItem[])
 
 function show(io::IO, item::GridItem, depth::Integer)
     indent = tab^depth
-    println(io, indent, "GridItem(")
-    println(io, indent, tab, item.row, ",")
-    println(io, indent, tab, item.row, ",")
+    println(io, indent, "GridItem($(item.row), $(item.column),")
     show(io, item.item, depth + 1)
-    print(io, indent, ")")
+    print(io, ")")
 end
 
 function print_layout_properties(io::IO, layout::Layout, depth::Integer)
