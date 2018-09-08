@@ -5,7 +5,7 @@ export read_ui, read_ui_string,
 
 "Convert generic widget to a more specialized on based on properties"
 function specialize_widget(w::CustomWidget)
-    W = get(cname_to_type_dict, w.class, CustomWidget)
+    W = get(widget_dict, w.class, CustomWidget)
     if W != CustomWidget
         fields = string.(fieldnames(W))
         obj = W(w.name)
@@ -52,7 +52,7 @@ end
 
 "Convert an Qt enum string such as `Qt::Horizontal` to a Julia enum value"
 function parse_enum(s::AbstractString)
-    ename_to_enum_dict[s]
+    orientation_dict[s]
 end
 
 function parse_rect(n::ElementNode)
@@ -109,7 +109,7 @@ function parse_func_signature(s::AbstractString, T::DataType)
 end
 
 function parse_connection(node::ElementNode)
-    value(key) = nodecontent(locatefirst(key, n))
+    value(key) = nodecontent(locatefirst(key, node))
 
     sender     = value("sender")
     receiver   = value("receiver")

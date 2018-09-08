@@ -1,5 +1,6 @@
 module QtUIParser
 
+include("assoclist.jl")
 include("core.jl")
 
 include("primitives.jl")

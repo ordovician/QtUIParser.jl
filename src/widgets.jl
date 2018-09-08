@@ -1,7 +1,7 @@
 import Base: setindex!, getindex
 
 export  Widget, CustomWidget,
-        PushButton, CheckBox, RadioButton, Slider, ComboBox, LineEdit, Label
+        PushButton, CheckBox, RadioButton, Slider, SpinBox, ComboBox, LineEdit, Label
 
 types = [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
 for T in types
@@ -14,6 +14,13 @@ for T in types
     $T(name::AbstractString, text::AbstractString = "") = $T(name, text, Property[])
   end
 end
+
+mutable struct SpinBox <: Widget
+    name::String
+    properties::Vector{Property}    
+end
+
+SpinBox(name) = SpinBox(name, Property[])
 
 "Allows you to move a slider  between a min and max value"
 mutable struct Slider <: Widget
@@ -49,25 +56,21 @@ function CustomWidget(name::AbstractString = "Form", class::AbstractString = "QW
     CustomWidget(name, class, Property[], nothing)
 end
 
+function Widget(name::AbstractString, class::AbstractString)
+    CustomWidget(name, class)
+end
+
 ######################  Mapping Qt Names to Types ###########################
-
-const cname_to_type_dict = Dict("QPushButton" => PushButton,
-                               "QComboBox"    => ComboBox,
-                               "QCheckBox"    => CheckBox,
-                               "QRadioButton" => RadioButton,
-                               "QSlider"      => Slider,
-                               "QLabel"       => Label,
-                               "QLineEdit"    => LineEdit,
-                               "QWidget"      => CustomWidget)
-
-const ename_to_enum_dict = Dict("Qt::Horizontal" => HORIZONTAL,
-                                "Qt::Vertical"   => VERTICAL)
-
-const type_to_cname_dict = Dict(PushButton  => "QPushButton",
+                                
+const orientation_dict =   Assoc(HORIZONTAL => "Qt::Horizontal",
+                                 VERTICAL   => "Qt::Vertical" )
+                                   
+const widget_dict  =     Assoc(PushButton   => "QPushButton",
                                ComboBox     => "QComboBox",
                                CheckBox     => "QCheckBox",
                                RadioButton  => "QRadioButton",
                                Slider       => "QSlider",
+                               SpinBox      => "QSpinBox",
                                Label        => "QLabel",
                                LineEdit     => "QLineEdit",
                                CustomWidget => "QWidget")
@@ -124,6 +127,39 @@ function show(io::IO, w::Union{PushButton, CheckBox, RadioButton, Label, LineEdi
     end
 end
 
+function show(io::IO, w::Slider, depth::Integer = 0)
+    indent = tab^depth
+    print(io, indent, string(typeof(w)))
+
+    if isempty(w.properties)
+        print(io, "(\"$(w.name)\", $(w.orientation))")
+    else
+        println(io, "(")
+        properties = Property[property("name", w.name),
+                              property("orientation", w.orientation),
+                              w.properties...]
+        show(io, properties, depth + 1)
+        println(io)
+        print(io, indent, ")")
+    end
+end
+
+function show(io::IO, w::SpinBox, depth::Integer = 0)
+    indent = tab^depth
+    print(io, indent, string(typeof(w)))
+
+    if isempty(w.properties)
+        print(io, "(\"$(w.name)\")")
+    else
+        println(io, "(")
+        properties = Property[property("name", w.name),
+                              w.properties...]
+        show(io, properties, depth + 1)
+        println(io)
+        print(io, indent, ")")
+    end
+end
+
 function print_widget_properties(io::IO, w::CustomWidget, depth::Integer)
     indent = tab^depth
     println(io, "(")
@@ -153,7 +189,7 @@ end
 
 ##################### XML #########################################
 function class_name(w::Widget)
-    type_to_cname_dict[typeof(w)]
+    widget_dict[typeof(w)]
 end
 
 """
@@ -169,8 +205,15 @@ function xml(w::ComboBox)
     node
 end
 
+function xml(w::SpinBox)
+    node = widget(class_name(w), w.name)
+    add_property_nodes!(node, w)
+    node
+end
+
 function xml(w::Slider)
     node = widget(class_name(w), w.name)
+    addchild!(node, xml(property(w.orientation)))
     add_property_nodes!(node, w)
     node
 end
