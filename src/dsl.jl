@@ -29,14 +29,27 @@ function Widget(;args...)
     config_widget!(w, args)
 end
 
-types = [:PushButton, :CheckBox, :RadioButton]
-for T in types
+for T in [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
   @eval begin
       function $T(;args...)
           w = $T("objname", "no label")
           config_widget!(w, args)
       end
   end
+end
+
+for T in [:SpinBox, :GroupBox, :TextEdit, :ToolButton]
+  @eval begin
+      function $T(;args...)
+          w = $T("objname")
+          config_widget!(w, args)
+      end
+  end
+end
+
+function ComboBox(;args...)
+   w = ComboBox("objname") 
+   config_widget!(w, args)
 end
 
 function BoxLayout(;args...)

@@ -140,6 +140,7 @@ function parse_item(tag, child)
     end
 end
 
+"Parses all types of layout."
 function parse_layout(node::ElementNode)
     class = node["class"]
     name  = node["name"]
@@ -182,12 +183,32 @@ function parse_resources(node::ElementNode)
     Resource[]
 end
 
+"Parse item tags found under a widget. Typically this will be a QComboBox"
+function parse_widget_item(node::ElementNode)
+    prop_nodes = elements(node)
+    if isempty(prop_nodes)
+       @warn "Expected item to contain a property but it didn't"
+       nothing 
+    else
+        n = first(prop_nodes)
+        tag = nodename(n)
+        if tag != "property"
+            @warn "item has a sub node with tag '$tag', but we expect 'property'"
+            nothing
+        else
+            parse_property(n)
+        end
+    end
+end
+
+"Parse any kind of widget. May want to split this up."
 function parse_widget(node::ElementNode)
     cname = node["class"] # class name
     name  = node["name"]
 
     children = elements(node)
 
+    items      = String[]  # In case we are parsing a combobox e.g.
     properties = Property[]
     layout = nothing
     for child in children
@@ -196,10 +217,24 @@ function parse_widget(node::ElementNode)
             push!(properties, parse_property(child))
         elseif tag == "layout"
             layout = parse_layout(child)
+        elseif tag == "item"
+            item = parse_widget_item(child)
+            if item != nothing
+               push!(items, propvalue(item))
+            end
+        else
+            @warn "Not parsing unknown widget tag '$tag'"
         end
     end
-
-    specialize_widget(CustomWidget(name, cname, properties, layout))
+    
+    # TODO: Perhaps instead of jumbling together parsing of every type of
+    # widget perhaps should fan out and follow a consistent pattern, where each
+    # sub function is determined based on the sub category of pattern a widget fits
+    if cname == "QComboBox"
+        ComboBox(name, properties, items)
+    else
+        specialize_widget(CustomWidget(name, cname, properties, layout))
+    end
 end
 
 function parse_spacer(node::ElementNode)

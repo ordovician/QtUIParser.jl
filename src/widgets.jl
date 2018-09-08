@@ -42,11 +42,15 @@ end
 mutable struct ComboBox <: Widget
     name::String
     properties::Vector{Property}
-    items::Vector{Property}
+    items::Vector{String}
 end
 
-function ComboBox(name::AbstractString, items::Vector{T} = T[]) where T <: AbstractString
+function ComboBox(name::AbstractString, items::Vector{T}) where T <: AbstractString
     ComboBox(name, Property[], items)
+end
+
+function ComboBox(name::AbstractString)
+    ComboBox(name, Property[], String[])
 end
 
 "Typically used for custom top level widgets"
@@ -168,6 +172,35 @@ function show(io::IO, w::Union{SpinBox, GroupBox, TextEdit, ToolButton}, depth::
     end
 end
 
+function show(io::IO, w::ComboBox, depth::Integer = 0)
+    indent = tab^depth
+    print(io, indent, string(typeof(w)))
+
+    if isempty(w.properties)
+        print(io, "(\"$(w.name)\", [")
+        join(io, string.("\"", w.items, "\""), ", ")
+        print(io, "])")
+    else
+        println(io, "(")
+        print(io, indent, tab, "name = \"$(w.name)\"")
+        if !isempty(w.properties)
+           println(io, ",")
+           join(io, string.(indent, tab, w.properties), ",\n") 
+        end
+        
+        if !isempty(w.items)
+            println(io, ",")
+            println(io, indent, tab, "items = [")
+            items = string.("\"", w.items, "\"")
+            join(io, string.(indent, tab^2, items), ",\n")
+            println(io)
+            print(io, indent, tab, "]")
+        end
+        println(io)
+        print(io, indent, ")")
+    end
+end
+
 function print_widget_properties(io::IO, w::CustomWidget, depth::Integer)
     indent = tab^depth
     println(io, "(")
@@ -208,7 +241,7 @@ function xml(w::ComboBox)
     node = widget(class_name(w), w.name)
     add_property_nodes!(node, w)
     for item in w.items
-       addchild!(node, ElementNode("item"), [xml(item)])
+       addchild!(node, ElementNode("item", [xml(property(item))]))
     end
     node
 end
