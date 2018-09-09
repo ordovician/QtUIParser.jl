@@ -269,7 +269,7 @@ function xml(w::ComboBox)
     node
 end
 
-function xml(w::Union{SpinBox, GroupBox, TextEdit, ToolButton})
+function xml(w::Union{SpinBox, TextEdit, ToolButton})
     node = widget(class_name(w), w.name)
     add_property_nodes!(node, w)
     node
