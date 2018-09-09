@@ -15,71 +15,109 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="color_layout">
-     <item row="0" column="0">
-      <widget class="QComboBox" name="mode_combo">
+    <layout class="QHBoxLayout" name="config_layout">
+     <item>
+      <layout class="QVBoxLayout" name="name_layout">
        <item>
-        <property name="text">
-         <string>RGB</string>
-        </property>
+        <widget class="QLabel" name="name_label">
+         <property name="text">
+          <string>color name</string>
+         </property>
+        </widget>
        </item>
        <item>
-        <property name="text">
-         <string>HSB</string>
-        </property>
+        <widget class="QLineEdit" name="name_edit"/>
        </item>
-      </widget>
+       <item>
+        <widget class="QCheckBox" name="alpha_box">
+         <property name="text">
+          <string>alpha channel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="red_label">
-       <property name="text">
-        <string>red</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QSlider" name="red_slider">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QSpinBox" name="red_spinner"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="green_label">
-       <property name="text">
-        <string>green</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QSlider" name="green_slider">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QSpinBox" name="green_spinner"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="blue_label">
-       <property name="text">
-        <string>blue</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QSlider" name="blue_slider">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QSpinBox" name="blue_spinner"/>
+     <item>
+      <layout class="QGridLayout" name="color_layout">
+       <item row="0" column="0">
+        <widget class="QComboBox" name="mode_combo">
+         <item>
+          <property name="text">
+           <string>RGB</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HSB</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="red_label">
+         <property name="text">
+          <string>red</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSlider" name="red_slider">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QSpinBox" name="red_spinner"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="green_label">
+         <property name="text">
+          <string>green</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSlider" name="green_slider">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QSpinBox" name="green_spinner"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="blue_label">
+         <property name="text">
+          <string>blue</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QSlider" name="blue_slider">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QSpinBox" name="blue_spinner"/>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
