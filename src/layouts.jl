@@ -1,5 +1,6 @@
 export Layout,
-       BoxLayout, GridLayout, GridItem
+       BoxLayout, VBoxLayout, HBoxLayout,
+       GridLayout, GridItem
 
 "A layout which lays out items vertical or horizontal depending on `orientation`"
 mutable struct BoxLayout <: Layout
@@ -11,6 +12,9 @@ end
 function BoxLayout(name::AbstractString, orientation::Orientation = HORIZONTAL)
     BoxLayout(name, orientation, Union{Layout, Widget, Spacer}[])
 end
+
+VBoxLayout(name) = BoxLayout(name, VERTICAL)
+HBoxLayout(name) = BoxLayout(name, HORIZONTAL)
 
 struct GridItem
     row::Int

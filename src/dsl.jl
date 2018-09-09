@@ -52,8 +52,7 @@ function ComboBox(;args...)
    config_widget!(w, args)
 end
 
-function BoxLayout(;args...)
-    layout = BoxLayout("noname",  QtUIParser.HORIZONTAL)
+function config_boxlayout!(layout::BoxLayout, args)
     for (k, v) in args
         if k in [:name, :orientation]
             setfield!(layout, k, v)
@@ -63,7 +62,22 @@ function BoxLayout(;args...)
             push!(layout.properties,  QtUIParser.property(string(k), v))
         end
     end
-    layout
+    layout  
+end
+
+function BoxLayout(;args...)
+    layout = BoxLayout("noname", HORIZONTAL)
+    config_boxlayout!(layout)
+end
+
+function VBoxLayout(;args...)
+    layout = BoxLayout("noname", VERTICAL)
+    config_boxlayout!(layout, args)
+end
+
+function HBoxLayout(;args...)
+    layout = BoxLayout("noname", HORIZONTAL)
+    config_boxlayout!(layout, args)
 end
 
 ################## Search Functionality ############################
