@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><ui version="4.0">
+  <class>DepthConvertPanel</class>
+  <widget class="QWidget" name="DepthConvertPanel">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>505</width>
+        <height>615</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Depth Convert Seismic</string>
+    </property>
+    <layout class="QVBoxLayout" name="top">
+      <item>
+        <widget class="QGroupBox" name="general">
+          <layout class="QHBoxLayout" name="general_layout">
+            <item>
+              <layout class="QGridLayout" name="output_layout">
+                <item row="0" column="0">
+                  <widget class="QLabel" name="name_label">
+                    <property name="text">
+                      <string>Output name:</string>
+                    </property>
+                  </widget>
+                </item>
+                <item row="0" column="1">
+                  <widget class="QLineEdit" name="name_edit">
+                    <property name="text">
+                      <string>Output name:</string>
+                    </property>
+                  </widget>
+                </item>
+              </layout>
+            </item>
+            <item>
+              <layout class="QVBoxLayout" name="type_layout">
+                <item>
+                  <widget class="QRadioButton" name="realized">
+                    <property name="text">
+                      <string>Realized</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QRadioButton" name="preview">
+                    <property name="text">
+                      <string>Preview</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <spacer name="type_spacer">
+                    <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint">
+                      <size>
+                        <width>10</width>
+                        <height>20</height>
+                      </size>
+                    </property>
+                  </spacer>
+                </item>
+              </layout>
+            </item>
+          </layout>
+        </widget>
+      </item>
+      <item>
+        <layout class="QGridLayout" name="cropping_layout">
+          <item row="0" column="0">
+            <widget class="QCheckBox" name="depth_crop">
+              <property name="text">
+                <string>Cropping in depth</string>
+              </property>
+            </widget>
+          </item>
+          <item row="2" column="0">
+            <widget class="QLabel" name="range_label">
+              <property name="text">
+                <string>Sample range:</string>
+              </property>
+            </widget>
+          </item>
+          <item row="1" column="1">
+            <widget class="QLabel" name="min_label">
+              <property name="text">
+                <string>Min</string>
+              </property>
+            </widget>
+          </item>
+          <item row="2" column="1">
+            <widget class="QLineEdit" name="min_edit">
+              <property name="text">
+                <string>0.0</string>
+              </property>
+            </widget>
+          </item>
+          <item row="3" column="1">
+            <widget class="QSlider" name="min_slider">
+              <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+              </property>
+            </widget>
+          </item>
+          <item row="1" column="2">
+            <widget class="QLabel" name="max_label">
+              <property name="text">
+                <string>Max</string>
+              </property>
+            </widget>
+          </item>
+          <item row="2" column="2">
+            <widget class="QLineEdit" name="max_edit">
+              <property name="text">
+                <string>0.0</string>
+              </property>
+            </widget>
+          </item>
+          <item row="3" column="2">
+            <widget class="QSlider" name="max_slider">
+              <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <resources></resources>
+  <connections></connections>
+</ui>
