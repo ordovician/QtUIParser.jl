@@ -67,7 +67,7 @@ end
 
 function BoxLayout(;args...)
     layout = BoxLayout("noname", HORIZONTAL)
-    config_boxlayout!(layout)
+    config_boxlayout!(layout, args)
 end
 
 function VBoxLayout(;args...)
