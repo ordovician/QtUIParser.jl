@@ -59,7 +59,7 @@ function config_boxlayout!(layout::BoxLayout, args)
         elseif k == :items
             layout.items = v
         else
-            push!(layout.properties,  QtUIParser.property(string(k), v))
+            push!(layout.properties,  property(string(k), v))
         end
     end
     layout  
@@ -78,6 +78,20 @@ end
 function HBoxLayout(;args...)
     layout = BoxLayout("noname", HORIZONTAL)
     config_boxlayout!(layout, args)
+end
+
+function GridLayout(;args...)
+    layout = GridLayout("noname")
+    for (k, v) in args
+        if k == :name
+            setfield!(layout, k, v)
+        elseif k == :items
+            layout.items = v
+        else
+            push!(layout.properties,  property(string(k), v))
+        end
+    end
+    layout
 end
 
 ################## Search Functionality ############################
