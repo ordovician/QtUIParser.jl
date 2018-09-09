@@ -143,7 +143,7 @@ function finditem(pred::Function, layout::Layout)
     append!(result, finditem(pred, layout.items))
 end
 
-function finditem(pred::Function, items::Vector{T}) where T <: Union{Layout, Widget, Spacer}
+function finditem(pred::Function, items::Vector{T}) where T <: Union{Layout, Widget, Spacer, GridItem}
     result = Union{Widget, Layout, Spacer}[]
     for item in items
         append!(result, finditem(pred, item))
@@ -151,6 +151,9 @@ function finditem(pred::Function, items::Vector{T}) where T <: Union{Layout, Wid
     result
 end
 
+function finditem(pred::Function, item::GridItem)
+    finditem(pred, item.item)
+end
 
 function finditem(pred::Function, spacer::Spacer)
     result = Union{Widget, Layout, Spacer}[]
