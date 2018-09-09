@@ -17,7 +17,7 @@ for T in [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
 end
 
 
-for T in [:SpinBox, :GroupBox, :TextEdit, :ToolButton]
+for T in [:SpinBox, :TextEdit, :ToolButton]
     @eval begin
         mutable struct $T <: Widget
             name::String
@@ -51,6 +51,16 @@ end
 
 function ComboBox(name::AbstractString)
     ComboBox(name, Property[], String[])
+end
+
+mutable struct GroupBox <: Widget
+   name::String
+   properties::Vector{Property}
+   layout::Union{Layout, Nothing}
+end
+
+function GroupBox(name::AbstractString)
+    GroupBox(name, Property[], nothing)
 end
 
 "Typically used for custom top level widgets"
@@ -156,7 +166,7 @@ function show(io::IO, w::Slider, depth::Integer = 0)
     end
 end
 
-function show(io::IO, w::Union{SpinBox, GroupBox, TextEdit, ToolButton}, depth::Integer = 0)
+function show(io::IO, w::Union{SpinBox, TextEdit, ToolButton}, depth::Integer = 0)
     indent = tab^depth
     print(io, indent, string(typeof(w)))
 
@@ -201,12 +211,16 @@ function show(io::IO, w::ComboBox, depth::Integer = 0)
     end
 end
 
-function print_widget_properties(io::IO, w::CustomWidget, depth::Integer)
+function print_widget_properties(io::IO, w::Union{CustomWidget, GroupBox}, depth::Integer)
     indent = tab^depth
     println(io, "(")
-    properties = Property[property("name", w.name),
-                          property("class", w.class),
-                          w.properties...]
+    
+    properties = Property[property("name", w.name)]
+    if isa(w, CustomWidget)
+        push!(properties, property("class", w.class))
+    end
+    append!(properties, w.properties)
+    
     show(io, properties, depth + 1)
     println(io, ",")
     if w.layout != nothing
@@ -217,9 +231,13 @@ function print_widget_properties(io::IO, w::CustomWidget, depth::Integer)
     print(io, indent, ")")
 end
 
-function show(io::IO, w::CustomWidget, depth::Integer = 0)
+function show(io::IO, w::Union{CustomWidget, GroupBox}, depth::Integer = 0)
     indent = tab^depth
-    print(io, indent, "Widget")
+    print(io, indent, if isa(w, CustomWidget)
+        "Widget"
+    else
+        string(typeof(w))
+    end)
 
     if isempty(w.properties) && w.layout == nothing
         print(io, "(\"$(w.name)\", \"$(w.class)\")")
@@ -230,7 +248,12 @@ end
 
 ##################### XML #########################################
 function class_name(w::Widget)
-    widget_dict[typeof(w)]
+    T = typeof(w)
+    if :class in fieldnames(T)
+        w.class
+    else
+        widget_dict[T]
+    end
 end
 
 """
@@ -266,8 +289,8 @@ function xml(w::Union{PushButton, CheckBox, RadioButton, Label, LineEdit})
     node
 end
 
-function xml(w::CustomWidget)
-    node = widget(w.class, w.name)
+function xml(w::Union{CustomWidget, GroupBox})
+    node = widget(class_name(w), w.name)
     add_property_nodes!(node, w)
     if w.layout != nothing
         addchild!(node, xml(w.layout))
