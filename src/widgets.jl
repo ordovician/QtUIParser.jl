@@ -240,7 +240,12 @@ function show(io::IO, w::Union{CustomWidget, GroupBox}, depth::Integer = 0)
     end)
 
     if isempty(w.properties) && w.layout == nothing
-        print(io, "(\"$(w.name)\", \"$(w.class)\")")
+        print(io, "(\"$(w.name)\"")
+        if isa(w, CustomWidget)
+            print(io, ", \"$(w.class)\")")
+        else
+            print(io, ")")
+        end
     else
         print_widget_properties(io, w, depth)
     end

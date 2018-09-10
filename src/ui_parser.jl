@@ -16,6 +16,9 @@ function specialize_widget(w::CustomWidget)
                 push!(obj.properties, prop)
             end
         end
+        if :layout in fieldnames(W)
+            obj.layout = w.layout
+        end
         obj
     else
         w
