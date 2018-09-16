@@ -1,312 +1,112 @@
-import Base: setindex!, getindex
+export Widget,
+       PushButton, CheckBox, RadioButton, Label, LineEdit
 
-export  Widget, CustomWidget,
-        PushButton, CheckBox, RadioButton, ToolButton,
-        Slider, SpinBox, ComboBox, GroupBox,
-        LineEdit, TextEdit, Label
-
-for T in [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
-  @eval begin
-    mutable struct $T <: Widget
-        name::String
-        text::String
-        properties::Vector{Property}
+function config_widget!(w::Widget, args)
+    for (k, v) in args
+        if k in fieldnames(typeof(w))
+            setfield!(w, k, v)
+        elseif k in [:title]
+            w.attributes[k] = v
+        else
+            w.properties[k] = v
+        end
     end
-    $T(name::AbstractString, text::AbstractString = "") = $T(name, text, Property[])
-  end
+    w
 end
 
+function Widget(name::AbstractString, class::Symbol)
+    Widget(name, class, Assoc{Symbol, String}(), Assoc{Symbol, Primitive}(), String[], nothing)
+end
 
-for T in [:SpinBox, :TextEdit, :ToolButton]
+function Widget(;args...)
+    w = Widget("noname",  :QWidget)
+    config_widget!(w, args)
+end
+
+const labeled_widgets = [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
+for T in labeled_widgets
+    s = string(T)
     @eval begin
-        mutable struct $T <: Widget
-            name::String
-            properties::Vector{Property}    
-        end
-        $T(name::AbstractString) = $T(name, Property[])
+      function $T(name::AbstractString, label::AbstractString)
+          w = Widget(name, Symbol($s))
+          w.attributes.text = label
+          w
+      end
+  
+      function $T(;args...)
+          w = Widget("noname", Symbol($s))
+          config_widget!(w, args)
+      end
     end
 end
 
-"Allows you to move a slider  between a min and max value"
-mutable struct Slider <: Widget
-   name::String
-   orientation::Orientation
-   properties::Vector{Property}
-end
+const supported_widgets = union(labeled_widgets)
 
-function Slider(name::AbstractString, orientation::Orientation = HORIZONTAL)
-    Slider(name, orientation, Property[])
-end
+function pretty_print_collection(io::IO, a, depth::Integer = 0)
+    indent = tab^depth
+    ks = string.(first.(collect(a)))
+    max_width = maximum(length.(ks))
 
-"User can chose between several choices define by `items`"
-mutable struct ComboBox <: Widget
-    name::String
-    properties::Vector{Property}
-    items::Vector{String}
-end
-
-function ComboBox(name::AbstractString, items::Vector{T}) where T <: AbstractString
-    ComboBox(name, Property[], items)
-end
-
-function ComboBox(name::AbstractString)
-    ComboBox(name, Property[], String[])
-end
-
-mutable struct GroupBox <: Widget
-   name::String
-   properties::Vector{Property}
-   layout::Union{Layout, Nothing}
-end
-
-function GroupBox(name::AbstractString)
-    GroupBox(name, Property[], nothing)
-end
-
-"Typically used for custom top level widgets"
-mutable struct CustomWidget <: Widget
-   name::String
-   class::String
-   properties::Vector{Property}
-   layout::Union{Layout, Nothing}
-end
-
-function CustomWidget(name::AbstractString = "Form", class::AbstractString = "QWidget")
-    CustomWidget(name, class, Property[], nothing)
-end
-
-function Widget(name::AbstractString, class::AbstractString)
-    CustomWidget(name, class)
-end
-
-######################  Mapping Qt Names to Types ###########################
-                                
-const orientation_dict =   Assoc(HORIZONTAL => "Qt::Horizontal",
-                                 VERTICAL   => "Qt::Vertical" )
-                                   
-const widget_dict  =     Assoc(PushButton   => "QPushButton",
-                               ComboBox     => "QComboBox",
-                               CheckBox     => "QCheckBox",
-                               RadioButton  => "QRadioButton",
-                               Slider       => "QSlider",
-                               SpinBox      => "QSpinBox",
-                               Label        => "QLabel",
-                               LineEdit     => "QLineEdit",
-                               TextEdit     => "QTextEdit",
-                               GroupBox     => "QGroupBox",
-                               ToolButton   => "QToolButton",
-                               CustomWidget => "QWidget")
-
-########################## Index Accessors #################################
-
-function getindex(w::Widget, key::AbstractString)
-    # Check if one of the type field has the key
-    sym_key = Symbol(key)
-    if sym_key in fieldnames(typeof(w))
-        return getfield(w, sym_key)
-    end
-
-    # if not lets go through our properties
-    for p in w.properties
-        if p.name == key
-            return p.value
-        end
-    end
-    error("No property with key $key exist")
-end
-
-function setindex!(w::Widget, value, key::AbstractString)
-    i = findfirst(w->w.name == key, w.properties)
-    if i == nothing
-        sym_key = Symbol(key)
-        fields = fieldnames(typeof(w))
-        if sym_key in fields && isa(value, fieldtype(typeof(w), sym_key))
-            setfield!(w, sym_key, value)
+    isfirst = true
+    for (k, v) in a
+        if isfirst
+            isfirst = false
         else
-            push!(w.properties, property(key, value))
-        end
-    else
-        w.properties[i] = property(key, value)
-    end
-end
-
-##################### IO ##########################################
-
-function show(io::IO, w::Union{PushButton, CheckBox, RadioButton, Label, LineEdit}, depth::Integer = 0)
-    indent = tab^depth
-    print(io, indent, string(typeof(w)))
-
-    if isempty(w.properties)
-        print(io, "(\"$(w.name)\", \"$(w.text)\")")
-    else
-        println(io, "(")
-        properties = Property[property("name", w.name),
-                              property("text", w.text),
-                              w.properties...]
-        show(io, properties, depth + 1)
-        println(io)
-        print(io, indent, ")")
-    end
-end
-
-function show(io::IO, w::Slider, depth::Integer = 0)
-    indent = tab^depth
-    print(io, indent, string(typeof(w)))
-
-    if isempty(w.properties)
-        print(io, "(\"$(w.name)\", $(w.orientation))")
-    else
-        println(io, "(")
-        properties = Property[property("name", w.name),
-                              property("orientation", w.orientation),
-                              w.properties...]
-        show(io, properties, depth + 1)
-        println(io)
-        print(io, indent, ")")
-    end
-end
-
-function show(io::IO, w::Union{SpinBox, TextEdit, ToolButton}, depth::Integer = 0)
-    indent = tab^depth
-    print(io, indent, string(typeof(w)))
-
-    if isempty(w.properties)
-        print(io, "(\"$(w.name)\")")
-    else
-        println(io, "(")
-        properties = Property[property("name", w.name),
-                              w.properties...]
-        show(io, properties, depth + 1)
-        println(io)
-        print(io, indent, ")")
-    end
-end
-
-function show(io::IO, w::ComboBox, depth::Integer = 0)
-    indent = tab^depth
-    print(io, indent, string(typeof(w)))
-
-    if isempty(w.properties)
-        print(io, "(\"$(w.name)\", [")
-        join(io, string.("\"", w.items, "\""), ", ")
-        print(io, "])")
-    else
-        println(io, "(")
-        print(io, indent, tab, "name = \"$(w.name)\"")
-        if !isempty(w.properties)
-           println(io, ",")
-           join(io, string.(indent, tab, w.properties), ",\n") 
-        end
-        
-        if !isempty(w.items)
             println(io, ",")
-            println(io, indent, tab, "items = [")
-            items = string.("\"", w.items, "\"")
-            join(io, string.(indent, tab^2, items), ",\n")
-            println(io)
-            print(io, indent, tab, "]")
+        end
+        sk = rpad(string(k), max_width)
+        print(io, indent, "$sk = ")
+        pretty_print(io, v, depth)
+    end 
+end
+
+function pretty_print_array(io::IO, xs::Vector, depth::Integer = 0)
+    indent = tab^depth
+    
+    isfirst = true
+    for x in xs
+        if isfirst
+            isfirst = false
+        else
+            println(io, ",")
+        end
+        print(io, indent, tab, repr(x))
+    end    
+end
+
+
+function pretty_print(io::IO, obj, depth::Integer = 0)
+    print(io, repr(obj))
+end
+
+function show(io::IO, w::Widget, depth::Integer = 0)
+    indent = tab^depth
+    traits = Any[:name => w.name]
+    if w.class in supported_widgets
+        print(io, indent, string(w.class))
+    else
+        print(io, indent, "Widget")
+        push!(traits, :class => w.class)
+    end
+    
+    if isempty(w.properties) && isempty(w.attributes) && isempty(w.items) && w.layout == nothing
+        print(io, "(")
+        join(io, repr.(last.(traits)), ", ")
+        print(io, ")")
+    else
+        println(io, "(")
+        pretty_print_collection(io, union(traits, 
+                                          w.properties, 
+                                          w.attributes), 
+                                depth + 1)
+        if !isempty(w.items)
+           println(io, ",")
+           println(io, indent, tab, "items = [")
+           pretty_print_array(io, w.items, depth + 1)
+           println(io)
+           print(io, indent, tab, "]") 
         end
         println(io)
-        print(io, indent, ")")
+        print(io, ")")
     end
-end
-
-function print_widget_properties(io::IO, w::Union{CustomWidget, GroupBox}, depth::Integer)
-    indent = tab^depth
-    println(io, "(")
-    
-    properties = Property[property("name", w.name)]
-    if isa(w, CustomWidget)
-        push!(properties, property("class", w.class))
-    end
-    append!(properties, w.properties)
-    
-    show(io, properties, depth + 1)
-    println(io, ",")
-    if w.layout != nothing
-        println(io, indent, tab, "layout = $(typeof(w.layout))(")
-        print_layout_properties(io, w.layout, depth + 1)
-    end
-    println(io)
-    print(io, indent, ")")
-end
-
-function show(io::IO, w::Union{CustomWidget, GroupBox}, depth::Integer = 0)
-    indent = tab^depth
-    print(io, indent, if isa(w, CustomWidget)
-        "Widget"
-    else
-        string(typeof(w))
-    end)
-
-    if isempty(w.properties) && w.layout == nothing
-        print(io, "(\"$(w.name)\"")
-        if isa(w, CustomWidget)
-            print(io, ", \"$(w.class)\")")
-        else
-            print(io, ")")
-        end
-    else
-        print_widget_properties(io, w, depth)
-    end
-end
-
-##################### XML #########################################
-function class_name(w::Widget)
-    T = typeof(w)
-    if :class in fieldnames(T)
-        w.class
-    else
-        widget_dict[T]
-    end
-end
-
-"""
-    xml(widget)
-Turn a widget such as a combobox, slider or checkbox into a tree of XML nodes.
-"""
-function xml(w::ComboBox)
-    node = widget(class_name(w), w.name)
-    add_property_nodes!(node, w)
-    for item in w.items
-       addchild!(node, ElementNode("item", [xml(property(item))]))
-    end
-    node
-end
-
-function xml(w::Union{SpinBox, TextEdit, ToolButton})
-    node = widget(class_name(w), w.name)
-    add_property_nodes!(node, w)
-    node
-end
-
-function xml(w::Slider)
-    node = widget(class_name(w), w.name)
-    addchild!(node, xml(property(w.orientation)))
-    add_property_nodes!(node, w)
-    node
-end
-
-function xml(w::Union{PushButton, CheckBox, RadioButton, Label, LineEdit})
-    node = widget(class_name(w), w.name)
-    addchild!(node, xml(property(w.text)))
-    add_property_nodes!(node, w)
-    node
-end
-
-function xml(w::Union{CustomWidget, GroupBox})
-    node = widget(class_name(w), w.name)
-    add_property_nodes!(node, w)
-    if w.layout != nothing
-        addchild!(node, xml(w.layout))
-    end
-    node
-end
-
-function xml(w::Widget)
-    error("Must implement xml(", typeof(w), ")")
-end
-
-function widget(class::AbstractString, name::AbstractString)
-    ElementNode("widget", ["class"=>class, "name"=>name])
 end
