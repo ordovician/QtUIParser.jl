@@ -1,50 +1,45 @@
 export Spacer
 
-mutable struct Spacer
-    name::String
-    orientation::Orientation
-    size_hint::Size
-    properties::Vector{Property}
+function Spacer(name::AbstractString)
+    Spacer(name, Assoc{Symbol, Primitive}())    
 end
 
-"""
-     Spacer(name, orientation, size_hint)
-Creates a strech or space inside a layout. It can be used to expand empty
-space, avoiding that other GUI components are made bigger.
-"""
-function Spacer(name, orientation, size_hint)
-    Spacer(name, orientation, size_hint, Property[])
+function Spacer(name::AbstractString, orientation::Orientation, sizehint::Size)
+    spacer = Spacer(name)
+    spacer.properties[:orientationt] = orientation
+    spacer.properties[:size_hint] = sizehint
+    spacer
 end
 
-##################### IO #####################
+function Spacer(;args)
+    spacer = Spacer("noname")
+    
+    for (k, v) in args
+        if k in fieldnames(typeof(spacer))
+            setfield!(spacer, k, v)
+        else
+            spacer.properties[k] = v
+        end
+    end
+    spacer
+end
+
 
 function show(io::IO, spacer::Spacer, depth::Integer = 0)
     indent = tab^depth
-    if isempty(spacer.properties)
-        print(io, indent, "Spacer(\"$(spacer.name)\", $(spacer.orientation), $(spacer.size_hint))")
-    else
-        println(io, indent, "Spacer(")
-        properties = Property[property("name", spacer.name),
-                              property("orientation", spacer.orientation),
-                              property("sizeHint", spacer.size_hint),
-                              w.properties...]
-        show(io, spacer.properties, depth + 1)
-        print(io, indent, ")")
+    
+    if get(io, :indent, true)
+        print(io, indent)
     end
+    
+    io = IOContext(io, :indent => true)
+    
+    println(io, "Spacer(")
+    traits = Any[:name => spacer.name]
+    pretty_print_collection(io, union(traits, spacer.properties), 
+                            depth + 1)
+    println(io)
+    print(io, indent, ")")
 end
 
-##################### XML #####################
 
-function add_property_nodes!(node::Node, w::Union{Spacer, Widget})
-    for p in w.properties
-        addchild!(node, xml(p))
-    end
-end
-
-function xml(spacer::Spacer)
-    node =  ElementNode("spacer", ["name"=>spacer.name])
-    addchild!(node, xml(property(spacer.orientation)))
-    addchild!(node, xml(property("sizeHint", spacer.size_hint)))
-    add_property_nodes!(node, spacer)
-    node
-end

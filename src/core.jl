@@ -62,6 +62,18 @@ mutable struct BoxLayout <: Layout
     items::Vector{Item}
 end
 
+struct GridItem
+    row::Int
+    column::Int
+    item::Item
+end
+
+mutable struct GridLayout <: Layout
+   name::String
+   properties::Assoc{Symbol, Primitive}
+   items::Vector{GridItem}
+end
+
 # How much indentation to use for each indentation level
 const tab = "    "
 
