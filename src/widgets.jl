@@ -101,8 +101,8 @@ function pretty_print_items(io::IO, items, depth::Integer)
     end    
 end
 
-function pretty_print(io::IO, w::Widget, depth::Integer)
-    show(io, w, depth)
+function pretty_print(io::IO, item::Item, depth::Integer)
+    show(io, item, depth)
 end
 
 function pretty_print(io::IO, obj, depth::Integer)

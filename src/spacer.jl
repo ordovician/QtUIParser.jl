@@ -6,7 +6,7 @@ end
 
 function Spacer(name::AbstractString, orientation::Orientation, sizehint::Size)
     spacer = Spacer(name)
-    spacer.properties[:orientationt] = orientation
+    spacer.properties[:orientation] = orientation
     spacer.properties[:size_hint] = sizehint
     spacer
 end
