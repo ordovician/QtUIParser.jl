@@ -15,24 +15,30 @@ mutable struct Ui
 end
 
 function Ui(class::AbstractString)
-    Ui(class, CustomWidget(class), Resource[], Connection[], "4.0")
+    Ui(class, Widget(class), Resource[], Connection[], "4.0")
 end
 
 function Ui(root::Widget)
     Ui(root.name, root, Resource[], Connection[], "4.0")
 end
 
+function Ui(;class = "Form", version =  "4.0", root = Widget(Symbol(class)))
+    Ui(class, root, Resource[], Connection[], version)
+end
+
+
 ##################### IO #####################
 
 function show(io::IO, ui::Ui)
     depth = 0
     println(io, "Ui(")
-    properties = Property[property("class", ui.class),
-                          property("version", ui.version)]
-    show(io, properties, depth + 1)
+    
+    traits = Any[:class => ui.class, :version => ui.version]
+    pretty_print_collection(io, traits, depth + 1)
+                            
     println(io, ",")
-    print(io, tab, "root = Widget")
-    print_widget_properties(io, ui.root, depth + 1)
+    print(io, tab, "root = ")
+    show(IOContext(io, :indent => false), ui.root, depth + 1)
     println(io)
     print(io, ")")
 end
