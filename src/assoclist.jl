@@ -1,4 +1,4 @@
-import Base: getindex, setindex!, get,
+import Base: getindex, setindex!, get, delete!,
        length, iterate, 
        getproperty, setproperty!, 
        haskey, isempty,
@@ -54,7 +54,7 @@ end
 getindex(a::Assoc{Symbol, String}, key::AbstractString) = value_lookup(a, key)
 
 function setindex!(a::Assoc{K, V}, value::V, key::K) where {K, V}
-    i = findfirst(a->first(a) == key, a.items)
+    i = findfirst(x->first(x) == key, a.items)
     if i == nothing
         push!(a.items, key => value)
     else
@@ -69,12 +69,18 @@ iterate(a::Assoc, i) = iterate(a.items, i)
 copy(a::Assoc)       = Assoc(copy(a.items))
 
 function get(a::Assoc{K, V}, key::K, default::V) where {K, V}
-    i = findfirst(a->first(a) == key, a.items)
+    i = findfirst(x->first(x) == key, a.items)
     if i == nothing
         default
     else
        last(a.items[i])
     end    
+end
+
+function delete!(a::Assoc{K, V}, key::K) where {K, V}
+    i = findall(x->first(x) == key, a.items)
+    deleteat!(a.items, i)
+    a
 end
 
 function getproperty(a::Assoc{Symbol, V}, key::Symbol) where V
@@ -94,6 +100,6 @@ function setproperty!(a::Assoc{Symbol, V}, key::Symbol, value::V) where V
 end
 
 function haskey(a::Assoc{K, V}, key::K) where {K, V}
-    i = findfirst(a->first(a) == key, a.items)
+    i = findfirst(x->first(x) == key, a.items)
     return i != nothing
 end
