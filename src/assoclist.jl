@@ -1,13 +1,14 @@
 import Base: getindex, setindex!, get,
        length, iterate, 
        getproperty, setproperty!, 
-       haskey, show, isempty,
-       union, keys, values
+       haskey, isempty,
+       union,
+       copy
        
 export Assoc
 
 "Dictionary implemented as associative list for doing lookups with either key or value"
-mutable struct Assoc{K, V}
+mutable struct Assoc{K, V} <: AbstractDict{K,V}
     items::Vector{Pair{K, V}}
 end
 
@@ -65,6 +66,7 @@ length(a::Assoc)     = length(a.items)
 isempty(a::Assoc)    = isempty(a.items)
 iterate(a::Assoc)    = iterate(a.items)
 iterate(a::Assoc, i) = iterate(a.items, i)
+copy(a::Assoc)       = Assoc(copy(a.items))
 
 function get(a::Assoc{K, V}, key::K, default::V) where {K, V}
     i = findfirst(a->first(a) == key, a.items)
@@ -94,29 +96,4 @@ end
 function haskey(a::Assoc{K, V}, key::K) where {K, V}
     i = findfirst(a->first(a) == key, a.items)
     return i != nothing
-end
-
-# TODO return iterator
-keys(a::Assoc) = first.(a.items)
-values(a::Assoc) = last.(a.items)
-
-function show(io::IO, a::Assoc{K, V}) where {K, V}
-    print(io, "Assoc(")
-    join(io, a.items, ", ")
-    print(")")
-    # len = length(a)
-    # if len == 1
-    #    println(io, "Assoc{$K,$V} with $len entry:")
-    # else
-    #     println(io, "Assoc{$K,$V} with $len entries:")
-    # end
-    #
-    # keys = string(first.(a.items))
-    # max_width = maximum(length.(keys))
-    #
-    # for (k, v) in a.items
-    #    sk = "\"$k\""
-    #    sk = rpad(sk, max_width + 2)
-    #    println(io, "  $sk => $v")
-    # end
 end
