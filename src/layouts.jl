@@ -55,9 +55,22 @@ function show(io::IO, layout::Layout, depth::Integer = 0)
     
     io = IOContext(io, :indent => true)
     
-    println(io, "$(typeof(layout))(")
+    properties = copy(layout.properties)
+    if isa(layout, BoxLayout) && haskey(properties, :orientation)
+        if properties.orientation == VERTICAL
+            println(io, "VBoxLayout(")
+        elseif properties.orientation == HORIZONTAL
+            println(io, "HBoxLayout(")
+        else
+            error("Unknown BoxLayout orientation")
+        end
+        delete!(properties, :orientation)
+    else
+        println(io, "$(typeof(layout))(")    
+    end
+    
     traits = Any[:name => layout.name]
-    pretty_print_collection(io, union(traits, layout.properties), 
+    pretty_print_collection(io, union(traits, properties), 
                             depth + 1)
     pretty_print_items(io, layout.items, depth + 1)
     println(io)

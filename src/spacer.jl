@@ -34,12 +34,30 @@ function show(io::IO, spacer::Spacer, depth::Integer = 0)
     
     io = IOContext(io, :indent => true)
     
-    println(io, "Spacer(")
     traits = Any[:name => spacer.name]
-    pretty_print_collection(io, union(traits, spacer.properties), 
-                            depth + 1)
-    println(io)
-    print(io, indent, ")")
+    properties = Assoc{Symbol, Primitive}()
+    
+    for (k, v) in spacer.properties
+       if k in [:orientation, :size_hint]
+           push!(traits, k => v)
+       else
+           push!(properties.items, k => v) 
+       end 
+    end
+
+    print(io, "Spacer")
+    
+    if isempty(properties)
+        print(io, "(")
+        join( io, repr.(last.(traits), context = IOContext(io, :compact => true)), ", ")
+        print(io, ")")
+    else
+        println(io, "(")
+        pretty_print_collection(io, union(traits, properties), 
+                                depth + 1)
+        println(io)
+        print(io, indent, ")")
+    end
 end
 
 

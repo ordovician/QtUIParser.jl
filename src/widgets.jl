@@ -30,7 +30,7 @@ for T in labeled_widgets
     @eval begin
       function $T(name::AbstractString, label::AbstractString)
           w = Widget(name, Symbol($s))
-          w.attributes.text = label
+          w.properties.text = label
           w
       end
     end
@@ -90,6 +90,7 @@ function pretty_print_array(io::IO, xs::Vector, depth::Integer)
     end    
 end
 
+"For printing items for a widget. Not for printing items separately"
 function pretty_print_items(io::IO, items, depth::Integer)
     indent = tab^depth
     if !isempty(items)
@@ -98,6 +99,16 @@ function pretty_print_items(io::IO, items, depth::Integer)
        pretty_print_array(io, items, depth)
        println(io)
        print(io, indent, "]") 
+    end    
+end
+
+"For printing layout info for a widget. Not for printing layout object separately"
+function pretty_print_layout(io::IO, layout::Union{Layout, Nothing}, depth::Integer)
+    indent = tab^depth
+    if layout != nothing
+        println(io, ",")
+        print(io, indent, "layout = ")
+        show(IOContext(io, :indent => false), layout, depth) 
     end    
 end
 
@@ -112,6 +123,19 @@ function pretty_print(io::IO, obj, depth::Integer)
     print(io, repr(obj, context = IOContext(io, :compact => true)))
 end
 
+"Returns properties not added to traits for this widget type"
+function filter_properties(properties::Assoc{K, V}, class::Symbol, traits) where {K, V}
+    result = copy(properties)
+    if class in supported_widgets
+        if class in labeled_widgets
+            push!(traits, :text => get(result, :text, ""))
+            delete!(result, :text)
+        end
+    else
+        push!(traits, :class => class)
+    end
+    result    
+end
 
 function show(io::IO, w::Widget, depth::Integer = 0)
     indent = tab^depth
@@ -127,26 +151,23 @@ function show(io::IO, w::Widget, depth::Integer = 0)
         print(io, string(w.class))
     else
         print(io, "Widget")
-        push!(traits, :class => w.class)
-    end
+    end 
     
-    if isempty(w.properties) && isempty(w.attributes) && isempty(w.items) && w.layout == nothing
+    properties = filter_properties(w.properties, w.class, traits)
+    
+    if isempty(properties) && isempty(w.attributes) && isempty(w.items) && w.layout == nothing
         print(io, "(")
-        join(io, repr.(last.(traits)), ", ")
+        join( io, repr.(last.(traits)), ", ")
         print(io, ")")
     else
         println(io, "(")
 
         pretty_print_collection(io, union(traits, 
-                                          w.properties, 
+                                          properties, 
                                           w.attributes), 
                                 depth + 1)
-        pretty_print_items(io, w.items, depth + 1)
-        if w.layout != nothing
-            println(io, ",")
-            print(io, indent, tab, "layout = ")
-            show(IOContext(io, :indent => false), w.layout, depth + 1) 
-        end
+        pretty_print_items( io, w.items,  depth + 1)
+        pretty_print_layout(io, w.layout, depth + 1)
         println(io)
         print(io, indent, ")")
     end
