@@ -2,7 +2,7 @@ import Base: getindex, setindex!, get, delete!,
        length, iterate, 
        getproperty, setproperty!, 
        haskey, isempty,
-       union,
+       union, push!,
        copy
        
 export Assoc
@@ -103,3 +103,5 @@ function haskey(a::Assoc{K, V}, key::K) where {K, V}
     i = findfirst(x->first(x) == key, a.items)
     return i != nothing
 end
+
+push!(a::Assoc{K, V}, x::Pair{K, V}) where {K, V} = push!(a.items, x)
