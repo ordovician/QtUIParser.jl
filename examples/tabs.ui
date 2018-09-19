@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TabsForm</class>
+ <widget class="QWidget" name="TabsForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>288</width>
+    <height>192</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Tab Example</string>
+  </property>
+  <layout class="QVBoxLayout" name="top_layout">
+   <item>
+    <widget class="QTabWidget" name="tab_widget">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="first_tab">
+      <attribute name="title">
+       <string>First Tab</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="first_tab_layout">
+       <item>
+        <widget class="QPushButton" name="push_button">
+         <property name="text">
+          <string>click me!</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="second_tab">
+      <attribute name="title">
+       <string>Second Tab</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="second_tab_layout">
+       <item>
+        <widget class="QCheckBox" name="check_button">
+         <property name="text">
+          <string>check me out!</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
