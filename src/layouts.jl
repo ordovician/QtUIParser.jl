@@ -30,7 +30,7 @@ function config_layout!(l::Layout, args)
     l
 end
 
-for T in [:BoxLayout, :GridLayout]
+for T in [:BoxLayout, :VBoxLayout, :HBoxLayout, :GridLayout]
     @eval begin
       function $T(;args...)
           layout = $T("noname")
@@ -41,12 +41,15 @@ end
 
 ##################### IO #####################
 
-function show(io::IO, item::GridItem, depth::Integer)
+function show(io::IO, item::GridItem, depth::Integer = 0)
     indent = tab^depth
     println(io, indent, "GridItem($(item.row), $(item.column),")
     show(io, item.item, depth + 1)
     print(io, ")")
 end
+
+pretty_print(io::IO, item::GridItem, depth::Integer) = show(io, item, depth)
+
 
 function show(io::IO, layout::Layout, depth::Integer = 0)
     indent = tab^depth

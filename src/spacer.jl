@@ -7,7 +7,7 @@ end
 function Spacer(name::AbstractString, orientation::Orientation, sizehint::Size)
     spacer = Spacer(name)
     spacer.properties[:orientation] = orientation
-    spacer.properties[:size_hint] = sizehint
+    spacer.properties[:sizeHint] = sizehint
     spacer
 end
 
@@ -38,7 +38,7 @@ function show(io::IO, spacer::Spacer, depth::Integer = 0)
     properties = Assoc{Symbol, Primitive}()
     
     for (k, v) in spacer.properties
-       if k in [:orientation, :size_hint]
+       if k in [:orientation, :sizeHint]
            push!(traits, k => v)
        else
            push!(properties.items, k => v) 
