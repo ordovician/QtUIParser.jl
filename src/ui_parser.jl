@@ -3,28 +3,6 @@ using PLists
 export read_ui, read_ui_string,
        findproperty, findwidget
 
-"Convert generic widget to a more specialized on based on properties"
-function specialize_widget(w::CustomWidget)
-    W = get(widget_dict, w.class, CustomWidget)
-    if W != CustomWidget
-        fields = string.(fieldnames(W))
-        obj = W(w.name)
-        for prop in w.properties
-            if prop.name in fields
-                setfield!(obj, Symbol(prop.name), propvalue(prop))
-            else
-                push!(obj.properties, prop)
-            end
-        end
-        if :layout in fieldnames(W)
-            obj.layout = w.layout
-        end
-        obj
-    else
-        w
-    end
-end
-
 "Looks for a child node of `n` which is a property with name `name`."
 findproperty(n::Node, name::AbstractString) = locatefirst(["property"], "name", name, n)
 
@@ -55,7 +33,13 @@ end
 
 "Convert an Qt enum string such as `Qt::Horizontal` to a Julia enum value"
 function parse_enum(s::AbstractString)
-    orientation_dict[s]
+    if      "Qt::Horizontal" == s
+        HORIZONTAL
+    elseif "Qt::Vertical" == s
+        VERTICAL
+    else
+        error("Unknown enum value '$s'")
+    end
 end
 
 function parse_rect(n::ElementNode)
@@ -99,7 +83,7 @@ function parse_property(n::ElementNode)
         error("property node is missing data")
     end
     data_node = first(children)
-    property(name, parse_property_data(data_node))
+    Symbol(name) => parse_property_data(data_node)
 end
 
 function parse_func_signature(s::AbstractString, T::DataType)
@@ -148,7 +132,7 @@ function parse_layout(node::ElementNode)
     class = node["class"]
     name  = node["name"]
 
-    items = Union{Layout, Widget, Spacer}[]
+    items = Item[]
     griditems = GridItem[]
 
     item_nodes = elements(node)
@@ -212,7 +196,7 @@ function parse_widget(node::ElementNode)
     children = elements(node)
 
     items      = String[]  # In case we are parsing a combobox e.g.
-    properties = Property[]
+    properties = Assoc{Symbol, Primitive}()
     layout = nothing
     for child in children
         tag = nodename(child)
@@ -223,47 +207,37 @@ function parse_widget(node::ElementNode)
         elseif tag == "item"
             item = parse_widget_item(child)
             if item != nothing
-               push!(items, propvalue(item))
+                if first(item) == :text
+                    push!(items, last(item))
+                else
+                   @warn "Did not add item of type '$(first(item))' to combobox '$name'" 
+                end
             end
         else
             @warn "Not parsing unknown widget tag '$tag'"
         end
     end
     
-    # TODO: Perhaps instead of jumbling together parsing of every type of
-    # widget perhaps should fan out and follow a consistent pattern, where each
-    # sub function is determined based on the sub category of pattern a widget fits
-    if cname == "QComboBox"
-        ComboBox(name, properties, items)
-    else
-        specialize_widget(CustomWidget(name, cname, properties, layout))
-    end
+    attributes = Assoc{Symbol, String}()
+    Widget(name, Symbol(cname[2:end]), attributes, properties, items, layout)    
 end
 
 function parse_spacer(node::ElementNode)
     name  = node["name"]
     children = elements(node)
 
-    properties = Property[]
-    orientation = HORIZONTAL
-    size_hint = Size(0, 0)
+    properties = Assoc{Symbol, Primitive}()
     for child in children
         tag = nodename(child)
         if tag == "property"
             key = child["name"]
             prop = parse_property(child)
-            if "orientation" == key
-                orientation = prop.value
-            elseif "sizeHint" == key
-                size_hint = prop.value
-            else
-                push!(properties, prop)
-            end
+            push!(properties, prop)
         else
             @error "Encountered a '$tag' element while parsing Spacer. Expect 'property' elements"
         end
     end
-    Spacer(name, orientation, size_hint, properties)
+    Spacer(name, properties)
 end
 
 function read_ui_string(text::AbstractString)

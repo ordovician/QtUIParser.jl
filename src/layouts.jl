@@ -3,17 +3,19 @@ export Layout,
        GridLayout, GridItem
 
 
-function BoxLayout(name::AbstractString, orientation::Orientation = HORIZONTAL)
+function BoxLayout(name::AbstractString, orientation::Orientation = HORIZONTAL, items::Array{Item} = Item[])
     a = Assoc{Symbol, Primitive}()
     a[:orientation] = orientation
-    BoxLayout(name, a, Item[])
+    BoxLayout(name, a, items)
 end
 
 VBoxLayout(name) = BoxLayout(name, VERTICAL)
 HBoxLayout(name) = BoxLayout(name, HORIZONTAL)
 
 
-GridLayout(name::AbstractString) = GridLayout(name, GridItem[])
+function GridLayout(name::AbstractString, items = GridItem[])
+    GridLayout(name, Assoc{Symbol, Primitive}(), items)
+end
 
 function config_layout!(l::Layout, args)
     for (k, v) in args
