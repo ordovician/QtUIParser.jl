@@ -82,6 +82,32 @@ function show(io::IO, layout::Layout, depth::Integer = 0)
     print(io, indent, ")")
 end
 
+##################### XML #####################
+"""
+    xml(boxlayout)
+Create XML representation for a vertical or horizontal box layout
+"""
+function xml(layout::BoxLayout)
+    orientation = layout.properties[:orientation]
+    class = if orientation == HORIZONTAL
+        "QHBoxLayout"
+    elseif     orientation == VERTICAL
+        "QVBoxLayout"
+    end
+    node = ElementNode("layout", ["class"=>class, "name"=>layout.name])
+    for item in layout.items
+       addchild!(node, ElementNode("item", [xml(item)]))
+    end
+    node
+end
 
-
+function xml(layout::GridLayout)
+    node = ElementNode("layout", ["class"=>"QGridLayout", "name"=>layout.name])
+    for item in layout.items
+        item_node =  ElementNode("item", ["row"=>string(item.row), "column" => string(item.column)])
+        addchild!(item_node, xml(item.item))
+        addchild!(node, item_node)
+    end
+    node
+end
 

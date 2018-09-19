@@ -24,6 +24,7 @@ function Spacer(;args)
     spacer
 end
 
+##################### IO #####################
 
 function show(io::IO, spacer::Spacer, depth::Integer = 0)
     indent = tab^depth
@@ -60,4 +61,10 @@ function show(io::IO, spacer::Spacer, depth::Integer = 0)
     end
 end
 
+##################### XML #####################
+function xml(spacer::Spacer)
+    node =  ElementNode("spacer", ["name"=>spacer.name])
+    node.children = xml(spacer.properties)
+    node
+end
 

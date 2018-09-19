@@ -58,6 +58,8 @@ for T in supported_widgets
     end
 end
 
+##################### IO #####################
+
 function pretty_print_collection(io::IO, a, depth::Integer)
     indent = tab^depth
     ks = string.(first.(collect(a)))
@@ -171,4 +173,15 @@ function show(io::IO, w::Widget, depth::Integer = 0)
         println(io)
         print(io, indent, ")")
     end
+end
+
+##################### XML #####################
+
+function xml(w::Widget)
+    node = ElementNode("widget", ["class"=>string('Q', w.class), "name"=>w.name])
+    node.children = xml(w.properties)
+    if w.layout != nothing
+        addchild!(node, xml(w.layout))
+    end
+    node
 end

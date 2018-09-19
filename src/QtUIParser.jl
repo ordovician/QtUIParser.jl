@@ -3,8 +3,10 @@ module QtUIParser
 include("assoclist.jl")
 include("core.jl")
 
-# include("primitives.jl")
-# include("properties.jl")
+include("xml.jl")
+
+include("primitives.jl")
+
 include("widgets.jl")
 include("spacer.jl")
 include("layouts.jl")
