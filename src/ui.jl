@@ -8,21 +8,21 @@ hierarchy.
 """
 mutable struct Ui
     class::String
-    root::Widget
+    root::QWidget
     resources::Vector{Resource}
     connections::Vector{Connection}
     version::String
 end
 
 function Ui(class::AbstractString)
-    Ui(class, Widget(class), Resource[], Connection[], "4.0")
+    Ui(class, QWidget(class), Resource[], Connection[], "4.0")
 end
 
-function Ui(root::Widget)
+function Ui(root::QWidget)
     Ui(root.name, root, Resource[], Connection[], "4.0")
 end
 
-function Ui(;class = "Form", version =  "4.0", root = Widget(Symbol(class)))
+function Ui(;class = "Form", version =  "4.0", root = QWidget(Symbol(class)))
     Ui(class, root, Resource[], Connection[], version)
 end
 

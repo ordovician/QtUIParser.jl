@@ -1,7 +1,7 @@
 Ui(
     class = "ColorsForm",
     version = "4.0",
-    root = Widget(
+    root = QWidget(
         name = "ColorsForm",
         class = "QWidget",
         geometry = Rect(0, 0, 121, 73),

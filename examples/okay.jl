@@ -1,6 +1,6 @@
 using QtUIParser
 
-ui = Ui(Widget(
+ui = Ui(QWidget(
     class  = "QWidget",
     name   = "OkayForm",
     geometry = Rect(0, 0, 156, 156),

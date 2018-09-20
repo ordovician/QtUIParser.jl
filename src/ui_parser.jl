@@ -219,7 +219,7 @@ function parse_widget(node::ElementNode)
     end
     
     attributes = Assoc{Symbol, String}()
-    Widget(name, Symbol(cname[2:end]), attributes, properties, items, layout)    
+    QWidget(name, Symbol(cname), attributes, properties, items, layout)    
 end
 
 function parse_spacer(node::ElementNode)

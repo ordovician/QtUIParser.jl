@@ -1,5 +1,5 @@
 struct PropertyIterator
-    widget::Widget
+    widget::QWidget
 end
 
 function iterate(it::PropertyIterator)
@@ -24,7 +24,7 @@ function length(it::PropertyIterator)
     length(it.widget.properties)
 end
 
-function keys(w::Widget)
+function keys(w::QWidget)
     PropertyIterator(w)
 end
 

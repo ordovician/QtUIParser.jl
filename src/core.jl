@@ -7,7 +7,7 @@ export Rect, Size, SizePolicy,
        SizeType, PREFERRED, EXPANDING, FIXED,
        Alignment, RIGHT, LEFT, HCENTER, VCENTER, TRAILING,
        Primitive,
-       Widget, Spacer, Layout, Item 
+       QWidget, Spacer, Layout, Item 
 
 abstract type Layout end
 
@@ -39,7 +39,7 @@ end
 Primitive = Union{String, Orientation, Rect, Size, Bool, SizePolicy, Number}
 
 "Typically used for custom top level widgets"
-mutable struct Widget
+mutable struct QWidget
     name::String
     class::Symbol
     attributes::Assoc{Symbol, String}
@@ -53,7 +53,7 @@ mutable struct Spacer
     properties::Assoc{Symbol, Primitive}
 end
 
-Item = Union{Layout, Spacer, Widget}
+Item = Union{Layout, Spacer, QWidget}
 
 "A layout which lays out items vertical or horizontal depending on `orientation`"
 mutable struct BoxLayout <: Layout

@@ -1,16 +1,16 @@
 # Refactoring Plans
 
-The approached followed in this design ended up with too many special cases which has to be handled. Having a different type for each Widget seems to have been mostly a bad idea.
+The approached followed in this design ended up with too many special cases which has to be handled. Having a different type for each QWidget seems to have been mostly a bad idea.
 
 Not having a clear distinction between attributes and properties is another bad idea. This complicates the parsing of the XML file and requires too much specialized code.
 
 So here are some ideas for how to improve the design.
 
 
-## One Flexible Widget Type
+## One Flexible QWidget Type
 Something like this
 
-    mutable struct Widget
+    mutable struct QWidget
         # Store class, name etc
         attributes::Assoc{String, String}
 
@@ -26,7 +26,7 @@ The `Assoc` type provides a dictionary interface, but has its items ordered acco
 
 The interface to work with these widgets could be something like this:
 
-    w = Widget(...)
+    w = QWidget(...)
     w.attributes["name"] = "ok_button"
     w.properties["geometry"].width = 10
     
@@ -44,15 +44,15 @@ Alternatively we implement the `getproperty(vale, name)` and `setproperty!(value
     w["cancel_button"].enabled = false
     
 ### Visualization
-We want to be able to write things like `PushButton("click me!")` rather than `Widget(class = "QPushButton", text = "click me!")`, and we that is what we want to see visualized. But there is nothing preventing us from doing that even if the underlying data structure is always `Widget`.
+We want to be able to write things like `PushButton("click me!")` rather than `QWidget(class = "QPushButton", text = "click me!")`, and we that is what we want to see visualized. But there is nothing preventing us from doing that even if the underlying data structure is always `QWidget`.
 
-We simple define constructors for `Widget` which supports this. 
+We simple define constructors for `QWidget` which supports this. 
 
     for T in [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
       @eval begin
         function $T(name::AbstractString, text::AbstractString = "")
             attributes = Assoc("name"=>name, "class"=>string('Q', $T))
-            Widget(attributes, Assoc{String, Any}(), nothing, Assoc{String, String}())
+            QWidget(attributes, Assoc{String, Any}(), nothing, Assoc{String, String}())
         end
         
         function $T(;args)
@@ -70,11 +70,11 @@ We simple define constructors for `Widget` which supports this.
       end
     end
     
-This will produce constructors which look like constructors for actual types but which really only create `Widget` instances.
+This will produce constructors which look like constructors for actual types but which really only create `QWidget` instances.
 
 We also modify `show(io, widget)` to fake the appearance of custom types.
 
-     function show(io::IO, w::Widget, depth::Integer = 0)
+     function show(io::IO, w::QWidget, depth::Integer = 0)
          print(io, w.attributes["class"][2:end], "(")
          for (k, v) in w.properties
              join(io, "$k = $v")

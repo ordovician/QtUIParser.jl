@@ -1,6 +1,6 @@
 using QtUIParser
 
-ui = Ui(Widget(
+ui = Ui(QWidget(
     class  = "QWidget",
     name   = "DepthConvertPanel",
     geometry = Rect(0, 0, 505, 615),

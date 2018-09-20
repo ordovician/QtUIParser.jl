@@ -1,6 +1,6 @@
 Ui( class = "ButtonsPanel",
     version = "4.0",
-    root = Widget(
+    root = QWidget(
         class = "QWidget",
         name = "ButtonForm",
         geometry = Rect(0, 0, 180, 150),

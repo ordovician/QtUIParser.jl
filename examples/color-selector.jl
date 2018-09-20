@@ -1,7 +1,7 @@
 Ui(
     class = "ColorSelectorDialog",
     version = "4.0",
-    root = Widget(
+    root = QWidget(
         name = "ColorSelectorDialog",
         class = "QWidget",
         geometry = Rect(0, 0, 362, 262),

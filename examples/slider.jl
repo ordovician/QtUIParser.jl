@@ -1,7 +1,7 @@
 Ui(
     class = "SliderForm",
     version = "4.0",
-    root = Widget(
+    root = QWidget(
         name = "SliderForm",
         class = "QWidget",
         geometry = Rect(0, 0, 175, 110),

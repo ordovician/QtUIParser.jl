@@ -1,8 +1,8 @@
-export Widget,
-       PushButton, CheckBox, RadioButton, Label, LineEdit,
-       SpinBox, GroupBox, TextEdit, ToolButton, ComboBox
+export QWidget,
+       QPushButton, QCheckBox, QRadioButton, QLabel, QLineEdit,
+       QSpinBox, QGroupBox, QTextEdit, QToolButton, QComboBox
 
-function config_widget!(w::Widget, args)
+function config_widget!(w::QWidget, args)
     for (k, v) in args
         if k in fieldnames(typeof(w))
             setfield!(w, k, v)
@@ -15,33 +15,33 @@ function config_widget!(w::Widget, args)
     w
 end
 
-function Widget(name::AbstractString, class::Symbol)
-    Widget(name, class, Assoc{Symbol, String}(), Assoc{Symbol, Primitive}(), String[], nothing)
+function QWidget(name::AbstractString, class::Symbol)
+    QWidget(name, class, Assoc{Symbol, String}(), Assoc{Symbol, Primitive}(), String[], nothing)
 end
 
-function Widget(;args...)
-    w = Widget("noname",  :QWidget)
+function QWidget(;args...)
+    w = QWidget("noname",  :QWidget)
     config_widget!(w, args)
 end
 
-const labeled_widgets = [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
+const labeled_widgets = [:QPushButton, :QCheckBox, :QRadioButton, :QLabel, :QLineEdit]
 for T in labeled_widgets
     s = string(T)
     @eval begin
       function $T(name::AbstractString, label::AbstractString)
-          w = Widget(name, Symbol($s))
+          w = QWidget(name, Symbol($s))
           w.properties.text = label
           w
       end
     end
 end
 
-const name_only_widget = [:SpinBox, :GroupBox, :TextEdit, :ToolButton, :ComboBox]
+const name_only_widget = [:QSpinBox, :QGroupBox, :QTextEdit, :QToolButton, :QComboBox]
 for T in name_only_widget
     s = string(T)
     @eval begin
       function $T(name::AbstractString)
-          Widget(name, Symbol($s))
+          QWidget(name, Symbol($s))
       end
     end
 end
@@ -52,7 +52,7 @@ for T in supported_widgets
     s = string(T)
     @eval begin
       function $T(;args...)
-          w = Widget("noname", Symbol($s))
+          w = QWidget("noname", Symbol($s))
           config_widget!(w, args)
       end
     end
@@ -139,11 +139,11 @@ function filter_properties(properties::Assoc{K, V}, class::Symbol, traits) where
     result    
 end
 
-function show(io::IO, w::Widget, depth::Integer = 0)
+function show(io::IO, w::QWidget, depth::Integer = 0)
     indent = tab^depth
     traits = Any[:name => w.name]
     
-    # In case it starts on an existing line. You don't want indentation before the Widget name
+    # In case it starts on an existing line. You don't want indentation before the QWidget name
     if get(io, :indent, true)
         print(io, indent)
     end
@@ -152,7 +152,7 @@ function show(io::IO, w::Widget, depth::Integer = 0)
     if w.class in supported_widgets
         print(io, string(w.class))
     else
-        print(io, "Widget")
+        print(io, "QWidget")
     end 
     
     properties = filter_properties(w.properties, w.class, traits)
@@ -177,8 +177,8 @@ end
 
 ##################### XML #####################
 
-function xml(w::Widget)
-    node = ElementNode("widget", ["class"=>string('Q', w.class), "name"=>w.name])
+function xml(w::QWidget)
+    node = ElementNode("widget", ["class"=>string(w.class), "name"=>w.name])
     node.children = xml(w.properties)
     if w.layout != nothing
         addchild!(node, xml(w.layout))

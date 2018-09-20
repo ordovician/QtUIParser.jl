@@ -13,7 +13,7 @@ function widget_name()
     "widget"
 end
 
-function config_widget!(w::Widget, args)
+function config_widget!(w::QWidget, args)
     for (k, v) in args
         if k in fieldnames(typeof(w))
             setfield!(w, k, v)
@@ -24,7 +24,7 @@ function config_widget!(w::Widget, args)
     w
 end
 
-function Widget(;args...)
+function QWidget(;args...)
     w = CustomWidget(widget_name(),  "QWidget",  Property[], nothing)
     config_widget!(w, args)
 end
@@ -112,14 +112,14 @@ end
     finditem(root, name)
 Locate an item in the tree. An item could be a layout, widget or spacer
 """
-function finditem(root::Union{Ui, Widget, Layout, Spacer}, name::AbstractString)
+function finditem(root::Union{Ui, QWidget, Layout, Spacer}, name::AbstractString)
     finditem(x->x.name == name, root)
 end
 
 finditem(pred::Function, ui::Ui) = finditem(pred, ui.root)
 
 function finditem(pred::Function, item::CustomWidget)
-    result = Union{Widget, Layout, Spacer}[]
+    result = Union{QWidget, Layout, Spacer}[]
     if pred(item)
         push!(result, item)
     end
@@ -127,24 +127,24 @@ function finditem(pred::Function, item::CustomWidget)
     append!(result, finditem(pred, item.layout))
 end
 
-function finditem(pred::Function, item::Widget)
+function finditem(pred::Function, item::QWidget)
     if pred(item)
         [item]
     else
-        Union{Widget, Layout, Spacer}[]
+        Union{QWidget, Layout, Spacer}[]
     end
 end
 
 function finditem(pred::Function, layout::Layout)
-    result = Union{Widget, Layout, Spacer}[]
+    result = Union{QWidget, Layout, Spacer}[]
     if pred(layout)
         push!(result, layout)
     end
     append!(result, finditem(pred, layout.items))
 end
 
-function finditem(pred::Function, items::Vector{T}) where T <: Union{Layout, Widget, Spacer, GridItem}
-    result = Union{Widget, Layout, Spacer}[]
+function finditem(pred::Function, items::Vector{T}) where T <: Union{Layout, QWidget, Spacer, GridItem}
+    result = Union{QWidget, Layout, Spacer}[]
     for item in items
         append!(result, finditem(pred, item))
     end
@@ -156,14 +156,14 @@ function finditem(pred::Function, item::GridItem)
 end
 
 function finditem(pred::Function, spacer::Spacer)
-    result = Union{Widget, Layout, Spacer}[]
+    result = Union{QWidget, Layout, Spacer}[]
     if pred(spacer)
         append!(result, [spacer])
     end
     result
 end
 
-finditem(pred::Function, ::Nothing) = Union{Widget, Layout, Spacer}[]
+finditem(pred::Function, ::Nothing) = Union{QWidget, Layout, Spacer}[]
 
 """
     copyitem!(root, source, target)
@@ -176,7 +176,7 @@ function copyitem!(root, item_name::AbstractString, layout_name::AbstractString)
         error("Did not find any source object named $item_name")
     end
 
-    if !isa(w, Union{Widget, Spacer, Layout})
+    if !isa(w, Union{QWidget, Spacer, Layout})
         error("$item_name is not an item (widget, spacer or layout)")
     end
 
@@ -206,7 +206,7 @@ end
 unequal(a, b) = a != b
 unequal(a) = Base.Fix2(unequal, a)
 
-function removeitem!(parent::CustomWidget, name::AbstractString)
+function removeitem!(parent::CustomQWidget, name::AbstractString)
     if parent.name == name
         nothing
     elseif parent.layout.name == name
@@ -218,7 +218,7 @@ function removeitem!(parent::CustomWidget, name::AbstractString)
     end
 end
 
-function removeitem!(item::Widget, name::AbstractString)
+function removeitem!(item::QWidget, name::AbstractString)
     if item.name == name
         item
     else
@@ -234,7 +234,7 @@ function removeitem!(layout::Layout, name::AbstractString)
     end
 end
 
-function removeitem!(items::Vector{T}, name::AbstractString) where T <: Union{Layout, Widget, Spacer}
+function removeitem!(items::Vector{T}, name::AbstractString) where T <: Union{Layout, QWidget, Spacer}
     for (i, item) in enumerate(items)
         if item.name == name
             return removeitem!(items, i)
@@ -259,7 +259,7 @@ function removeitem!(layout::Layout, i)
     remoteitem(layout.items, i)
 end
 
-function removeitem!(items::Vector{T}, i) where T <: Union{Layout, Widget, Spacer}
+function removeitem!(items::Vector{T}, i) where T <: Union{Layout, QWidget, Spacer}
     item = items[i]
     deleteat!(items, i)
     item
