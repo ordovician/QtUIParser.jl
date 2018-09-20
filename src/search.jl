@@ -1,4 +1,4 @@
-export finditem, copyitem!, removeitem!, findfirstitem
+export finditem, copyitem!, findparentitem, removeitem!, findfirstitem
 
 
 function findfirstitem(root, name::AbstractString)
@@ -91,70 +91,50 @@ function copyitem!(root, item_name::AbstractString, layout_name::AbstractString)
     layout.items
 end
 
+findparentitem(root::Union{Ui, QWidget, Layout, Spacer}, name::AbstractString) = findparentitem(x->x.name == name, root)
 
-"""
-    removeitem!(root, name)
-Removes item named `name` located under in a tree starting from `root`.
-Returns the item removed in case one wants to put it somewhere else.
-"""
-function removeitem!(ui::Ui, name::AbstractString)
-    if ui.root.name == name
-        nothing
-    else
-        removeitem!(ui.root, name)
-    end
-end
+findparentitem(pred::Function, ui::Ui) = findparentitem(pred, ui.root)
+findparentitem(pred::Function, item::QWidget) = findparentitem(pred, item.layout)
 
-unequal(a, b) = a != b
-unequal(a) = Base.Fix2(unequal, a)
-
-function removeitem!(parent::QWidget, name::AbstractString)
-    if parent.name == name
-        nothing
-    elseif parent.layout.name == name
-        layout = parent.layout
-        parent.layout = nothing
-        layout
-    else
-        removeitem!(parent.layout, name)
-    end
-end
-
-function removeitem!(layout::Layout, name::AbstractString)
-    if layout.name == name
-        nothing
-    else
-        removeitem!(layout.items, name)
-    end
-end
-
-function removeitem!(items::Vector{T}, name::AbstractString) where T <: Item
-    for (i, item) in enumerate(items)
-        if item.name == name
-            return removeitem!(items, i)
+function findparentitem(pred::Function, layout::Layout)
+    for (i, item) in enumerate(layout.items)
+        if isa(item, GridItem)
+            item = item.item
+        end
+        
+        if pred(item)
+            return (layout, i)
         else
-            x = removeitem!(item, name)
+            x = findparentitem(pred, item)
             if x != nothing
                 return x
             end
         end
     end
+
+    nothing
 end
 
-removeitem!(spacer::Spacer, name) = nothing
-removeitem!(::Nothing, name) = nothing
+findparentitem(pred::Function, ::Union{Spacer, Nothing, GridItem}) = nothing
 
 """
-    removeitem!(layout_or_items, index)
-Remove item at given index.
-Returns the item removed in case one wants to put it somewhere else.
+    removeitem!(pred, root)
+Locate item matching predicate `pred` starting at `root`, then remove it. This requires that
+item is actually in some kind of collection.
 """
-function removeitem!(layout::Layout, i)
-    remoteitem(layout.items, i)
+function removeitem!(pred::Function, root::Union{Ui, QWidget, Layout})
+    loc = findparentitem(pred, root)
+    if loc != nothing
+       parent, i = loc
+       deleteat!(parent.items, i)
+    else
+       nothing
+    end
 end
 
-function removeitem!(items::Vector{T}, i) where T <: Item
-    item = items[i]
-    deleteat!(items, i)
-    item
-end
+"""
+    removeitem!(root, name)
+Locate item with `name` starting at `root`, then remove it. This requires that
+item is actually in some kind of collection.
+"""
+removeitem!(root::Union{Ui, QWidget, Layout}, name::AbstractString) = removeitem!(x->x.name == name, root)
