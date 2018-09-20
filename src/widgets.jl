@@ -1,6 +1,7 @@
 export QWidget,
        QPushButton, QCheckBox, QRadioButton, QLabel, QLineEdit,
-       QSpinBox, QGroupBox, QTextEdit, QToolButton, QComboBox
+       QSpinBox, QGroupBox, QTextEdit, QToolButton, QComboBox,
+       QSlider
 
 function config_widget!(w::QWidget, args)
     for (k, v) in args
@@ -46,8 +47,13 @@ for T in name_only_widget
     end
 end
 
+function QSlider(name::AbstractString, orientation::Orientation)
+    w = QWidget(name, :QSlider)
+    w.properties[:orientation] = orientation
+    w
+end
 
-const supported_widgets = union(labeled_widgets, name_only_widget)
+const supported_widgets = union(labeled_widgets, name_only_widget, [:QSlider])
 for T in supported_widgets
     s = string(T)
     @eval begin
@@ -132,6 +138,9 @@ function filter_properties(properties::Assoc{K, V}, class::Symbol, traits) where
         if class in labeled_widgets
             push!(traits, :text => get(result, :text, ""))
             delete!(result, :text)
+        elseif class == :QSlider
+            push!(traits, :orientation => get(result, :orientation, HORIZONTAL))
+            delete!(result, :orientation)
         end
     else
         push!(traits, :class => class)
@@ -159,7 +168,7 @@ function show(io::IO, w::QWidget, depth::Integer = 0)
     
     if isempty(properties) && isempty(w.attributes) && isempty(w.items) && w.layout == nothing
         print(io, "(")
-        join( io, repr.(last.(traits)), ", ")
+        join( io, repr.(last.(traits), context = IOContext(io, :compact => true)), ", ")
         print(io, ")")
     else
         println(io, "(")
