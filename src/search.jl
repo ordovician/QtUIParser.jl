@@ -1,100 +1,6 @@
 export finditem, copyitem!, removeitem!, findfirstitem
 
-function Ui(;class = "Form", version =  "4.0", root = CustomWidget(class))
-    Ui(class, root, Resource[], Connection[], version)
-end
 
-
-function Rect(;x, y, width, height)
-    Rect(x, y, width, height)
-end
-
-function widget_name()
-    "widget"
-end
-
-function config_widget!(w::QWidget, args)
-    for (k, v) in args
-        if k in fieldnames(typeof(w))
-            setfield!(w, k, v)
-        else
-            push!(w.properties,  QtUIParser.property(string(k), v))
-        end
-    end
-    w
-end
-
-function QWidget(;args...)
-    w = CustomWidget(widget_name(),  "QWidget",  Property[], nothing)
-    config_widget!(w, args)
-end
-
-for T in [:PushButton, :CheckBox, :RadioButton, :Label, :LineEdit]
-  @eval begin
-      function $T(;args...)
-          w = $T("objname", "no label")
-          config_widget!(w, args)
-      end
-  end
-end
-
-for T in [:SpinBox, :GroupBox, :TextEdit, :ToolButton]
-  @eval begin
-      function $T(;args...)
-          w = $T("objname")
-          config_widget!(w, args)
-      end
-  end
-end
-
-function ComboBox(;args...)
-   w = ComboBox("objname") 
-   config_widget!(w, args)
-end
-
-function config_boxlayout!(layout::BoxLayout, args)
-    for (k, v) in args
-        if k in [:name, :orientation]
-            setfield!(layout, k, v)
-        elseif k == :items
-            layout.items = v
-        else
-            push!(layout.properties,  property(string(k), v))
-        end
-    end
-    layout  
-end
-
-function BoxLayout(;args...)
-    layout = BoxLayout("noname", HORIZONTAL)
-    config_boxlayout!(layout, args)
-end
-
-function VBoxLayout(;args...)
-    layout = BoxLayout("noname", VERTICAL)
-    config_boxlayout!(layout, args)
-end
-
-function HBoxLayout(;args...)
-    layout = BoxLayout("noname", HORIZONTAL)
-    config_boxlayout!(layout, args)
-end
-
-function GridLayout(;args...)
-    layout = GridLayout("noname")
-    for (k, v) in args
-        if k == :name
-            setfield!(layout, k, v)
-        elseif k == :items
-            layout.items = v
-        else
-            push!(layout.properties,  property(string(k), v))
-        end
-    end
-    layout
-end
-
-################## Search Functionality ############################
 function findfirstitem(root, name::AbstractString)
     items = finditem(root, name)
     if isempty(items)
@@ -108,6 +14,10 @@ function finditem(root, kind::DataType)
     finditem(x -> isa(x, kind), root)
 end
 
+function finditem(root, kind::Symbol)
+    finditem(x -> isa(x, QWidget) && x.class == kind, root)
+end
+
 """
     finditem(root, name)
 Locate an item in the tree. An item could be a layout, widget or spacer
@@ -118,8 +28,8 @@ end
 
 finditem(pred::Function, ui::Ui) = finditem(pred, ui.root)
 
-function finditem(pred::Function, item::CustomWidget)
-    result = Union{QWidget, Layout, Spacer}[]
+function finditem(pred::Function, item::QWidget)
+    result = Item[]
     if pred(item)
         push!(result, item)
     end
@@ -127,16 +37,8 @@ function finditem(pred::Function, item::CustomWidget)
     append!(result, finditem(pred, item.layout))
 end
 
-function finditem(pred::Function, item::QWidget)
-    if pred(item)
-        [item]
-    else
-        Union{QWidget, Layout, Spacer}[]
-    end
-end
-
 function finditem(pred::Function, layout::Layout)
-    result = Union{QWidget, Layout, Spacer}[]
+    result = Item[]
     if pred(layout)
         push!(result, layout)
     end
@@ -144,7 +46,7 @@ function finditem(pred::Function, layout::Layout)
 end
 
 function finditem(pred::Function, items::Vector{T}) where T <: Union{Layout, QWidget, Spacer, GridItem}
-    result = Union{QWidget, Layout, Spacer}[]
+    result = Item[]
     for item in items
         append!(result, finditem(pred, item))
     end
@@ -156,14 +58,14 @@ function finditem(pred::Function, item::GridItem)
 end
 
 function finditem(pred::Function, spacer::Spacer)
-    result = Union{QWidget, Layout, Spacer}[]
+    result = Item[]
     if pred(spacer)
         append!(result, [spacer])
     end
     result
 end
 
-finditem(pred::Function, ::Nothing) = Union{QWidget, Layout, Spacer}[]
+finditem(pred::Function, ::Nothing) = Item[]
 
 """
     copyitem!(root, source, target)
@@ -176,7 +78,7 @@ function copyitem!(root, item_name::AbstractString, layout_name::AbstractString)
         error("Did not find any source object named $item_name")
     end
 
-    if !isa(w, Union{QWidget, Spacer, Layout})
+    if !isa(w, Item)
         error("$item_name is not an item (widget, spacer or layout)")
     end
 
@@ -206,7 +108,7 @@ end
 unequal(a, b) = a != b
 unequal(a) = Base.Fix2(unequal, a)
 
-function removeitem!(parent::CustomQWidget, name::AbstractString)
+function removeitem!(parent::QWidget, name::AbstractString)
     if parent.name == name
         nothing
     elseif parent.layout.name == name
@@ -218,14 +120,6 @@ function removeitem!(parent::CustomQWidget, name::AbstractString)
     end
 end
 
-function removeitem!(item::QWidget, name::AbstractString)
-    if item.name == name
-        item
-    else
-        nothing
-    end
-end
-
 function removeitem!(layout::Layout, name::AbstractString)
     if layout.name == name
         nothing
@@ -234,7 +128,7 @@ function removeitem!(layout::Layout, name::AbstractString)
     end
 end
 
-function removeitem!(items::Vector{T}, name::AbstractString) where T <: Union{Layout, QWidget, Spacer}
+function removeitem!(items::Vector{T}, name::AbstractString) where T <: Item
     for (i, item) in enumerate(items)
         if item.name == name
             return removeitem!(items, i)
@@ -259,7 +153,7 @@ function removeitem!(layout::Layout, i)
     remoteitem(layout.items, i)
 end
 
-function removeitem!(items::Vector{T}, i) where T <: Union{Layout, QWidget, Spacer}
+function removeitem!(items::Vector{T}, i) where T <: Item
     item = items[i]
     deleteat!(items, i)
     item
