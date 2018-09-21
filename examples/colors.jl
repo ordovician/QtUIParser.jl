@@ -1,17 +1,16 @@
 Ui(
-    class = "ColorsForm",
+    class   = "ColorsForm",
     version = "4.0",
     root = QWidget(
-        name = "ColorsForm",
-        class = "QWidget",
-        geometry = Rect(0, 0, 121, 73),
+        name        = "ColorsForm",
+        class       = :QWidget,
+        geometry    = Rect(0, 0, 121, 73),
         windowTitle = "Form",
-        layout = BoxLayout(
+        layout = VBoxLayout(
             name = "top_layout",
-            orientation = VERTICAL,
             items = [
-                CheckBox("red_box", "red"),
-                CheckBox("blue_box", "blue")
+                QCheckBox("red_box", "red"),
+                QCheckBox("blue_box", "blue")
             ]
         )
     )
