@@ -192,5 +192,9 @@ function xml(w::QWidget)
     if w.layout != nothing
         addchild!(node, xml(w.layout))
     end
+    item_nodes = map(w.items) do item
+        ElementNode("item", [xml(:text => item)])
+    end
+    append!(node.children, item_nodes)
     node
 end
