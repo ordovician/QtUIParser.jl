@@ -1,66 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ButtonForm</class>
- <widget class="QWidget" name="ButtonForm">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>180</width>
-    <height>150</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Choose Colors</string>
-  </property>
-  <layout class="QVBoxLayout" name="top_vlayout">
-   <item>
-    <widget class="QCheckBox" name="red_checkbox">
-     <property name="text">
-      <string>red</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="green_checkbox">
-     <property name="text">
-      <string>green</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <spacer name="vertical_spacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="bottom_hlayout">
-     <item>
-      <widget class="QPushButton" name="ok_button">
-       <property name="text">
-        <string>Ok</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancel_button">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
+  <class>ButtonForm</class>
+  <widget class="QWidget" name="ButtonForm">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>180</width>
+        <height>150</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Choose Colors</string>
+    </property>
+    <layout class="QVBoxLayout" name="top_vlayout">
+      <item>
+        <widget class="QCheckBox" name="red_checkbox">
+          <property name="text">
+            <string>red</string>
+          </property>
+        </widget>
+      </item>
+      <item>
+        <widget class="QCheckBox" name="green_checkbox">
+          <property name="text">
+            <string>green</string>
+          </property>
+        </widget>
+      </item>
+      <item>
+        <spacer name="vertical_spacer">
+          <property name="orientation">
+            <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+            <size>
+              <width>20</width>
+              <height>40</height>
+            </size>
+          </property>
+        </spacer>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" name="bottom_hlayout">
+          <item>
+            <widget class="QPushButton" name="ok_button">
+              <property name="text">
+                <string>Ok</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="cancel_button">
+              <property name="text">
+                <string>Cancel</string>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
     </layout>
-   </item>
-  </layout>
- </widget>
- <resources/>
- <connections/>
+  </widget>
+  <resources></resources>
+  <connections></connections>
 </ui>

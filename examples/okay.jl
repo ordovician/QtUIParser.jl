@@ -1,20 +1,16 @@
-using QtUIParser
-
-ui = Ui(QWidget(
-    class  = "QWidget",
-    name   = "OkayForm",
-    geometry = Rect(0, 0, 156, 156),
-    windowTitle = "Form",
-    layout = BoxLayout(
-        name  = "verticalLayout",
-        orientation = VERTICAL,
-        items = [
-            PushButton(
-                name = "okay_button",
-                text = "okay!"
-            )
-        ]
+Ui(
+    class   = "OkayForm",
+    version = "4.0",
+    root = QWidget(
+        name        = "OkayForm",
+        class       = :QWidget,
+        geometry    = Rect(0, 0, 156, 55),
+        windowTitle = "Form",
+        layout = VBoxLayout(
+            name = "verticalLayout",
+            items = [
+                QPushButton("okay_button", "okay!")
+            ]
+        )
     )
-))
-
-xml(ui)
+)

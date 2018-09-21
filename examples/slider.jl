@@ -1,17 +1,16 @@
 Ui(
-    class = "SliderForm",
+    class   = "SliderForm",
     version = "4.0",
     root = QWidget(
-        name = "SliderForm",
-        class = "QWidget",
-        geometry = Rect(0, 0, 175, 110),
+        name        = "SliderForm",
+        class       = :QWidget,
+        geometry    = Rect(0, 0, 175, 110),
         windowTitle = "Form",
-        layout = BoxLayout(
+        layout = VBoxLayout(
             name = "verticalLayout",
-            orientation = VERTICAL,
             items = [
-                SpinBox("value_spinner"),
-                Slider("value_slider", HORIZONTAL)
+                QSpinBox("value_spinner"),
+                QSlider("value_slider", HORIZONTAL)
             ]
         )
     )
