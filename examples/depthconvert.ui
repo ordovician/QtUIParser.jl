@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><ui version="4.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
   <class>DepthConvertPanel</class>
   <widget class="QWidget" name="DepthConvertPanel">
     <property name="geometry">
@@ -6,7 +7,7 @@
         <x>0</x>
         <y>0</y>
         <width>505</width>
-        <height>615</height>
+        <height>263</height>
       </rect>
     </property>
     <property name="windowTitle">
