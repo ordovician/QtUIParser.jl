@@ -62,6 +62,8 @@ function parse_property_data(n::ElementNode)
     tag = nodename(n)
     if     "string" == tag
         nodecontent(n)
+    elseif "number" == tag
+        Meta.parse(nodecontent(n))
     elseif "enum" == tag
         parse_enum(nodecontent(n))
     elseif "bool" == tag
@@ -197,6 +199,7 @@ function parse_widget(node::ElementNode)
 
     items      = String[]  # In case we are parsing a combobox e.g.
     properties = Assoc{Symbol, Primitive}()
+    attributes = Assoc{Symbol, String}()
     layout = nothing
     for child in children
         tag = nodename(child)
@@ -213,12 +216,14 @@ function parse_widget(node::ElementNode)
                    @warn "Did not add item of type '$(first(item))' to combobox '$name'" 
                 end
             end
+        elseif tag == "attribute"
+            push!(attributes, parse_property(child))    
         else
             @warn "Not parsing unknown widget tag '$tag'"
         end
     end
     
-    attributes = Assoc{Symbol, String}()
+    
     QWidget(name, Symbol(cname), attributes, properties, items, layout)    
 end
 
