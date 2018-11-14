@@ -177,7 +177,7 @@ function parse_widget_item(node::ElementNode)
     prop_nodes = elements(node)
     if isempty(prop_nodes)
        @warn "Expected item to contain a property but it didn't"
-       nothing 
+       nothing
     else
         n = first(prop_nodes)
         tag = nodename(n)
@@ -213,18 +213,18 @@ function parse_widget(node::ElementNode)
                 if first(item) == :text
                     push!(items, last(item))
                 else
-                   @warn "Did not add item of type '$(first(item))' to combobox '$name'" 
+                   @warn "Did not add item of type '$(first(item))' to combobox '$name'"
                 end
             end
         elseif tag == "attribute"
-            push!(attributes, parse_property(child))    
+            push!(attributes, parse_property(child))
         else
             @warn "Not parsing unknown widget tag '$tag'"
         end
     end
-    
-    
-    QWidget(name, Symbol(cname), attributes, properties, items, layout)    
+
+
+    QWidget(name, Symbol(cname), attributes, properties, items, layout)
 end
 
 function parse_spacer(node::ElementNode)
