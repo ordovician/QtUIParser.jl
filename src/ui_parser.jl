@@ -37,9 +37,31 @@ function parse_enum(s::AbstractString)
         HORIZONTAL
     elseif "Qt::Vertical" == s
         VERTICAL
+    elseif "QSizePolicy::Fixed" == s
+        FIXED
+    elseif "Qt::AlignRight" == s
+        RIGHT
+    elseif "Qt::AlignLeft" == s
+        LEFT
+    elseif "Qt::AlignHCenter" == s
+        HCENTER
+    elseif "Qt::AlignVCenter" == s
+        VCENTER
+    elseif "Qt::AlignTrailing" == s
+        TRAILING
+    elseif "QAbstractSpinBox::UpDownArrows" == s
+        UP_DOWN_ARROWS
+    elseif "QAbstractSpinBox::PlusMinus" == s
+        PLUS_MINUS
+    elseif "QAbstractSpinBox::NoButtons" == s
+        NO_BUTTONS
     else
         error("Unknown enum value '$s'")
     end
+end
+
+function parse_set(s::AbstractString)
+    parse_enum.(split(s, '|'))
 end
 
 function parse_rect(n::ElementNode)
@@ -64,14 +86,18 @@ function parse_property_data(n::ElementNode)
         nodecontent(n)
     elseif "number" == tag
         Meta.parse(nodecontent(n))
+    elseif "double" == tag              # TODO probably need to distinguish between number and double somehow
+        Meta.parse(nodecontent(n))
     elseif "enum" == tag
         parse_enum(nodecontent(n))
     elseif "bool" == tag
-        parse(nodecontent(n))
+        Meta.parse(nodecontent(n))
     elseif "rect" == tag
         parse_rect(n)
     elseif "size" == tag
         parse_size(n)
+    elseif "set" == tag
+        parse_set(nodecontent(n))
     else
         @error "Unknown property type '$tag' encountered"
     end
@@ -200,7 +226,9 @@ function parse_widget(node::ElementNode)
     items      = String[]  # In case we are parsing a combobox e.g.
     properties = Assoc{Symbol, Primitive}()
     attributes = Assoc{Symbol, String}()
-    layout = nothing
+    layout  = nothing
+    widgets = QWidget[]
+
     for child in children
         tag = nodename(child)
         if     tag == "property"
@@ -218,13 +246,15 @@ function parse_widget(node::ElementNode)
             end
         elseif tag == "attribute"
             push!(attributes, parse_property(child))
+        elseif tag == "widget"
+            push!(widgets, parse_widget(child))
         else
             @warn "Not parsing unknown widget tag '$tag'"
         end
     end
 
 
-    QWidget(name, Symbol(cname), attributes, properties, items, layout)
+    QWidget(name, Symbol(cname), attributes, properties, items, layout, widgets)
 end
 
 function parse_spacer(node::ElementNode)

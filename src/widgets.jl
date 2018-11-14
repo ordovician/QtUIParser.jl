@@ -17,7 +17,7 @@ function config_widget!(w::QWidget, args)
 end
 
 function QWidget(name::AbstractString, class::Symbol)
-    QWidget(name, class, Assoc{Symbol, String}(), Assoc{Symbol, Primitive}(), String[], nothing)
+    QWidget(name, class, Assoc{Symbol, String}(), Assoc{Symbol, Primitive}(), String[], nothing, QWidget[])
 end
 
 function QWidget(;args...)
@@ -81,12 +81,12 @@ function pretty_print_collection(io::IO, a, depth::Integer)
         sk = rpad(string(k), max_width)
         print(io, indent, "$sk = ")
         pretty_print(IOContext(io, :indent => false), v, depth + 1)
-    end 
+    end
 end
 
 function pretty_print_array(io::IO, xs::Vector, depth::Integer)
     indent = tab^depth
-    
+
     isfirst = true
     for x in xs
         if isfirst
@@ -95,7 +95,7 @@ function pretty_print_array(io::IO, xs::Vector, depth::Integer)
             println(io, ",")
         end
         pretty_print(io, x, depth + 1)
-    end    
+    end
 end
 
 "For printing items for a widget. Not for printing items separately"
@@ -106,8 +106,8 @@ function pretty_print_items(io::IO, items, depth::Integer)
        println(io, indent, "items = [")
        pretty_print_array(io, items, depth)
        println(io)
-       print(io, indent, "]") 
-    end    
+       print(io, indent, "]")
+    end
 end
 
 "For printing layout info for a widget. Not for printing layout object separately"
@@ -116,8 +116,8 @@ function pretty_print_layout(io::IO, layout::Union{Layout, Nothing}, depth::Inte
     if layout != nothing
         println(io, ",")
         print(io, indent, "layout = ")
-        show(IOContext(io, :indent => false), layout, depth) 
-    end    
+        show(IOContext(io, :indent => false), layout, depth)
+    end
 end
 
 function pretty_print(io::IO, item::Item, depth::Integer)
@@ -145,27 +145,27 @@ function filter_properties(properties::Assoc{K, V}, class::Symbol, traits) where
     else
         push!(traits, :class => class)
     end
-    result    
+    result
 end
 
 function show(io::IO, w::QWidget, depth::Integer = 0)
     indent = tab^depth
     traits = Any[:name => w.name]
-    
+
     # In case it starts on an existing line. You don't want indentation before the QWidget name
     if get(io, :indent, true)
         print(io, indent)
     end
     io = IOContext(io, :indent => true)
-    
+
     if w.class in supported_widgets
         print(io, string(w.class))
     else
         print(io, "QWidget")
-    end 
-    
+    end
+
     properties = filter_properties(w.properties, w.class, traits)
-    
+
     if isempty(properties) && isempty(w.attributes) && isempty(w.items) && w.layout == nothing
         print(io, "(")
         join( io, repr.(last.(traits), context = IOContext(io, :compact => true)), ", ")
@@ -173,9 +173,9 @@ function show(io::IO, w::QWidget, depth::Integer = 0)
     else
         println(io, "(")
 
-        pretty_print_collection(io, union(traits, 
-                                          properties, 
-                                          w.attributes), 
+        pretty_print_collection(io, union(traits,
+                                          properties,
+                                          w.attributes),
                                 depth + 1)
         pretty_print_items( io, w.items,  depth + 1)
         pretty_print_layout(io, w.layout, depth + 1)

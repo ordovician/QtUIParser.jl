@@ -7,7 +7,7 @@ export Rect, Size, SizePolicy,
        SizeType, PREFERRED, EXPANDING, FIXED,
        Alignment, RIGHT, LEFT, HCENTER, VCENTER, TRAILING,
        Primitive,
-       QWidget, Spacer, Layout, Item 
+       QWidget, Spacer, Layout, Item
 
 abstract type Layout end
 
@@ -15,6 +15,7 @@ abstract type Layout end
 @enum Orientation HORIZONTAL VERTICAL
 @enum SizeType PREFERRED EXPANDING FIXED
 @enum Alignment RIGHT LEFT HCENTER VCENTER TRAILING
+@enum ButtonSymbols UP_DOWN_ARROWS PLUS_MINUS NO_BUTTONS
 
 "Define the placement and size of a widget. Used for the geometry property"
 struct Rect
@@ -36,7 +37,10 @@ struct SizePolicy
     verstretch::Int
 end
 
-Primitive = Union{String, Orientation, Rect, Size, Bool, SizePolicy, Number}
+AlignmentSet = Vector{Alignment}
+
+Primitive = Union{String, Orientation, SizeType, ButtonSymbols, AlignmentSet, Rect, Size, Bool, SizePolicy, Number}
+
 
 "Typically used for custom top level widgets"
 mutable struct QWidget
@@ -46,6 +50,7 @@ mutable struct QWidget
     properties::Assoc{Symbol, Primitive}
     items::Vector{String}
     layout::Union{Layout, Nothing}
+    children::Vector{QWidget}
 end
 
 mutable struct Spacer
@@ -76,4 +81,3 @@ end
 
 # How much indentation to use for each indentation level
 const tab = "    "
-
