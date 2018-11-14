@@ -267,13 +267,19 @@ function read_ui_string(text::AbstractString)
 end
 
 """
-Read Qt `.ui` file
+    read_ui(stream)
+Read Qt `.ui` file from stream
 """
 function read_ui(stream::IO)
     text = read(stream, String)
     read_ui_string(text)
 end
 
+"""
+    read_ui(filename)
+Read Qt `.ui` file. Returns a node graph representing UI which can be transformed
+to different formats.
+"""
 function read_ui(filename::AbstractString)
     open(read_ui, filename)
 end
