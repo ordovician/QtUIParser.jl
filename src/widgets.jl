@@ -110,6 +110,18 @@ function pretty_print_items(io::IO, items, depth::Integer)
     end
 end
 
+# TODO: factor out similar code to pretty_print_items
+function pretty_print_widgets(io::IO, items, depth::Integer)
+    indent = tab^depth
+    if !isempty(items)
+       println(io, ",")
+       println(io, indent, "children = [")
+       pretty_print_array(io, items, depth)
+       println(io)
+       print(io, indent, "]")
+    end
+end
+
 "For printing layout info for a widget. Not for printing layout object separately"
 function pretty_print_layout(io::IO, layout::Union{Layout, Nothing}, depth::Integer)
     indent = tab^depth
@@ -148,6 +160,8 @@ function filter_properties(properties::Assoc{K, V}, class::Symbol, traits) where
     result
 end
 
+
+
 function show(io::IO, w::QWidget, depth::Integer = 0)
     indent = tab^depth
     traits = Any[:name => w.name]
@@ -166,7 +180,7 @@ function show(io::IO, w::QWidget, depth::Integer = 0)
 
     properties = filter_properties(w.properties, w.class, traits)
 
-    if isempty(properties) && isempty(w.attributes) && isempty(w.items) && w.layout == nothing
+    if all(isempty, [properties, w.attributes, w.items, w.children]) && w.layout == nothing
         print(io, "(")
         join( io, repr.(last.(traits), context = IOContext(io, :compact => true)), ", ")
         print(io, ")")
@@ -177,8 +191,9 @@ function show(io::IO, w::QWidget, depth::Integer = 0)
                                           properties,
                                           w.attributes),
                                 depth + 1)
-        pretty_print_items( io, w.items,  depth + 1)
-        pretty_print_layout(io, w.layout, depth + 1)
+        pretty_print_items( io, w.items,    depth + 1)
+        pretty_print_layout(io, w.layout,   depth + 1)
+        pretty_print_widgets(io, w.children, depth + 1)
         println(io)
         print(io, indent, ")")
     end
