@@ -6,6 +6,7 @@ export Rect, Size, SizePolicy,
        Orientation, HORIZONTAL, VERTICAL,
        SizeType, PREFERRED, EXPANDING, FIXED,
        Alignment, RIGHT, LEFT, HCENTER, VCENTER, TRAILING,
+       ButtonSymbols, UP_DOWN_ARROWS, PLUS_MINUS, NO_BUTTONS,
        Primitive,
        QWidget, Spacer, Layout, Item
 

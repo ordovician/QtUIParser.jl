@@ -1,3 +1,5 @@
+import Base: string
+
 ##################### XML #####################
 
 function xml(r::Rect)
@@ -20,6 +22,46 @@ function xml(sz::Size)
     parent
 end
 
+function string(alignment::Alignment)
+    if     RIGHT == alignment
+        "Qt::AlignRight"
+    elseif LEFT == alignment
+        "Qt::AlignLeft"
+    elseif HCENTER == alignment
+        "Qt::AlignHCenter"
+    elseif VCENTER == alignment
+        "Qt::AlignVCenter"
+    elseif TRAILING == alignment
+        "Qt::AlignTrailing"
+    end
+end
+
+function xml(alignset::AlignmentSet)
+    ElementNode("enum", join(string.(alignset), '|'))
+end
+
+function xml(button_sym::ButtonSymbols)
+    s = if     UP_DOWN_ARROWS == button_sym
+            "QAbstractSpinBox::UpDownArrows"
+        elseif PLUS_MINUS == button_sym
+            "QAbstractSpinBox::PlusMinus"
+        elseif NO_BUTTONS == button_sym
+            "QAbstractSpinBox::NoButtons"
+        end
+    ElementNode("enum", s)
+end
+
+function xml(st::SizeType)
+    s = if     PREFERRED == st
+            "QSizePolicy::Preferred"
+        elseif EXPANDING == st
+            "QSizePolicy::Expanding"
+        elseif FIXED == st
+            "QSizePolicy::Fixed"
+        end
+    ElementNode("enum", s)
+end
+
 function xml(orientation::Orientation)
     s = if orientation == HORIZONTAL
             "Qt::Horizontal"
@@ -32,3 +74,4 @@ end
 xml(on::Bool) = ElementNode("bool", string(on))
 xml(text::AbstractString) = ElementNode("string", text)
 xml(num::Number) = ElementNode("number", string(num))
+xml(num::AbstractFloat) = ElementNode("double", string(num))

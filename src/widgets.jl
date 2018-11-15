@@ -210,6 +210,9 @@ function xml(w::QWidget)
     item_nodes = map(w.items) do item
         ElementNode("item", [xml(:text => item)])
     end
+    child_widgets = xml.(w.children)
+    
     append!(node.children, item_nodes)
+    append!(node.children, child_widgets)
     node
 end
