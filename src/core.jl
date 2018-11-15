@@ -68,11 +68,14 @@ mutable struct BoxLayout <: Layout
     items::Vector{Item}
 end
 
-struct GridItem
+mutable struct GridItem
     row::Int
     column::Int
+    colspan::Int
     item::Item
 end
+
+GridItem(row, column, item::Item) = GridItem(row, column, 1, item)
 
 mutable struct GridLayout <: Layout
    name::String

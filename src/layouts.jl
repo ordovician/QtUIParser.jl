@@ -43,7 +43,12 @@ end
 
 function show(io::IO, item::GridItem, depth::Integer = 0)
     indent = tab^depth
-    println(io, indent, "GridItem($(item.row), $(item.column),")
+    print(io, indent, "GridItem($(item.row), $(item.column),")
+    if item.colspan == 1
+        println(io)
+    else
+        println(io, " ", item.colspan, ",")
+    end
     show(io, item.item, depth + 1)
     print(io, ")")
 end
@@ -53,13 +58,13 @@ pretty_print(io::IO, item::GridItem, depth::Integer) = show(io, item, depth)
 
 function show(io::IO, layout::Layout, depth::Integer = 0)
     indent = tab^depth
-    
+
     if get(io, :indent, true)
         print(io, indent)
     end
-    
+
     io = IOContext(io, :indent => true)
-    
+
     properties = copy(layout.properties)
     if isa(layout, BoxLayout) && haskey(properties, :orientation)
         if properties.orientation == VERTICAL
@@ -71,11 +76,11 @@ function show(io::IO, layout::Layout, depth::Integer = 0)
         end
         delete!(properties, :orientation)
     else
-        println(io, "$(typeof(layout))(")    
+        println(io, "$(typeof(layout))(")
     end
-    
+
     traits = Any[:name => layout.name]
-    pretty_print_collection(io, union(traits, properties), 
+    pretty_print_collection(io, union(traits, properties),
                             depth + 1)
     pretty_print_items(io, layout.items, depth + 1)
     println(io)
@@ -104,10 +109,13 @@ end
 function xml(layout::GridLayout)
     node = ElementNode("layout", ["class"=>"QGridLayout", "name"=>layout.name])
     for item in layout.items
-        item_node =  ElementNode("item", ["row"=>string(item.row), "column" => string(item.column)])
+        props = ["row"=>string(item.row), "column" => string(item.column)]
+        if item.colspan > 1
+            push!(props, "colspan" => string(item.colspan))
+        end
+        item_node =  ElementNode("item", props)
         addchild!(item_node, xml(item.item))
         addchild!(node, item_node)
     end
     node
 end
-
