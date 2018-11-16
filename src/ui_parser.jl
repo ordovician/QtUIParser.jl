@@ -178,7 +178,7 @@ function parse_layout(node::ElementNode)
             col = Meta.parse(item_node["column"])
             colspan = 1
             if haskey(item_node, "colspan")
-                colpan = Meta.parse(item_node["colspan"])
+                colspan = Meta.parse(item_node["colspan"])
             end
             push!(griditems, GridItem(row, col, colspan, item))
         else
