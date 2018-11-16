@@ -7,7 +7,7 @@ function findfirstitem(root, name::AbstractString)
         nothing
     else
         first(items)
-    end    
+    end
 end
 
 function finditem(root, kind::DataType)
@@ -33,8 +33,9 @@ function finditem(pred::Function, item::QWidget)
     if pred(item)
         push!(result, item)
     end
-    
+
     append!(result, finditem(pred, item.layout))
+    append!(result, finditem(pred, item.children))
 end
 
 function finditem(pred::Function, layout::Layout)
@@ -101,7 +102,7 @@ function findparentitem(pred::Function, layout::Layout)
         if isa(item, GridItem)
             item = item.item
         end
-        
+
         if pred(item)
             return (layout, i)
         else
