@@ -13,6 +13,7 @@ include("layouts.jl")
 
 include("signals_and_slots.jl")
 include("resources.jl")
+include("customwidgets.jl")
 include("ui.jl")
 
 include("ui_parser.jl")

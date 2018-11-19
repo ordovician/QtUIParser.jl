@@ -11,19 +11,20 @@ mutable struct Ui
     root::QWidget
     resources::Vector{Resource}
     connections::Vector{Connection}
+    customwidgets::Vector{CustomWidget}
     version::String
 end
 
 function Ui(class::AbstractString)
-    Ui(class, QWidget(class), Resource[], Connection[], "4.0")
+    Ui(class, QWidget(class), Resource[], Connection[], CustomWidget[]. "4.0")
 end
 
 function Ui(root::QWidget)
-    Ui(root.name, root, Resource[], Connection[], "4.0")
+    Ui(root.name, root, Resource[], Connection[], CustomWidget[],  "4.0")
 end
 
 function Ui(;class = "Form", version =  "4.0", root = QWidget(Symbol(class)))
-    Ui(class, root, Resource[], Connection[], version)
+    Ui(class, root, Resource[], Connection[], CustomWidget[], version)
 end
 
 
@@ -32,13 +33,14 @@ end
 function show(io::IO, ui::Ui)
     depth = 0
     println(io, "Ui(")
-    
+
     traits = Any[:class => ui.class, :version => ui.version]
     pretty_print_collection(io, traits, depth + 1)
-                            
+
     println(io, ",")
     print(io, tab, "root = ")
     show(IOContext(io, :indent => false), ui.root, depth + 1)
+    show(io, ui.customwidgets, depth + 1)
     println(io)
     print(io, ")")
 end
@@ -54,6 +56,7 @@ function xml(ui::Ui)
 
     node.children =  Node[ElementNode("class", ui.class),
                           xml(ui.root),
+                          xml(ui.customwidgets),
                           xml(ui.resources),
                           xml(ui.connections)]
     node

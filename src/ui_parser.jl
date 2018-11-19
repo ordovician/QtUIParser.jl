@@ -202,6 +202,22 @@ function parse_resources(node::ElementNode)
     Resource[]
 end
 
+function parse_custom_widget(node::ElementNode)
+    value(key) = nodecontent(locatefirst(key, node))
+
+    class  = value("class")
+    super  = value("extends")
+    path   = value("header")
+
+    CustomWidget(Symbol(class), Symbol(super), path)
+end
+
+function parse_custom_widgets(node::ElementNode)
+    widgets = elements(node)
+    [parse_custom_widget(w) for w in widgets]
+end
+
+
 "Parse item tags found under a widget. Typically this will be a QComboBox"
 function parse_widget_item(node::ElementNode)
     prop_nodes = elements(node)
@@ -296,8 +312,9 @@ function read_ui_string(text::AbstractString)
     root_widget = parse_widget(     locatefirst("widget", ui))
     connections = parse_connections(locatefirst("connections", ui))
     resources   = parse_resources(  locatefirst("resources", ui))
+    customwidgets = parse_custom_widgets(locatefirst("customwidgets", ui))
 
-    Ui(class, root_widget, resources, connections, version)
+    Ui(class, root_widget, resources, connections, customwidgets, version)
 end
 
 """
