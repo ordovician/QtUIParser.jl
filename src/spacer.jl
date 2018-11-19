@@ -1,7 +1,7 @@
 export Spacer
 
 function Spacer(name::AbstractString)
-    Spacer(name, Assoc{Symbol, Primitive}())    
+    Spacer(name, Assoc{Symbol, Primitive}())
 end
 
 function Spacer(name::AbstractString, orientation::Orientation, sizehint::Size)
@@ -11,9 +11,9 @@ function Spacer(name::AbstractString, orientation::Orientation, sizehint::Size)
     spacer
 end
 
-function Spacer(;args)
+function Spacer(;args...)
     spacer = Spacer("noname")
-    
+
     for (k, v) in args
         if k in fieldnames(typeof(spacer))
             setfield!(spacer, k, v)
@@ -28,33 +28,33 @@ end
 
 function show(io::IO, spacer::Spacer, depth::Integer = 0)
     indent = tab^depth
-    
+
     if get(io, :indent, true)
         print(io, indent)
     end
-    
+
     io = IOContext(io, :indent => true)
-    
+
     traits = Any[:name => spacer.name]
     properties = Assoc{Symbol, Primitive}()
-    
+
     for (k, v) in spacer.properties
        if k in [:orientation, :sizeHint]
            push!(traits, k => v)
        else
-           push!(properties.items, k => v) 
-       end 
+           push!(properties.items, k => v)
+       end
     end
 
     print(io, "Spacer")
-    
+
     if isempty(properties)
         print(io, "(")
         join( io, repr.(last.(traits), context = IOContext(io, :compact => true)), ", ")
         print(io, ")")
     else
         println(io, "(")
-        pretty_print_collection(io, union(traits, properties), 
+        pretty_print_collection(io, union(traits, properties),
                                 depth + 1)
         println(io)
         print(io, indent, ")")
@@ -67,4 +67,3 @@ function xml(spacer::Spacer)
     node.children = xml(spacer.properties)
     node
 end
-
