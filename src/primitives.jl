@@ -37,7 +37,7 @@ function string(alignment::Alignment)
 end
 
 function xml(alignset::AlignmentSet)
-    ElementNode("enum", join(string.(alignset), '|'))
+    ElementNode("set", join(string.(alignset), '|'))
 end
 
 function xml(button_sym::ButtonSymbols)
