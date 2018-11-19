@@ -23,8 +23,8 @@ function Ui(root::QWidget)
     Ui(root.name, root, Resource[], Connection[], CustomWidget[],  "4.0")
 end
 
-function Ui(;class = "Form", version =  "4.0", root = QWidget(Symbol(class)))
-    Ui(class, root, Resource[], Connection[], CustomWidget[], version)
+function Ui(;class = "Form", version =  "4.0", root = QWidget(class), customwidgets = CustomWidget[])
+    Ui(class, root, Resource[], Connection[], customwidgets, version)
 end
 
 

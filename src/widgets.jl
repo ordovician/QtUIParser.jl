@@ -16,7 +16,7 @@ function config_widget!(w::QWidget, args)
     w
 end
 
-function QWidget(name::AbstractString, class::Symbol)
+function QWidget(name::AbstractString, class::Symbol = :QWidget)
     QWidget(name, class, Assoc{Symbol, String}(), Assoc{Symbol, Primitive}(), String[], nothing, QWidget[])
 end
 
