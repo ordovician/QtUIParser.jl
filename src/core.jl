@@ -38,6 +38,14 @@ struct SizePolicy
     verstretch::Int
 end
 
+"""
+Used to store attributes of widgets. Not a very useful type. Mainly used to be
+able to distingush properties and attributes typewise.
+"""
+mutable struct Attributes
+    items::Assoc{Symbol, String}
+end
+
 AlignmentSet = Vector{Alignment}
 
 Primitive = Union{String, Orientation, SizeType, ButtonSymbols, AlignmentSet, Rect, Size, Bool, SizePolicy, Number}
@@ -47,7 +55,7 @@ Primitive = Union{String, Orientation, SizeType, ButtonSymbols, AlignmentSet, Re
 mutable struct QWidget
     name::String
     class::Symbol
-    attributes::Assoc{Symbol, String}
+    attributes::Attributes
     properties::Assoc{Symbol, Primitive}
     items::Vector{String}
     layout::Union{Layout, Nothing}

@@ -1,22 +1,18 @@
 import Base: show
-import QtUIParser: xml
 export Attributes
 
-"""
-Used to store attributes of widgets. Not a very useful type. Mainly used to be
-able to distingush properties and attributes typewise.
-"""
-mutable struct Attributes
-    items::Assoc{Symbol, String}
+function Attributes(;args...)
+    if isempty(args)
+        Attributes(Assoc{Symbol, String}())
+    else
+        Attributes(Assoc(args...))
+    end
 end
-
-Attributes(;args...) = Attributes(Assoc(args...))
 
 function show(io::IO, attributes::Attributes, depth::Integer = 0)
     indent = tab^depth
     if !isempty(attributes.items)
-       println(io, ",")
-       println(io, indent, "attributes = Attributes(")
+       println(io, "Attributes(")
        pretty_print_collection(io, attributes.items, depth + 1)
        println(io)
        print(io, indent, ")")

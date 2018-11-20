@@ -7,8 +7,6 @@ function config_widget!(w::QWidget, args)
     for (k, v) in args
         if k in fieldnames(typeof(w))
             setfield!(w, k, v)
-        elseif k in [:title]
-            w.attributes[k] = v
         else
             w.properties[k] = v
         end
@@ -17,7 +15,7 @@ function config_widget!(w::QWidget, args)
 end
 
 function QWidget(name::AbstractString, class::Symbol = :QWidget)
-    QWidget(name, class, Assoc{Symbol, String}(), Assoc{Symbol, Primitive}(), String[], nothing, QWidget[])
+    QWidget(name, class, Attributes(), Assoc{Symbol, Primitive}(), String[], nothing, QWidget[])
 end
 
 function QWidget(;args...)
@@ -143,6 +141,10 @@ function pretty_print(io::IO, obj, depth::Integer)
     print(io, repr(obj, context = IOContext(io, :compact => true)))
 end
 
+function pretty_print(io::IO, obj::Attributes, depth::Integer)
+    show(io, obj, depth)
+end
+
 "Returns properties not added to traits for this widget type"
 function filter_properties(properties::Assoc{K, V}, class::Symbol, traits) where {K, V}
     result = copy(properties)
@@ -165,6 +167,10 @@ end
 function show(io::IO, w::QWidget, depth::Integer = 0)
     indent = tab^depth
     traits = Any[:name => w.name]
+    attributes = Any[]
+    if !isempty(w.attributes.items)
+        push!(attributes, :attributes => w.attributes)
+    end
 
     # In case it starts on an existing line. You don't want indentation before the QWidget name
     if get(io, :indent, true)
@@ -180,16 +186,15 @@ function show(io::IO, w::QWidget, depth::Integer = 0)
 
     properties = filter_properties(w.properties, w.class, traits)
 
-    if all(isempty, [properties, w.attributes, w.items, w.children]) && w.layout == nothing
+    if all(isempty, [properties, attributes, w.items, w.children]) && w.layout == nothing
         print(io, "(")
         join( io, repr.(last.(traits), context = IOContext(io, :compact => true)), ", ")
         print(io, ")")
     else
         println(io, "(")
-
         pretty_print_collection(io, union(traits,
                                           properties,
-                                          w.attributes),
+                                          attributes),
                                 depth + 1)
         pretty_print_items( io, w.items,    depth + 1)
         pretty_print_layout(io, w.layout,   depth + 1)
@@ -204,14 +209,13 @@ end
 function xml(w::QWidget)
     node = ElementNode("widget", ["class"=>string(w.class), "name"=>w.name])
     node.children = xml(w.properties, tag = "property")
-    attributes = xml(w.attributes, tag = "attribute")
 
     item_nodes = map(w.items) do item
         ElementNode("item", [xml(:text => item)])
     end
     child_widgets = xml.(w.children)
 
-    append!(node.children, attributes)
+    append!(node.children, xml(w.attributes))
     append!(node.children, item_nodes)
     if w.layout != nothing
         addchild!(node, xml(w.layout))

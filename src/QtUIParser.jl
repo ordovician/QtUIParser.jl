@@ -7,6 +7,7 @@ include("xml.jl")
 
 include("primitives.jl")
 
+include("attributes.jl")
 include("widgets.jl")
 include("spacer.jl")
 include("layouts.jl")

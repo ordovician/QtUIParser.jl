@@ -217,6 +217,8 @@ function parse_custom_widgets(node::ElementNode)
     [parse_custom_widget(w) for w in widgets]
 end
 
+"To handle cases where there was no custom widget node in XML tree"
+parse_custom_widgets(::Nothing) = CustomWidget[]
 
 "Parse item tags found under a widget. Typically this will be a QComboBox"
 function parse_widget_item(node::ElementNode)
@@ -245,7 +247,7 @@ function parse_widget(node::ElementNode)
 
     items      = String[]  # In case we are parsing a combobox e.g.
     properties = Assoc{Symbol, Primitive}()
-    attributes = Assoc{Symbol, String}()
+    attributes = Attributes()
     layout  = nothing
     widgets = QWidget[]
 
@@ -265,7 +267,7 @@ function parse_widget(node::ElementNode)
                 end
             end
         elseif tag == "attribute"
-            push!(attributes, parse_property(child))
+            push!(attributes.items, parse_property(child))
         elseif tag == "widget"
             push!(widgets, parse_widget(child))
         else
@@ -312,6 +314,9 @@ function read_ui_string(text::AbstractString)
     root_widget = parse_widget(     locatefirst("widget", ui))
     connections = parse_connections(locatefirst("connections", ui))
     resources   = parse_resources(  locatefirst("resources", ui))
+
+    # locatefirst() returns `nothing` when nothing is found, but we got a parse_custom_widgets() method
+    # handling nothing as an argument.
     customwidgets = parse_custom_widgets(locatefirst("customwidgets", ui))
 
     Ui(class, root_widget, resources, connections, customwidgets, version)

@@ -29,7 +29,6 @@ end
 
 
 ##################### IO #####################
-
 function show(io::IO, ui::Ui)
     depth = 0
     println(io, "Ui(")
