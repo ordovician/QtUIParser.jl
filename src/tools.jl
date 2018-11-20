@@ -93,12 +93,17 @@ function save_erml_as(path::AbstractString)
     end
 end
 
+
+function save_erml(ui::Ui)
+    save_erml_as(erml_file, ui)
+end
+
 """
     save_erml()
 Saves ui object prevously loaded with `load(path)` to `path`
 """
 function save_erml()
-    if loaded_ui != nothing
+    if erml_file != nothing
         save_erml_as(erml_file)
     else
         @error "No previously stored load path"
