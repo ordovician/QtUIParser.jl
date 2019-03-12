@@ -1,6 +1,9 @@
 export finditem, copyitem!, findparentitem, removeitem!, findfirstitem
 
-
+"""
+    findfirstitem(root, name) -> Union{Layout, QWidget, Spacer, GridItem}
+Find first item with name `name` starting the search at `root`    
+"""    
 function findfirstitem(root, name::AbstractString)
     items = finditem(root, name)
     if isempty(items)
@@ -14,13 +17,23 @@ function finditem(root, kind::DataType)
     finditem(x -> isa(x, kind), root)
 end
 
+"""
+    finditem(root, kind) -> Array
+Locate item of given type, such as `QCheckBox`, `QPushButton` or `QLabel`.
+
+# Example
+```jldoctest
+julia> item = finditem(ui, :QCheckBox)
+```    
+"""
 function finditem(root, kind::Symbol)
     finditem(x -> isa(x, QWidget) && x.class == kind, root)
 end
 
 """
-    finditem(root, name)
-Locate an item in the tree. An item could be a layout, widget or spacer
+    finditem(root, name) -> Array
+Locate all items with `name` in tree, starting from `root`. 
+An item could be a layout, widget or spacer
 """
 function finditem(root::Union{Ui, QWidget, Layout, Spacer}, name::AbstractString)
     finditem(x->x.name == name, root)
