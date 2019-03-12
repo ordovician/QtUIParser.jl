@@ -1,4 +1,5 @@
-export load, save_ui, save_ui_as, ui_filepath, ui_file,
+export load, load_ui, load_erml, 
+       save_ui, save_ui_as, ui_filepath, ui_file,
        erml_filepath, save_erml_as, save_erml, erml_file
 
 
@@ -29,9 +30,8 @@ function load(path::AbstractString)
     loaded_ui
 end
 
-function load()
-    load(ui_file)
-end
+load_ui() = load(ui_file)
+load_erml() = load(erml_file)
 
 """
     save_ui_as(path)
