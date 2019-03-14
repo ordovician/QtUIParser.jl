@@ -145,13 +145,21 @@ Ui(
                                             items = [
                                                 GridItem(0, 0,
                                                     QLabel("wellpickset_label_", "Wellpick set:")),
-                                                GridItem(0, 1,
+                                                GridItem(0, 1, 2,
                                                     QComboBox("wellpick_set_combo_")),
                                                 GridItem(1, 0,
                                                     QLabel("uncertainty_label_", "For uncertainty use:")),
                                                 GridItem(1, 1,
                                                     QRadioButton("constant_radio_", "constant")),
-                                                GridItem(2, 1,
+                                                GridItem(1, 2,
+                                                    QWidget(
+                                                        name          = "constant_edit_",
+                                                        class         = :QDoubleSpinBox,
+                                                        alignment     = Alignment[RIGHT, TRAILING, VCENTER],
+                                                        buttonSymbols = NO_BUTTONS,
+                                                        maximum       = 1.0e8
+                                                    )),
+                                                GridItem(2, 1, 2,
                                                     QRadioButton("attribute_radio_", "depth uncertainty attribute"))
                                             ]
                                         )
