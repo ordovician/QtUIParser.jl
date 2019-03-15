@@ -1,4 +1,4 @@
-export load, load_ui, load_erml, 
+export load, load_ui, load_erml, load_root_widget,
        save_ui, save_ui_as, ui_filepath, ui_file,
        erml_filepath, save_erml_as, save_erml, erml_file
 
@@ -24,7 +24,7 @@ function load(path::AbstractString)
         global loaded_ui = include(path)
         if loaded_ui != nothing
            global erml_file = path
-           global ui_file   = base * ".ui" 
+           global ui_file   = base * ".ui"
         end
     end
     loaded_ui
@@ -32,6 +32,15 @@ end
 
 load_ui() = load(ui_file)
 load_erml() = load(erml_file)
+
+"""
+    load_root_widget(path)
+Gets the root widget of UI stored on `path`
+"""
+function load_root_widget(path::AbstractString)
+    ui = load(path)
+    ui.root
+end
 
 """
     save_ui_as(path)
@@ -71,12 +80,24 @@ function save_ui_as(path::AbstractString, ui::Ui)
 end
 
 """
+    save_ui_as(path, w::QWidget)
+Save widget `w` to `path` by wrapping it in a Ui object. That makes is possible
+to view it in Qt designer. The purpose of this is to facilitate pulling out
+individual parts of a larger Ui file and save them in separate files, to be
+combined later.
+"""
+save_ui_as(path::AbstractString, w::QWidget) = save_ui_as(path, Ui(w))
+
+
+"""
     save_ui(ui::Ui)
 Save `ui` object to filepath previously used by `load(path)`
 """
 function save_ui(ui::Ui)
     save_ui_as(ui_file, ui)
 end
+
+
 
 ui_filepath() = ui_file
 erml_filepath() = erml_file
@@ -119,5 +140,5 @@ function save_erml_as(path::AbstractString, ui::Ui)
         show(io, ui)
         global erml_file = path
         global loaded_ui = ui
-    end  
+    end
 end
