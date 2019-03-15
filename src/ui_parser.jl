@@ -57,6 +57,8 @@ function parse_enum(s::AbstractString)
         PLUS_MINUS
     elseif "QAbstractSpinBox::NoButtons" == s
         NO_BUTTONS
+    elseif "Qt::PlainText" == s
+        PLAIN_TEXT
     else
         error("Unknown enum value '$s'")
     end
@@ -82,6 +84,12 @@ function parse_size(n::ElementNode)
     Size(width, height)
 end
 
+function parse_font(n::ElementNode)
+    value(key) = Meta.parse(nodecontent(locatefirst(key, n)))
+    size   = value("pointsize")
+    Font(size)
+end
+
 function parse_property_data(n::ElementNode)
     tag = nodename(n)
     if     "string" == tag
@@ -100,6 +108,8 @@ function parse_property_data(n::ElementNode)
         parse_size(n)
     elseif "set" == tag
         parse_set(nodecontent(n))
+    elseif "font" == tag
+        parse_font(n)
     else
         @error "Unknown property type '$tag' encountered"
     end

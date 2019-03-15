@@ -22,6 +22,14 @@ function xml(sz::Size)
     parent
 end
 
+function xml(font::Font)
+    parent = ElementNode("font")
+
+    addchildren!(parent, [
+        "pointsize" => string(font.pointsize)])
+    parent
+end
+
 function string(alignment::Alignment)
     if     RIGHT == alignment
         "Qt::AlignRight"
@@ -69,6 +77,13 @@ function xml(orientation::Orientation)
             "Qt::Horizontal"
         elseif orientation == VERTICAL
             "Qt::Vertical"
+        end
+    ElementNode("enum", s)
+end
+
+function xml(format::TextFormat)
+    s = if format == PLAIN_TEXT
+            "Qt::PlainText"
         end
     ElementNode("enum", s)
 end

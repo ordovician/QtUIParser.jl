@@ -2,11 +2,12 @@ import Base: print, show, setindex!, getindex, haskey, keys, iterate, length
 
 using PLists
 
-export Rect, Size, SizePolicy,
+export Rect, Size, SizePolicy, Font,
        Orientation, HORIZONTAL, VERTICAL,
        SizeType, PREFERRED, EXPANDING, FIXED,
        Alignment, RIGHT, LEFT, HCENTER, VCENTER, TRAILING, LEADING,
        ButtonSymbols, UP_DOWN_ARROWS, PLUS_MINUS, NO_BUTTONS,
+       TextFormat, PLAIN_TEXT,
        Primitive,
        QWidget, Spacer, Layout, Item
 
@@ -17,6 +18,7 @@ abstract type Layout end
 @enum SizeType PREFERRED EXPANDING FIXED
 @enum Alignment RIGHT LEFT HCENTER VCENTER TRAILING LEADING
 @enum ButtonSymbols UP_DOWN_ARROWS PLUS_MINUS NO_BUTTONS
+@enum TextFormat PLAIN_TEXT
 
 "Define the placement and size of a widget. Used for the geometry property"
 struct Rect
@@ -38,6 +40,10 @@ struct SizePolicy
     verstretch::Int
 end
 
+struct Font
+    pointsize::Int
+end
+
 """
 Used to store attributes of widgets. Not a very useful type. Mainly used to be
 able to distingush properties and attributes typewise.
@@ -48,7 +54,7 @@ end
 
 AlignmentSet = Vector{Alignment}
 
-Primitive = Union{String, Orientation, SizeType, ButtonSymbols, AlignmentSet, Rect, Size, Bool, SizePolicy, Number}
+Primitive = Union{String, Orientation, SizeType, ButtonSymbols, AlignmentSet, Rect, Size, Font, TextFormat, Bool, SizePolicy, Number}
 
 
 "Typically used for custom top level widgets"

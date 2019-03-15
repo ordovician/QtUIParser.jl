@@ -1,6 +1,6 @@
 export xml
 
-function xml(p::Pair{Symbol, T}; tag = "property") where T <: Union{String, Orientation, SizeType, ButtonSymbols, AlignmentSet, Rect, Bool, SizePolicy, Number}
+function xml(p::Pair{Symbol, T}; tag = "property") where T <: Union{String, Orientation, SizeType, TextFormat, ButtonSymbols, AlignmentSet, Rect, Font, Bool, SizePolicy, Number}
     parent = ElementNode(tag, ["name"=>string(first(p))])
     child  = xml(last(p))
     addchild!(parent, child)
