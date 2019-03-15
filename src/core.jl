@@ -5,7 +5,7 @@ using PLists
 export Rect, Size, SizePolicy, Font,
        Orientation, HORIZONTAL, VERTICAL,
        SizeType, PREFERRED, EXPANDING, FIXED,
-       Alignment, RIGHT, LEFT, HCENTER, VCENTER, TRAILING, LEADING,
+       Alignment, RIGHT, LEFT, HCENTER, VCENTER, TRAILING, LEADING, TOP,
        ButtonSymbols, UP_DOWN_ARROWS, PLUS_MINUS, NO_BUTTONS,
        TextFormat, PLAIN_TEXT,
        Primitive,
@@ -16,7 +16,7 @@ abstract type Layout end
 "Sliders and box layouts may have orientations"
 @enum Orientation HORIZONTAL VERTICAL
 @enum SizeType PREFERRED EXPANDING FIXED
-@enum Alignment RIGHT LEFT HCENTER VCENTER TRAILING LEADING
+@enum Alignment RIGHT LEFT HCENTER VCENTER TRAILING LEADING TOP
 @enum ButtonSymbols UP_DOWN_ARROWS PLUS_MINUS NO_BUTTONS
 @enum TextFormat PLAIN_TEXT
 

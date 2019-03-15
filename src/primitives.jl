@@ -22,6 +22,17 @@ function xml(sz::Size)
     parent
 end
 
+function xml(policy::SizePolicy)
+    hsizetype = titlecase(string(policy.hsizetype))
+    vsizetype = titlecase(string(policy.vsizetype))
+    parent = ElementNode("sizepolicy", ["hsizetype"=>hsizetype, "vsizetype"=>vsizetype])
+
+    addchildren!(parent, [
+        "horstretch"  => string(policy.horstretch),
+        "verstretch" => string(policy.verstretch)])
+    parent
+end
+
 function xml(font::Font)
     parent = ElementNode("font")
 
@@ -43,6 +54,8 @@ function string(alignment::Alignment)
         "Qt::AlignTrailing"
     elseif LEADING == alignment
         "Qt::AlignLeading"
+    elseif TOP == alignment
+        "Qt::AlignTop"
     end
 end
 

@@ -51,6 +51,8 @@ function parse_enum(s::AbstractString)
         TRAILING
     elseif "Qt::AlignLeading" == s
         LEADING
+    elseif "Qt::AlignTop" == s
+        TOP
     elseif "QAbstractSpinBox::UpDownArrows" == s
         UP_DOWN_ARROWS
     elseif "QAbstractSpinBox::PlusMinus" == s
@@ -90,6 +92,33 @@ function parse_font(n::ElementNode)
     Font(size)
 end
 
+# In the context of sizepolicy attribute
+function parse_sizetype(s::AbstractString)
+    if "Preferred" == s
+        PREFERRED
+    elseif "Fixed" == s
+        FIXED
+    elseif "Expanding" == s
+        EXPANDING
+    end
+end
+
+function parse_sizepolicy(n::ElementNode)
+    value(key) = Meta.parse(nodecontent(locatefirst(key, n)))
+    horstretch   = value("horstretch")
+    verstretch  = value("verstretch")
+    hsizetype = PREFERRED
+    vsizetype = PREFERRED
+    if haskey(n, "hsizetype")
+        hsizetype =  parse_sizetype(n["hsizetype"])
+    end
+    if haskey(n, "vsizetype")
+        vsizetype =  parse_sizetype(n["vsizetype"])
+    end
+
+    SizePolicy(hsizetype, vsizetype, horstretch, verstretch)
+end
+
 function parse_property_data(n::ElementNode)
     tag = nodename(n)
     if     "string" == tag
@@ -110,6 +139,8 @@ function parse_property_data(n::ElementNode)
         parse_set(nodecontent(n))
     elseif "font" == tag
         parse_font(n)
+    elseif "sizepolicy" == tag
+        parse_sizepolicy(n)
     else
         @error "Unknown property type '$tag' encountered"
     end
