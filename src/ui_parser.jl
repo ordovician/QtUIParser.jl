@@ -178,11 +178,15 @@ function parse_layout(node::ElementNode)
         if "QGridLayout" == class
             row = Meta.parse(item_node["row"])
             col = Meta.parse(item_node["column"])
+            rowspan = 1
             colspan = 1
+            if haskey(item_node, "rowspan")
+                rowspan = Meta.parse(item_node["rowspan"])
+            end
             if haskey(item_node, "colspan")
                 colspan = Meta.parse(item_node["colspan"])
             end
-            push!(griditems, GridItem(row, col, colspan, item))
+            push!(griditems, GridItem(row, col, rowspan, colspan, item))
         else
             push!(items, item)
         end

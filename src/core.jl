@@ -79,11 +79,12 @@ end
 mutable struct GridItem
     row::Int
     column::Int
+    rowspan::Int
     colspan::Int
     item::Item
 end
 
-GridItem(row, column, item::Item) = GridItem(row, column, 1, item)
+GridItem(row::Integer, column::Integer, item::Item) = GridItem(row, column, 1, 1, item)
 
 mutable struct GridLayout <: Layout
    name::String

@@ -44,10 +44,10 @@ end
 function show(io::IO, item::GridItem, depth::Integer = 0)
     indent = tab^depth
     print(io, indent, "GridItem($(item.row), $(item.column),")
-    if item.colspan == 1
+    if item.rowspan == 1 && item.colspan == 1
         println(io)
     else
-        println(io, " ", item.colspan, ",")
+        println(io, " ", item.rowspan, ", ", item.colspan, ",")
     end
     show(io, item.item, depth + 1)
     print(io, ")")
@@ -110,6 +110,9 @@ function xml(layout::GridLayout)
     node = ElementNode("layout", ["class"=>"QGridLayout", "name"=>layout.name])
     for item in layout.items
         props = ["row"=>string(item.row), "column" => string(item.column)]
+        if item.rowspan > 1
+            push!(props, "rowspan" => string(item.rowspan))
+        end
         if item.colspan > 1
             push!(props, "colspan" => string(item.colspan))
         end
