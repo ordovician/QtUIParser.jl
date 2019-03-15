@@ -49,6 +49,8 @@ function parse_enum(s::AbstractString)
         VCENTER
     elseif "Qt::AlignTrailing" == s
         TRAILING
+    elseif "Qt::AlignLeading" == s
+        LEADING
     elseif "QAbstractSpinBox::UpDownArrows" == s
         UP_DOWN_ARROWS
     elseif "QAbstractSpinBox::PlusMinus" == s

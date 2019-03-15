@@ -5,7 +5,7 @@ using PLists
 export Rect, Size, SizePolicy,
        Orientation, HORIZONTAL, VERTICAL,
        SizeType, PREFERRED, EXPANDING, FIXED,
-       Alignment, RIGHT, LEFT, HCENTER, VCENTER, TRAILING,
+       Alignment, RIGHT, LEFT, HCENTER, VCENTER, TRAILING, LEADING,
        ButtonSymbols, UP_DOWN_ARROWS, PLUS_MINUS, NO_BUTTONS,
        Primitive,
        QWidget, Spacer, Layout, Item
@@ -15,7 +15,7 @@ abstract type Layout end
 "Sliders and box layouts may have orientations"
 @enum Orientation HORIZONTAL VERTICAL
 @enum SizeType PREFERRED EXPANDING FIXED
-@enum Alignment RIGHT LEFT HCENTER VCENTER TRAILING
+@enum Alignment RIGHT LEFT HCENTER VCENTER TRAILING LEADING
 @enum ButtonSymbols UP_DOWN_ARROWS PLUS_MINUS NO_BUTTONS
 
 "Define the placement and size of a widget. Used for the geometry property"

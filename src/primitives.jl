@@ -33,6 +33,8 @@ function string(alignment::Alignment)
         "Qt::AlignVCenter"
     elseif TRAILING == alignment
         "Qt::AlignTrailing"
+    elseif LEADING == alignment
+        "Qt::AlignLeading"
     end
 end
 
