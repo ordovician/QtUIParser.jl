@@ -8,6 +8,7 @@ export Rect, Size, SizePolicy, Font,
        Alignment, RIGHT, LEFT, HCENTER, VCENTER, TRAILING, LEADING, TOP,
        ButtonSymbols, UP_DOWN_ARROWS, PLUS_MINUS, NO_BUTTONS,
        TextFormat, PLAIN_TEXT,
+       FontStyle, ITALIC, BOLD, UNDERLINE, STRIKEOUT,
        Primitive,
        QWidget, Spacer, Layout, Item
 
@@ -19,6 +20,7 @@ abstract type Layout end
 @enum Alignment RIGHT LEFT HCENTER VCENTER TRAILING LEADING TOP
 @enum ButtonSymbols UP_DOWN_ARROWS PLUS_MINUS NO_BUTTONS
 @enum TextFormat PLAIN_TEXT
+@enum FontStyle ITALIC BOLD UNDERLINE STRIKEOUT
 
 "Define the placement and size of a widget. Used for the geometry property"
 struct Rect
@@ -42,7 +44,11 @@ end
 
 struct Font
     pointsize::Int
+    weight::Union{Int, Nothing}
+    styles::Array{FontStyle}
 end
+
+Font(pointsize::Int) = Font(pointsize, nothing, FontStyle[])
 
 """
 Used to store attributes of widgets. Not a very useful type. Mainly used to be

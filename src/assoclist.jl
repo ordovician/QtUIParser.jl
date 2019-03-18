@@ -4,8 +4,8 @@ import Base: getindex, setindex!, get, delete!,
        haskey, isempty,
        union, push!,
        copy
-       
-export Assoc
+
+export Assoc, value_lookup
 
 "Dictionary implemented as associative list for doing lookups with either key or value"
 mutable struct Assoc{K, V} <: AbstractDict{K,V}

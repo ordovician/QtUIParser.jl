@@ -38,6 +38,13 @@ function xml(font::Font)
 
     addchildren!(parent, [
         "pointsize" => string(font.pointsize)])
+    if font.weight != nothing
+        addchildren!(parent, [
+            "weight" => string(font.weight)])
+    end
+    addchildren!(parent, map(font.styles) do style
+        lowercase(string(style)) => "true"
+    end)
     parent
 end
 

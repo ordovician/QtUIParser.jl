@@ -86,10 +86,27 @@ function parse_size(n::ElementNode)
     Size(width, height)
 end
 
+const font_style_names = lowercase.(string.(instances(FontStyle)))
+
 function parse_font(n::ElementNode)
-    value(key) = Meta.parse(nodecontent(locatefirst(key, n)))
-    size   = value("pointsize")
-    Font(size)
+    value(child) = Meta.parse(nodecontent(child))
+    size   = 11
+    weight = nothing
+    styles = FontStyle[]
+    for child in elements(n)
+        tag = nodename(child)
+        if "pointsize" == tag
+            size = value(child)
+        elseif "weight" == tag
+            weight = value(child)
+        elseif tag in font_style_names
+            # Check if we got true of false for style. E.g. <bold>true</bold>
+            if value(child)
+                push!(styles, eval(Symbol(uppercase(tag))))
+            end
+        end
+    end
+    Font(size, weight, styles)
 end
 
 # In the context of sizepolicy attribute
