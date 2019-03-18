@@ -23,7 +23,7 @@ Locate item of given type, such as `QCheckBox`, `QPushButton` or `QLabel`.
 
 # Example
 ```jldoctest
-julia> item = finditem(ui, :QCheckBox)
+julia> items = finditem(ui, :QCheckBox)
 ```    
 """
 function finditem(root, kind::Symbol)
