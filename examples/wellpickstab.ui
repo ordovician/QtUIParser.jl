@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>wellpicks_tab_</class>
+  <widget class="QWidget" name="wellpicks_tab_">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>539</width>
+        <height>454</height>
+      </rect>
+    </property>
+    <layout class="QVBoxLayout" name="top_wellpick_layout_">
+      <item>
+        <layout class="QHBoxLayout" name="pick_selection_layout_">
+          <item>
+            <widget class="QLabel" name="wellpickset_label_">
+              <property name="text">
+                <string>Wellpick set:</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QComboBox" name="wellpickset_combo_"></widget>
+          </item>
+          <item>
+            <widget class="QLabel" name="pick_display_label_">
+              <property name="text">
+                <string>display:</string>
+              </property>
+              <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QRadioButton" name="individual_radio_">
+              <property name="text">
+                <string>individual picks</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QRadioButton" name="summary_radio_">
+              <property name="text">
+                <string>summary</string>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+      <item>
+        <widget class="QTableWidget" name="wellpicks_table_"></widget>
+      </item>
+      <item>
+        <layout class="QGridLayout" name="wellpick_uncertainty_layout_">
+          <item row="0" column="0">
+            <widget class="QLabel" name="uncertainty_from_label_">
+              <property name="text">
+                <string>get uncertainty for each wellpick from:</string>
+              </property>
+            </widget>
+          </item>
+          <item row="0" column="1">
+            <widget class="QRadioButton" name="uncert_attr_table_radio">
+              <property name="text">
+                <string>uncertainty attribute in table</string>
+              </property>
+            </widget>
+          </item>
+          <item row="1" column="1">
+            <widget class="QRadioButton" name="uncert_const_radio">
+              <property name="text">
+                <string>constant</string>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <customwidgets></customwidgets>
+  <resources></resources>
+  <connections></connections>
+</ui>

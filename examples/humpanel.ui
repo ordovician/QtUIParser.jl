@@ -1,428 +1,678 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>HUMPanel</class>
- <widget class="QWidget" name="HUMPanel">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>463</width>
-    <height>556</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
-  <layout class="QVBoxLayout" name="verticalLayout_9">
-   <item>
-    <widget class="QTabWidget" name="main_tab_widget_">
-     <property name="currentIndex">
-      <number>1</number>
-     </property>
-     <widget class="QWidget" name="general_tab_">
-      <attribute name="title">
-       <string>General</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QLabel" name="horizon_model_label_">
-           <property name="text">
-            <string>Input horizon model:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>18</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QtCompComboBox" name="input_hmodel_"/>
-           </item>
+  <class>HUMForm</class>
+  <widget class="QWidget" name="humpanel">
+    <layout class="QHBoxLayout" name="top_column_layout_">
+      <item>
+        <widget class="QWidget" name="data_selection_column_">
+          <property name="geometry">
+            <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>354</width>
+              <height>355</height>
+            </rect>
+          </property>
+          <layout class="QVBoxLayout" name="data_selection_column_layout_">
+            <item>
+              <layout class="QVBoxLayout" name="input_hmodel_layout_">
+                <item>
+                  <widget class="QLabel" name="input_hmodel_label_">
+                    <property name="text">
+                      <string>Input horizon model:</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <layout class="QHBoxLayout" name="hbox_input_hmodel_layout_">
+                    <item>
+                      <spacer name="input_hmodel_spacer_">
+                        <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                          <size>
+                            <width>18</width>
+                            <height>20</height>
+                          </size>
+                        </property>
+                        <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                        </property>
+                      </spacer>
+                    </item>
+                    <item>
+                      <widget class="QtCompComboBox" name="input_hmodel_combo_"></widget>
+                    </item>
+                  </layout>
+                </item>
+                <item>
+                  <spacer name="input_hmodel_section_spacer_">
+                    <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                      <size>
+                        <width>20</width>
+                        <height>18</height>
+                      </size>
+                    </property>
+                    <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                  </spacer>
+                </item>
+              </layout>
+            </item>
+            <item>
+              <layout class="QVBoxLayout" name="algomode_layout_">
+                <item>
+                  <widget class="QLabel" name="algomode_label_">
+                    <property name="text">
+                      <string>For each input horizon create:</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <layout class="QHBoxLayout" name="hbox_algomode_layout_">
+                    <item>
+                      <spacer name="algomode_spacer_">
+                        <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                          <size>
+                            <width>18</width>
+                            <height>20</height>
+                          </size>
+                        </property>
+                        <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                        </property>
+                      </spacer>
+                    </item>
+                    <item>
+                      <layout class="QVBoxLayout" name="algomode_radio_layout_">
+                        <item>
+                          <widget class="QRadioButton" name="prediction_radio_">
+                            <property name="text">
+                              <string>one unique surface using prediction</string>
+                            </property>
+                          </widget>
+                        </item>
+                        <item>
+                          <widget class="QRadioButton" name="simulation_radio_">
+                            <property name="text">
+                              <string>one realization using stochastic simulation</string>
+                            </property>
+                          </widget>
+                        </item>
+                      </layout>
+                    </item>
+                  </layout>
+                </item>
+                <item>
+                  <spacer name="algomode_section_spacer_">
+                    <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                      <size>
+                        <width>20</width>
+                        <height>18</height>
+                      </size>
+                    </property>
+                    <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                  </spacer>
+                </item>
+              </layout>
+            </item>
+            <item>
+              <layout class="QVBoxLayout" name="kriging_layout_">
+                <item>
+                  <widget class="QLabel" name="kriging_label_">
+                    <property name="text">
+                      <string>Condition surfaces using:</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <layout class="QHBoxLayout" name="hbox_kriging_layout_">
+                    <item>
+                      <spacer name="kriging_spacer_">
+                        <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                          <size>
+                            <width>18</width>
+                            <height>20</height>
+                          </size>
+                        </property>
+                        <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                        </property>
+                      </spacer>
+                    </item>
+                    <item>
+                      <widget class="QComboBox" name="kriging_combo_"></widget>
+                    </item>
+                    <item>
+                      <widget class="QLabel" name="kriging_method_label">
+                        <property name="text">
+                          <string>kriging method</string>
+                        </property>
+                      </widget>
+                    </item>
+                  </layout>
+                </item>
+                <item>
+                  <spacer name="kriging_section_spacer_">
+                    <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                      <size>
+                        <width>20</width>
+                        <height>18</height>
+                      </size>
+                    </property>
+                    <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                  </spacer>
+                </item>
+              </layout>
+            </item>
+            <item>
+              <spacer name="middle_spacer_">
+                <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                  <size>
+                    <width>20</width>
+                    <height>40</height>
+                  </size>
+                </property>
+              </spacer>
+            </item>
+            <item>
+              <layout class="QVBoxLayout" name="data_conditioning_layout_">
+                <item>
+                  <widget class="QLabel" name="data_conditioning_label_">
+                    <property name="text">
+                      <string>Condition surfaces using:</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <layout class="QHBoxLayout" name="hbox_data_conditioning_layout_">
+                    <item>
+                      <spacer name="data_conditioning_spacer_">
+                        <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                          <size>
+                            <width>18</width>
+                            <height>20</height>
+                          </size>
+                        </property>
+                        <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                        </property>
+                      </spacer>
+                    </item>
+                    <item>
+                      <layout class="QVBoxLayout" name="well_data_checkbox_layout_">
+                        <item>
+                          <widget class="QCheckBox" name="wellpicks_option_">
+                            <property name="text">
+                              <string>wellpicks</string>
+                            </property>
+                          </widget>
+                        </item>
+                        <item>
+                          <widget class="QCheckBox" name="traj_option_">
+                            <property name="text">
+                              <string>trajectories and logs</string>
+                            </property>
+                          </widget>
+                        </item>
+                      </layout>
+                    </item>
+                  </layout>
+                </item>
+                <item>
+                  <spacer name="data_conditioning_section_spacer_">
+                    <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                      <size>
+                        <width>20</width>
+                        <height>18</height>
+                      </size>
+                    </property>
+                    <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                  </spacer>
+                </item>
+              </layout>
+            </item>
+            <item>
+              <layout class="QVBoxLayout" name="well_data_layout_">
+                <item>
+                  <widget class="QLabel" name="well_data_label_">
+                    <property name="text">
+                      <string>Input well data:</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <layout class="QHBoxLayout" name="hbox_well_data_layout_">
+                    <item>
+                      <spacer name="well_data_spacer_">
+                        <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                          <size>
+                            <width>18</width>
+                            <height>20</height>
+                          </size>
+                        </property>
+                        <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                        </property>
+                      </spacer>
+                    </item>
+                    <item>
+                      <widget class="QtCompComboBox" name="input_welldata_combo_"></widget>
+                    </item>
+                  </layout>
+                </item>
+                <item>
+                  <spacer name="well_data_section_spacer_">
+                    <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                      <size>
+                        <width>20</width>
+                        <height>18</height>
+                      </size>
+                    </property>
+                    <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                  </spacer>
+                </item>
+              </layout>
+            </item>
+            <item>
+              <layout class="QVBoxLayout" name="output_smodel_layout_">
+                <item>
+                  <widget class="QLabel" name="output_smodel_label_">
+                    <property name="text">
+                      <string>Output structural model:</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <layout class="QHBoxLayout" name="hbox_output_smodel_layout_">
+                    <item>
+                      <spacer name="output_smodel_spacer_">
+                        <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                          <size>
+                            <width>18</width>
+                            <height>20</height>
+                          </size>
+                        </property>
+                        <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                        </property>
+                      </spacer>
+                    </item>
+                    <item>
+                      <widget class="QtCompComboBox" name="output_smodel_">
+                        <property name="editable">
+                          <bool>true</bool>
+                        </property>
+                      </widget>
+                    </item>
+                  </layout>
+                </item>
+                <item>
+                  <spacer name="output_smodel_section_spacer_">
+                    <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                      <size>
+                        <width>20</width>
+                        <height>18</height>
+                      </size>
+                    </property>
+                    <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                  </spacer>
+                </item>
+              </layout>
+            </item>
           </layout>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>18</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QLabel" name="mode_label_">
-           <property name="text">
-            <string>For each input horizon create:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>18</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
-              <widget class="QRadioButton" name="prediction_radio_">
-               <property name="text">
-                <string>one unique surface using prediction</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="simulation_radio_">
-               <property name="text">
-                <string>one realization using stochastic simulation</string>
-               </property>
-              </widget>
-             </item>
+        </widget>
+      </item>
+      <item>
+        <widget class="QTabWidget" name="main_tab_widget_">
+          <property name="currentIndex">
+            <number>1</number>
+          </property>
+          <widget class="QWidget" name="wellpicks_tab_">
+            <property name="geometry">
+              <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>539</width>
+                <height>454</height>
+              </rect>
+            </property>
+            <attribute name="title">
+              <string>Wellpicks</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="top_wellpick_layout_">
+              <item>
+                <layout class="QHBoxLayout" name="pick_selection_layout_">
+                  <item>
+                    <widget class="QLabel" name="wellpickset_label_">
+                      <property name="text">
+                        <string>Wellpick set:</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QComboBox" name="wellpickset_combo_"></widget>
+                  </item>
+                  <item>
+                    <widget class="QLabel" name="pick_display_label_">
+                      <property name="text">
+                        <string>display:</string>
+                      </property>
+                      <property name="alignment">
+                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QRadioButton" name="individual_radio_">
+                      <property name="text">
+                        <string>individual picks</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QRadioButton" name="summary_radio_">
+                      <property name="text">
+                        <string>summary</string>
+                      </property>
+                    </widget>
+                  </item>
+                </layout>
+              </item>
+              <item>
+                <widget class="QTableWidget" name="wellpicks_table_"></widget>
+              </item>
+              <item>
+                <layout class="QGridLayout" name="wellpick_uncertainty_layout_">
+                  <item row="0" column="0">
+                    <widget class="QLabel" name="uncertainty_from_label_">
+                      <property name="text">
+                        <string>get uncertainty for each wellpick from:</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="0" column="1">
+                    <widget class="QRadioButton" name="uncert_attr_table_radio">
+                      <property name="text">
+                        <string>uncertainty attribute in table</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="1">
+                    <widget class="QRadioButton" name="uncert_const_radio">
+                      <property name="text">
+                        <string>constant</string>
+                      </property>
+                    </widget>
+                  </item>
+                </layout>
+              </item>
             </layout>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>38</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QLabel" name="output_structural_model_label_">
-           <property name="text">
-            <string>Output structural model:</string>
-           </property>
           </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <spacer name="horizontalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>18</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QtCompComboBox" name="output_smodel_">
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="well_data_tab_">
-      <attribute name="title">
-       <string>Well Data</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_8">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_7">
-         <item>
-          <widget class="QLabel" name="wells_label_">
-           <property name="text">
-            <string>Get wellpicks and well trajectories from:</string>
-           </property>
+          <widget class="QWidget" name="traj_logs_tab_">
+            <property name="geometry">
+              <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>652</width>
+                <height>492</height>
+              </rect>
+            </property>
+            <attribute name="title">
+              <string>Trajectories and logs</string>
+            </attribute>
+            <layout class="QGridLayout" name="trajlogs_gridlayout">
+              <item row="0" column="0">
+                <widget class="QLabel" name="logrun_label_">
+                  <property name="text">
+                    <string>logrun:</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="6" column="2">
+                <widget class="QRadioButton" name="uncertainty_log_radio_">
+                  <property name="text">
+                    <string>Uncertainity log:</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="0" column="1" colspan="4">
+                <widget class="QComboBox" name="logrun_combo_"></widget>
+              </item>
+              <item row="1" column="3" colspan="2">
+                <widget class="QComboBox" name="zonelog_combo_"></widget>
+              </item>
+              <item row="1" column="6">
+                <widget class="QPushButton" name="map_zone_button_">
+                  <property name="text">
+                    <string>map zone codes...</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="2" column="6">
+                <widget class="QLabel" name="map_zone_label_">
+                  <property name="text">
+                    <string>For discrete logs you need to specify how zones names shoud be mapped to zone codes</string>
+                  </property>
+                  <property name="font">
+                    <font>
+                      <pointsize>9</pointsize>
+                    </font>
+                  </property>
+                  <property name="textFormat">
+                    <enum>Qt::PlainText</enum>
+                  </property>
+                  <property name="wordWrap">
+                    <bool>true</bool>
+                  </property>
+                  <property name="indent">
+                    <number>10</number>
+                  </property>
+                </widget>
+              </item>
+              <item row="2" column="2">
+                <widget class="QLabel" name="wells_with_log_label_">
+                  <property name="text">
+                    <string>wells with log:</string>
+                  </property>
+                  <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                </widget>
+              </item>
+              <item row="3" column="2">
+                <spacer name="zonelog_spacer">
+                  <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                    <size>
+                      <width>20</width>
+                      <height>40</height>
+                    </size>
+                  </property>
+                </spacer>
+              </item>
+              <item row="1" column="1" colspan="2">
+                <widget class="QLabel" name="zonelog_label_">
+                  <property name="text">
+                    <string>condition zones on zonelog:</string>
+                  </property>
+                  <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                  </property>
+                </widget>
+              </item>
+              <item row="4" column="1" colspan="3">
+                <widget class="QCheckBox" name="vertical_shift_checkbox_">
+                  <property name="text">
+                    <string>Allow vertical shifts</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="2" column="3" rowspan="2" colspan="2">
+                <widget class="QListWidget" name="wells_with_log_list_"></widget>
+              </item>
+              <item row="6" column="3" colspan="2">
+                <widget class="QComboBox" name="uncertainty_log_combo_"></widget>
+              </item>
+              <item row="5" column="2" colspan="2">
+                <widget class="QRadioButton" name="sd_range_uncertainty_radio_">
+                  <property name="text">
+                    <string>Standard deviation range of uncertainty:</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="5" column="4">
+                <widget class="QDoubleSpinBox" name="sd_range_uncertainty_spinner_">
+                  <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buttonSymbols">
+                    <enum>QAbstractSpinBox::NoButtons</enum>
+                  </property>
+                  <property name="maximum">
+                    <double>1000.0</double>
+                  </property>
+                  <property name="value">
+                    <double>100.0</double>
+                  </property>
+                </widget>
+              </item>
+              <item row="7" column="3" rowspan="2" colspan="2">
+                <widget class="QListWidget" name="wells_with_uncert_log_list_"></widget>
+              </item>
+              <item row="7" column="2">
+                <widget class="QLabel" name="wells_with_uncert_log_label_">
+                  <property name="text">
+                    <string>wells with log:</string>
+                  </property>
+                  <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                </widget>
+              </item>
+              <item row="8" column="2">
+                <spacer name="uncertlog_spacer">
+                  <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                    <size>
+                      <width>20</width>
+                      <height>40</height>
+                    </size>
+                  </property>
+                </spacer>
+              </item>
+            </layout>
           </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <item>
-            <spacer name="horizontalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>18</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="WObjectsSelector" name="wells_selector_combo_" native="true"/>
-           </item>
+        </widget>
+      </item>
+      <item>
+        <widget class="QWidget" name="info_column_">
+          <property name="geometry">
+            <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>291</width>
+              <height>292</height>
+            </rect>
+          </property>
+          <layout class="QVBoxLayout" name="info_column_layout_">
+            <item>
+              <widget class="QLabel" name="log_pick_conflicts_title_">
+                <property name="text">
+                  <string>Log and Wellpick Data Conflicts</string>
+                </property>
+                <property name="font">
+                  <font>
+                    <pointsize>12</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                    <italic>true</italic>
+                  </font>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QTableWidget" name="conflicts_table_"></widget>
+            </item>
+            <item>
+              <widget class="QLabel" name="log_pick_conflicts_help_">
+                <property name="text">
+                  <string>Shows horizons and well where there is a conflict between uncertainty data provided by wellpicks, trajectories and logs.</string>
+                </property>
+                <property name="font">
+                  <font>
+                    <pointsize>9</pointsize>
+                  </font>
+                </property>
+                <property name="textFormat">
+                  <enum>Qt::PlainText</enum>
+                </property>
+                <property name="wordWrap">
+                  <bool>true</bool>
+                </property>
+                <property name="indent">
+                  <number>10</number>
+                </property>
+              </widget>
+            </item>
           </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="wellpicks_group_">
-         <property name="title">
-          <string>condition using wellpicks</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="wellpickset_label_">
-            <property name="text">
-             <string>Wellpick set:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="wellpick_set_combo_"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="uncertainty_label_">
-            <property name="text">
-             <string>For uncertainty use:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QRadioButton" name="constant_radio_">
-            <property name="text">
-             <string>constant</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QDoubleSpinBox" name="constant_edit_">
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="buttonSymbols">
-             <enum>QAbstractSpinBox::NoButtons</enum>
-            </property>
-            <property name="maximum">
-             <double>100000000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QRadioButton" name="attribute_radio_">
-            <property name="text">
-             <string>depth uncertainty attribute</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_7">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="wellpath_group_">
-         <property name="title">
-          <string>condition using wellpath data</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="1" colspan="2">
-           <widget class="QLabel" name="zonelog_label_">
-            <property name="text">
-             <string>condition zones on zonelog:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="3">
-           <widget class="QDoubleSpinBox" name="sd_range_uncertainty_spinner_">
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="buttonSymbols">
-             <enum>QAbstractSpinBox::NoButtons</enum>
-            </property>
-            <property name="maximum">
-             <double>1000.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>100.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3" colspan="2">
-           <widget class="QComboBox" name="zonelog_combo_"/>
-          </item>
-          <item row="2" column="1" colspan="3">
-           <widget class="QCheckBox" name="vertical_shift_checkbox_">
-            <property name="text">
-             <string>Allow vertical shifts</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2" colspan="2">
-           <widget class="QRadioButton" name="sd_range_uncertainty_radio_">
-            <property name="text">
-             <string>Standard deviation range of uncertainty:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="logrun_label_">
-            <property name="text">
-             <string>logrun:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="4">
-           <widget class="QComboBox" name="logrun_combo_"/>
-          </item>
-          <item row="3" column="2">
-           <widget class="QRadioButton" name="uncertainty_log_radio_">
-            <property name="text">
-             <string>Uncertainity log:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QComboBox" name="uncertainty_log_combo_"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-  </layout>
- </widget>
- <customwidgets>
-  <customwidget>
-   <class>WObjectsSelector</class>
-   <extends>QWidget</extends>
-   <header location="global">panel/ui/wobjectsselector.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QtCompComboBox</class>
-   <extends>QComboBox</extends>
-   <header>uiqt/qtcompcombobox.h</header>
-  </customwidget>
- </customwidgets>
- <resources/>
- <connections/>
+      </item>
+    </layout>
+  </widget>
+  <customwidgets></customwidgets>
+  <resources></resources>
+  <connections></connections>
 </ui>

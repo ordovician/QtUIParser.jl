@@ -4,6 +4,9 @@ Ui(
     root = QWidget(
         name     = "traj_logs_tab_",
         class    = :QWidget,
+        attributes = Attributes(
+                title = "Trajectories and logs"
+            ),
         geometry = Rect(0, 0, 652, 492),
         layout = GridLayout(
             name = "trajlogs_gridlayout",
