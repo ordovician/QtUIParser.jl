@@ -1,6 +1,6 @@
 export QWidget,
        QPushButton, QCheckBox, QRadioButton, QLabel, QLineEdit,
-       QSpinBox, QGroupBox, QTextEdit, QToolButton, QComboBox,
+       QDoubleSpinBox, QSpinBox, QGroupBox, QTextEdit, QToolButton, QComboBox,
        QSlider
 
 function config_widget!(w::QWidget, args)
@@ -35,7 +35,7 @@ for T in labeled_widgets
     end
 end
 
-const name_only_widget = [:QSpinBox, :QGroupBox, :QTextEdit, :QComboBox]
+const name_only_widget = [:QDoubleSpinBox, :QSpinBox, :QGroupBox, :QTextEdit, :QComboBox]
 for T in name_only_widget
     s = string(T)
     @eval begin
