@@ -11,7 +11,7 @@ Ui(
                 QLabel(
                     name = "log_pick_conflicts_title_",
                     text = "Log and Wellpick Data Conflicts",
-                    font = Font(12, 75, FontStyle[BOLD, ITALIC])
+                    font = Font(12, 75, FontStyle[BOLD])
                 ),
                 QWidget("conflicts_table_", :QTableWidget),
                 QLabel(

@@ -15,7 +15,7 @@ Ui(
                     name = "pick_selection_layout_",
                     items = [
                         QLabel("wellpickset_label_", "Wellpick set:"),
-                        QComboBox("wellpickset_combo_"),
+                        QComboBox("wellpick_set_combo_"),
                         QLabel(
                             name      = "pick_display_label_",
                             text      = "display:",

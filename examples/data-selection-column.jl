@@ -34,7 +34,7 @@ Ui(
                     )
                 ),
                 Section("well_data", "Input well data:",
-                    QWidget("input_welldata_combo_", :QtCompComboBox)),
+                    QWidget("wells_selector_combo_", :WObjectsSelector)),
 
                 Section("output_smodel", "Output structural model:",
                     QWidget(

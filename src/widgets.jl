@@ -23,7 +23,7 @@ function QWidget(;args...)
     config_widget!(w, args)
 end
 
-const labeled_widgets = [:QPushButton, :QCheckBox, :QRadioButton, :QLabel, :QLineEdit]
+const labeled_widgets = [:QPushButton, :QToolButton, :QCheckBox, :QRadioButton, :QLabel, :QLineEdit]
 for T in labeled_widgets
     s = string(T)
     @eval begin
@@ -35,7 +35,7 @@ for T in labeled_widgets
     end
 end
 
-const name_only_widget = [:QSpinBox, :QGroupBox, :QTextEdit, :QToolButton, :QComboBox]
+const name_only_widget = [:QSpinBox, :QGroupBox, :QTextEdit, :QComboBox]
 for T in name_only_widget
     s = string(T)
     @eval begin
