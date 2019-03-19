@@ -42,7 +42,7 @@
                       </spacer>
                     </item>
                     <item>
-                      <widget class="QtCompComboBox" name="input_hmodel_combo_"></widget>
+                      <widget class="QtCompComboBox" name="input_hmodel_combo_"/>
                     </item>
                   </layout>
                 </item>
@@ -157,7 +157,7 @@
                       </spacer>
                     </item>
                     <item>
-                      <widget class="QComboBox" name="kriging_combo_"></widget>
+                      <widget class="QComboBox" name="kriging_combo_"/>
                     </item>
                     <item>
                       <widget class="QLabel" name="kriging_method_label">
@@ -292,7 +292,7 @@
                       </spacer>
                     </item>
                     <item>
-                      <widget class="QtCompComboBox" name="input_welldata_combo_"></widget>
+                      <widget class="QtCompComboBox" name="input_welldata_combo_"/>
                     </item>
                   </layout>
                 </item>
@@ -376,6 +376,76 @@
           <property name="currentIndex">
             <number>1</number>
           </property>
+          <widget class="QWidget" name="HorizonsTab">
+            <layout class="QGridLayout" name="main_horizons_layout_">
+              <item row="0" column="0" rowspan="9" colspan="5">
+                <widget class="QTableWidget" name="horizons_table_"/>
+              </item>
+              <item row="0" column="5">
+                <widget class="QLabel" name="visual_filter_label_">
+                  <property name="text">
+                    <string>Visual Filter</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="1" column="5">
+                <widget class="QPushButton" name="depth_surface_btn_">
+                  <property name="text">
+                    <string>depth surface</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="2" column="5">
+                <widget class="QPushButton" name="reflector_btn_">
+                  <property name="text">
+                    <string>reflector</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="6" column="5">
+                <widget class="QLabel" name="edit_attr_label_">
+                  <property name="text">
+                    <string>Edit Attributes For</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="7" column="5">
+                <widget class="QPushButton" name="zone_thickness_btn_">
+                  <property name="text">
+                    <string>zone thickness...</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="8" column="5">
+                <widget class="QPushButton" name="time_interpret_btn_">
+                  <property name="text">
+                    <string>time interpretations...</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="9" column="1">
+                <widget class="QPushButton" name="add_menu_btn_">
+                  <property name="text">
+                    <string>Add</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="9" column="2">
+                <widget class="QPushButton" name="remove_btn_">
+                  <property name="text">
+                    <string>Remove</string>
+                  </property>
+                </widget>
+              </item>
+              <item row="9" column="3">
+                <widget class="QPushButton" name="reset_zone_setup_btn_">
+                  <property name="text">
+                    <string>reset zone setup...</string>
+                  </property>
+                </widget>
+              </item>
+            </layout>
+          </widget>
           <widget class="QWidget" name="wellpicks_tab_">
             <property name="geometry">
               <rect>
@@ -399,7 +469,7 @@
                     </widget>
                   </item>
                   <item>
-                    <widget class="QComboBox" name="wellpickset_combo_"></widget>
+                    <widget class="QComboBox" name="wellpickset_combo_"/>
                   </item>
                   <item>
                     <widget class="QLabel" name="pick_display_label_">
@@ -428,7 +498,7 @@
                 </layout>
               </item>
               <item>
-                <widget class="QTableWidget" name="wellpicks_table_"></widget>
+                <widget class="QTableWidget" name="wellpicks_table_"/>
               </item>
               <item>
                 <layout class="QGridLayout" name="wellpick_uncertainty_layout_">
@@ -485,10 +555,10 @@
                 </widget>
               </item>
               <item row="0" column="1" colspan="4">
-                <widget class="QComboBox" name="logrun_combo_"></widget>
+                <widget class="QComboBox" name="logrun_combo_"/>
               </item>
               <item row="1" column="3" colspan="2">
-                <widget class="QComboBox" name="zonelog_combo_"></widget>
+                <widget class="QComboBox" name="zonelog_combo_"/>
               </item>
               <item row="1" column="6">
                 <widget class="QPushButton" name="map_zone_button_">
@@ -559,10 +629,10 @@
                 </widget>
               </item>
               <item row="2" column="3" rowspan="2" colspan="2">
-                <widget class="QListWidget" name="wells_with_log_list_"></widget>
+                <widget class="QListWidget" name="wells_with_log_list_"/>
               </item>
               <item row="6" column="3" colspan="2">
-                <widget class="QComboBox" name="uncertainty_log_combo_"></widget>
+                <widget class="QComboBox" name="uncertainty_log_combo_"/>
               </item>
               <item row="5" column="2" colspan="2">
                 <widget class="QRadioButton" name="sd_range_uncertainty_radio_">
@@ -588,7 +658,7 @@
                 </widget>
               </item>
               <item row="7" column="3" rowspan="2" colspan="2">
-                <widget class="QListWidget" name="wells_with_uncert_log_list_"></widget>
+                <widget class="QListWidget" name="wells_with_uncert_log_list_"/>
               </item>
               <item row="7" column="2">
                 <widget class="QLabel" name="wells_with_uncert_log_label_">
@@ -644,7 +714,7 @@
               </widget>
             </item>
             <item>
-              <widget class="QTableWidget" name="conflicts_table_"></widget>
+              <widget class="QTableWidget" name="conflicts_table_"/>
             </item>
             <item>
               <widget class="QLabel" name="log_pick_conflicts_help_">
@@ -672,7 +742,7 @@
       </item>
     </layout>
   </widget>
-  <customwidgets></customwidgets>
-  <resources></resources>
-  <connections></connections>
+  <customwidgets/>
+  <resources/>
+  <connections/>
 </ui>

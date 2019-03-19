@@ -13,6 +13,7 @@ Ui(
                     class        = :QTabWidget,
                     currentIndex = 1,
                     children = [
+                        load_root_widget("horizonstab.jl"),
                         load_root_widget("wellpickstab.jl"),
                         load_root_widget("trajlogstab.jl")
                     ]
