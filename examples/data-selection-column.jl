@@ -1,5 +1,3 @@
-include("section.jl")
-
 Ui(
     class   = "DataSelectionColumn",
     version = "4.0",

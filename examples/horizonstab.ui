@@ -2,9 +2,17 @@
 <ui version="4.0">
   <class>HorizonsTab</class>
   <widget class="QWidget" name="HorizonsTab">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>597</width>
+        <height>430</height>
+      </rect>
+    </property>
     <layout class="QGridLayout" name="main_horizons_layout_">
       <item row="0" column="0" rowspan="9" colspan="5">
-        <widget class="QTableWidget" name="horizons_table_"/>
+        <widget class="QTableWidget" name="horizons_table_"></widget>
       </item>
       <item row="0" column="5">
         <widget class="QLabel" name="visual_filter_label_">
@@ -49,14 +57,14 @@
         </widget>
       </item>
       <item row="9" column="1">
-        <widget class="QPushButton" name="add_menu_btn_">
+        <widget class="QToolButton" name="add_menu_btn_">
           <property name="text">
             <string>Add</string>
           </property>
         </widget>
       </item>
       <item row="9" column="2">
-        <widget class="QPushButton" name="remove_btn_">
+        <widget class="QToolButton" name="remove_btn_">
           <property name="text">
             <string>Remove</string>
           </property>
@@ -69,9 +77,35 @@
           </property>
         </widget>
       </item>
+      <item row="3" column="5">
+        <spacer name="side_spacer_">
+          <property name="orientation">
+            <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+            <size>
+              <width>20</width>
+              <height>40</height>
+            </size>
+          </property>
+        </spacer>
+      </item>
+      <item row="9" column="4">
+        <spacer name="bottom_spacer_">
+          <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+            <size>
+              <width>40</width>
+              <height>20</height>
+            </size>
+          </property>
+        </spacer>
+      </item>
     </layout>
   </widget>
-  <customwidgets/>
-  <resources/>
-  <connections/>
+  <customwidgets></customwidgets>
+  <resources></resources>
+  <connections></connections>
 </ui>

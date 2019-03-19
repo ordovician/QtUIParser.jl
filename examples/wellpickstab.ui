@@ -6,7 +6,7 @@
       <rect>
         <x>0</x>
         <y>0</y>
-        <width>539</width>
+        <width>522</width>
         <height>454</height>
       </rect>
     </property>
@@ -21,7 +21,20 @@
             </widget>
           </item>
           <item>
-            <widget class="QComboBox" name="wellpickset_combo_"></widget>
+            <widget class="QComboBox" name="wellpick_set_combo_"></widget>
+          </item>
+          <item>
+            <spacer name="pick_selection_spacer_">
+              <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+                <size>
+                  <width>40</width>
+                  <height>20</height>
+                </size>
+              </property>
+            </spacer>
           </item>
           <item>
             <widget class="QLabel" name="pick_display_label_">
@@ -54,26 +67,49 @@
       </item>
       <item>
         <layout class="QGridLayout" name="wellpick_uncertainty_layout_">
-          <item row="0" column="0">
+          <item row="0" column="2" colspan="2">
+            <widget class="QRadioButton" name="uncert_attr_table_radio_">
+              <property name="text">
+                <string>uncertainty attribute in table</string>
+              </property>
+            </widget>
+          </item>
+          <item row="0" column="1">
             <widget class="QLabel" name="uncertainty_from_label_">
               <property name="text">
                 <string>get uncertainty for each wellpick from:</string>
               </property>
             </widget>
           </item>
-          <item row="0" column="1">
-            <widget class="QRadioButton" name="uncert_attr_table_radio">
-              <property name="text">
-                <string>uncertainty attribute in table</string>
-              </property>
-            </widget>
-          </item>
-          <item row="1" column="1">
-            <widget class="QRadioButton" name="uncert_const_radio">
+          <item row="1" column="2">
+            <widget class="QRadioButton" name="uncert_const_radio_">
               <property name="text">
                 <string>constant</string>
               </property>
             </widget>
+          </item>
+          <item row="1" column="3">
+            <widget class="QDoubleSpinBox" name="uncert_const_spinner_">
+              <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buttonSymbols">
+                <enum>QAbstractSpinBox::NoButtons</enum>
+              </property>
+            </widget>
+          </item>
+          <item row="0" column="0">
+            <spacer name="wellpick_uncert_spacer_">
+              <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+                <size>
+                  <width>40</width>
+                  <height>20</height>
+                </size>
+              </property>
+            </spacer>
           </item>
         </layout>
       </item>

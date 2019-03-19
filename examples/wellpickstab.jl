@@ -4,10 +4,7 @@ Ui(
     root = QWidget(
         name     = "wellpicks_tab_",
         class    = :QWidget,
-        attributes = Attributes(
-                title = "Wellpicks"
-            ),
-        geometry = Rect(0, 0, 539, 454),
+        geometry = Rect(0, 0, 522, 454),
         layout = VBoxLayout(
             name = "top_wellpick_layout_",
             items = [
@@ -16,6 +13,7 @@ Ui(
                     items = [
                         QLabel("wellpickset_label_", "Wellpick set:"),
                         QComboBox("wellpick_set_combo_"),
+                        Spacer("pick_selection_spacer_", HORIZONTAL, Size(40, 20)),
                         QLabel(
                             name      = "pick_display_label_",
                             text      = "display:",
@@ -29,12 +27,16 @@ Ui(
                 GridLayout(
                     name = "wellpick_uncertainty_layout_",
                     items = [
-                        GridItem(0, 0,
-                            QLabel("uncertainty_from_label_", "get uncertainty for each wellpick from:")),
+                        GridItem(0, 2, 1, 2,
+                            QRadioButton("uncert_attr_table_radio_", "uncertainty attribute in table")),
                         GridItem(0, 1,
-                            QRadioButton("uncert_attr_table_radio", "uncertainty attribute in table")),
-                        GridItem(1, 1,
-                            QRadioButton("uncert_const_radio", "constant"))
+                            QLabel("uncertainty_from_label_", "get uncertainty for each wellpick from:")),
+                        GridItem(1, 2,
+                            QRadioButton("uncert_const_radio_", "constant")),
+                        GridItem(1, 3,
+                            DoubleEdit("uncert_const_spinner_")),
+                        GridItem(0, 0,
+                            Spacer("wellpick_uncert_spacer_", HORIZONTAL, Size(40, 20)))
                     ]
                 )
             ]

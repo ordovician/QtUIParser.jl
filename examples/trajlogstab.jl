@@ -50,14 +50,7 @@ Ui(
                 GridItem(5, 2, 1, 2,
                     QRadioButton("sd_range_uncertainty_radio_", "Standard deviation range of uncertainty:")),
                 GridItem(5, 4,
-                    QWidget(
-                        name          = "sd_range_uncertainty_spinner_",
-                        class         = :QDoubleSpinBox,
-                        alignment     = Alignment[RIGHT, TRAILING, VCENTER],
-                        buttonSymbols = NO_BUTTONS,
-                        maximum       = 1000.0,
-                        value         = 100.0
-                    )),
+                    DoubleEdit("sd_range_uncertainty_spinner_", 0, 100, 1000)),
                 GridItem(7, 3, 2, 2,
                     QWidget("wells_with_uncert_log_list_", :QListWidget)),
                 GridItem(7, 2,

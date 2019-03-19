@@ -1,8 +1,3 @@
-function Tab(tabname::AbstractString, filename::AbstractString)
-    w = load_root_widget(filename)
-    w.attributes.items[:title] = tabname
-    w
-end
 
 Ui(
     class   = "HUMForm",
@@ -27,7 +22,7 @@ Ui(
                 load_root_widget("info-column.jl")
             ]
         )
-    )
+    ),
     customwidgets = [
         CustomWidget(:WObjectsSelector, :QWidget, "panel/ui/wobjectsselector.h"),
         CustomWidget(:QtCompComboBox, :QComboBox, "uiqt/qtcompcombobox.h")

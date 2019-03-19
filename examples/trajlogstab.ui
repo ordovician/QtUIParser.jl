@@ -1,156 +1,165 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>traj_logs_tab_</class>
- <widget class="QWidget" name="traj_logs_tab_">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>652</width>
-    <height>511</height>
-   </rect>
-  </property>
-  <layout class="QGridLayout" name="trajlogs_gridlayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="logrun_label_">
-     <property name="text">
-      <string>logrun:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="2">
-    <widget class="QRadioButton" name="uncertainty_log_radio_">
-     <property name="text">
-      <string>Uncertainity log:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="4">
-    <widget class="QComboBox" name="logrun_combo_"/>
-   </item>
-   <item row="1" column="3" colspan="2">
-    <widget class="QComboBox" name="zonelog_combo_"/>
-   </item>
-   <item row="1" column="6">
-    <widget class="QPushButton" name="map_zone_button_">
-     <property name="text">
-      <string>map zone codes...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="6">
-    <widget class="QLabel" name="map_zone_label_">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>For discrete logs you need to specify how zones names shoud be mapped to zone codes</string>
-     </property>
-     <property name="textFormat">
-      <enum>Qt::PlainText</enum>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <property name="margin">
-      <number>0</number>
-     </property>
-     <property name="indent">
-      <number>0</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="wells_with_log_label_">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>wells with log:</string>
-     </property>
-     <property name="textFormat">
-      <enum>Qt::AutoText</enum>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QLabel" name="zonelog_label_">
-     <property name="text">
-      <string>condition zones on zonelog:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="3">
-    <widget class="QCheckBox" name="vertical_shift_checkbox_">
-     <property name="text">
-      <string>Allow vertical shifts</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3" rowspan="2" colspan="2">
-    <widget class="QListWidget" name="wells_with_log_list_"/>
-   </item>
-   <item row="6" column="3" colspan="2">
-    <widget class="QComboBox" name="uncertainty_log_combo_"/>
-   </item>
-   <item row="5" column="2" colspan="2">
-    <widget class="QRadioButton" name="sd_range_uncertainty_radio_">
-     <property name="text">
-      <string>Standard deviation range of uncertainty:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="4">
-    <widget class="QDoubleSpinBox" name="sd_range_uncertainty_spinner_">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="maximum">
-      <double>1000.000000000000000</double>
-     </property>
-     <property name="value">
-      <double>100.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="3" rowspan="2" colspan="2">
-    <widget class="QListWidget" name="wells_with_uncert_log_list_"/>
-   </item>
-   <item row="7" column="2">
-    <widget class="QLabel" name="wells_with_uncert_log_label_">
-     <property name="text">
-      <string>wells with log:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-     </property>
-    </widget>
-   </item>
-  </layout>
- </widget>
- <resources/>
- <connections/>
+  <class>traj_logs_tab_</class>
+  <widget class="QWidget" name="traj_logs_tab_">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>652</width>
+        <height>492</height>
+      </rect>
+    </property>
+    <layout class="QGridLayout" name="trajlogs_gridlayout">
+      <item row="0" column="0">
+        <widget class="QLabel" name="logrun_label_">
+          <property name="text">
+            <string>logrun:</string>
+          </property>
+        </widget>
+      </item>
+      <item row="6" column="2">
+        <widget class="QRadioButton" name="uncertainty_log_radio_">
+          <property name="text">
+            <string>Uncertainity log:</string>
+          </property>
+        </widget>
+      </item>
+      <item row="0" column="1" colspan="4">
+        <widget class="QComboBox" name="logrun_combo_"></widget>
+      </item>
+      <item row="1" column="3" colspan="2">
+        <widget class="QComboBox" name="zonelog_combo_"></widget>
+      </item>
+      <item row="1" column="6">
+        <widget class="QPushButton" name="map_zone_button_">
+          <property name="text">
+            <string>map zone codes...</string>
+          </property>
+        </widget>
+      </item>
+      <item row="2" column="6">
+        <widget class="QLabel" name="map_zone_label_">
+          <property name="text">
+            <string>For discrete logs you need to specify how zones names shoud be mapped to zone codes</string>
+          </property>
+          <property name="font">
+            <font>
+              <pointsize>9</pointsize>
+            </font>
+          </property>
+          <property name="textFormat">
+            <enum>Qt::PlainText</enum>
+          </property>
+          <property name="wordWrap">
+            <bool>true</bool>
+          </property>
+          <property name="indent">
+            <number>10</number>
+          </property>
+        </widget>
+      </item>
+      <item row="2" column="2">
+        <widget class="QLabel" name="wells_with_log_label_">
+          <property name="text">
+            <string>wells with log:</string>
+          </property>
+          <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+        </widget>
+      </item>
+      <item row="3" column="2">
+        <spacer name="zonelog_spacer">
+          <property name="orientation">
+            <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+            <size>
+              <width>20</width>
+              <height>40</height>
+            </size>
+          </property>
+        </spacer>
+      </item>
+      <item row="1" column="1" colspan="2">
+        <widget class="QLabel" name="zonelog_label_">
+          <property name="text">
+            <string>condition zones on zonelog:</string>
+          </property>
+          <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+        </widget>
+      </item>
+      <item row="4" column="1" colspan="3">
+        <widget class="QCheckBox" name="vertical_shift_checkbox_">
+          <property name="text">
+            <string>Allow vertical shifts</string>
+          </property>
+        </widget>
+      </item>
+      <item row="2" column="3" rowspan="2" colspan="2">
+        <widget class="QListWidget" name="wells_with_log_list_"></widget>
+      </item>
+      <item row="6" column="3" colspan="2">
+        <widget class="QComboBox" name="uncertainty_log_combo_"></widget>
+      </item>
+      <item row="5" column="2" colspan="2">
+        <widget class="QRadioButton" name="sd_range_uncertainty_radio_">
+          <property name="text">
+            <string>Standard deviation range of uncertainty:</string>
+          </property>
+        </widget>
+      </item>
+      <item row="5" column="4">
+        <widget class="QDoubleSpinBox" name="sd_range_uncertainty_spinner_">
+          <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::NoButtons</enum>
+          </property>
+          <property name="minimum">
+            <number>0</number>
+          </property>
+          <property name="value">
+            <number>100</number>
+          </property>
+          <property name="maximum">
+            <number>1000</number>
+          </property>
+        </widget>
+      </item>
+      <item row="7" column="3" rowspan="2" colspan="2">
+        <widget class="QListWidget" name="wells_with_uncert_log_list_"></widget>
+      </item>
+      <item row="7" column="2">
+        <widget class="QLabel" name="wells_with_uncert_log_label_">
+          <property name="text">
+            <string>wells with log:</string>
+          </property>
+          <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+        </widget>
+      </item>
+      <item row="8" column="2">
+        <spacer name="uncertlog_spacer">
+          <property name="orientation">
+            <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+            <size>
+              <width>20</width>
+              <height>40</height>
+            </size>
+          </property>
+        </spacer>
+      </item>
+    </layout>
+  </widget>
+  <customwidgets></customwidgets>
+  <resources></resources>
+  <connections></connections>
 </ui>
