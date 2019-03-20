@@ -8,8 +8,6 @@ I tried to overcome these problems by editing the `.ui` file XML format directly
 
 That is the purpose of this package. To provide an assortment of tools to manipulate the `.ui` files with a more friendly interface.
 
-## Status
-Parsing and generating `.ui` files work, with the exception of some UI components. Tabs are not well supported presently.
 
 # Installation
 This has been made for the new package manager in Julia 0.7. You hit the `]` key in the Julia REPL (command line interface) and write.
@@ -102,3 +100,22 @@ Or you can specify another path:
 
     julia> save_erml_as("foobar.jl")
     julia> save_ui_as("foobar.ui")
+
+Or use existing path but different `ui` object:
+
+    julia> save_erml(ui)
+    julia> save_ui(ui)
+
+### Locating Items
+In `search.jl` you will find various functions for finding widgets or layout of particular name or type. To look for a widget with a particular name:
+
+    julia> ui = load("examples/slider.jl")
+    julia> findfirstitem(ui, "value_spinner")
+
+### Building UIs Quicker
+A lot of UI building requires boilerplate code. Often you use the same layout with a bunch of components over and over again. In `prefab.jl` we have some functions for creating prefabricated composite widgets.
+
+    Tab("Foo Bar", "foobar.ui")
+
+For instance `Tab` will load a widget from a file, `foobar.ui` in this case, and add an
+attribute for the tab title `Foo Bar`, so you can fill up a `QTabWidget` with individual tabs stored on separate `.ui` files.
